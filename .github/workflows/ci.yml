@@ -26,4 +26,9 @@ jobs:
     
     - name: Run tests
       working-directory: ./server
+      env:
+        NODE_ENV: test
+        JWT_SECRET: test_jwt_secret
+        JWT_REFRESH_SECRET: test_jwt_refresh_secret
+        MONGO_URI: mongodb://localhost:27017/test_db
       run: npm test
