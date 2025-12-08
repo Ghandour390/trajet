@@ -1,0 +1,42 @@
+const mongoose = require('mongoose');
+
+const vehicleSchema = new mongoose.Schema({
+  plateNumber: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  type: {
+    type: String,
+    required: true
+  },
+  brand: {
+    type: String,
+    required: true
+  },
+  year: {
+    type: Number,
+    required: true
+  },
+  currentKm: {
+    type: Number,
+    default: 0
+  },
+  status: {
+    type: String,
+    enum: ['available', 'in_use', 'maintenance'],
+    default: 'available'
+  },
+  tires: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tire'
+  }],
+  maintenanceDueDates: [{
+    type: Date
+  }]
+}, {
+  timestamps: true
+});
+
+module.exports = mongoose.model('Vehicle', vehicleSchema);
