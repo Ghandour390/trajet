@@ -10,6 +10,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    services:
+      mongodb:
+        image: mongo:6
+        ports:
+          - 27017:27017
+
     steps:
     - uses: actions/checkout@v3
     
@@ -31,4 +37,4 @@ jobs:
         JWT_SECRET: test_jwt_secret
         JWT_REFRESH_SECRET: test_jwt_refresh_secret
         MONGO_URI: mongodb://localhost:27017/test_db
-      run: npm test
+      run: npm test -- --verbose
