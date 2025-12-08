@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const trailerSchema = new mongoose.Schema({
   plateNumber: {
@@ -23,4 +23,4 @@ const trailerSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Trailer', trailerSchema);
+export default mongoose.model('Trailer', trailerSchema);

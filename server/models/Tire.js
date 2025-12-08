@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const tireSchema = new mongoose.Schema({
   serial: {
@@ -29,4 +29,4 @@ const tireSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('Tire', tireSchema);
+export default mongoose.model('Tire', tireSchema);

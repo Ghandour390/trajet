@@ -1,8 +1,8 @@
-const userService = require('../services/userService');
+import userService from '../services/userService.js';
 
 // @desc    Get all users
 // @route   GET /api/users
-exports.getUsers = async (req, res, next) => {
+export const getUsers = async (req, res, next) => {
   try {
     const users = await userService.findAll();
     res.json(users);
@@ -13,7 +13,7 @@ exports.getUsers = async (req, res, next) => {
 
 // @desc    Get user by ID
 // @route   GET /api/users/:id
-exports.getUserById = async (req, res, next) => {
+export const getUserById = async (req, res, next) => {
   try {
     const user = await userService.findById(req.params.id);
     if (!user) {
@@ -27,7 +27,7 @@ exports.getUserById = async (req, res, next) => {
 
 // @desc    Create user
 // @route   POST /api/users
-exports.createUser = async (req, res, next) => {
+export const createUser = async (req, res, next) => {
   try {
     const user = await userService.create(req.body);
     res.status(201).json(user);
@@ -38,7 +38,7 @@ exports.createUser = async (req, res, next) => {
 
 // @desc    Update user
 // @route   PUT /api/users/:id
-exports.updateUser = async (req, res, next) => {
+export const updateUser = async (req, res, next) => {
   try {
     const user = await userService.update(req.params.id, req.body);
     if (!user) {
@@ -52,7 +52,7 @@ exports.updateUser = async (req, res, next) => {
 
 // @desc    Delete user
 // @route   DELETE /api/users/:id
-exports.deleteUser = async (req, res, next) => {
+export const deleteUser = async (req, res, next) => {
   try {
     const user = await userService.delete(req.params.id);
     if (!user) {
