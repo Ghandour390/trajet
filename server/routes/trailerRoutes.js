@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticate, authorize } from '../middleware/auth.js';
+import trailerController from '../controllers/trailerController.js';
 
 const router = express.Router();
 
@@ -28,12 +29,12 @@ const router = express.Router();
  *         description: Liste des remorques
  */
 router.route('/')
-  .post(authenticate, authorize('admin'))
-  .get(authenticate, authorize('admin'));
+  .post(authenticate, authorize('admin'), trailerController.createTrailer.bind(trailerController))
+  .get(authenticate, authorize('admin'), trailerController.getAllTrailers.bind(trailerController));
 
 router.route('/:id')
-  .get(authenticate, authorize('admin'))
-  .patch(authenticate, authorize('admin'))
-  .delete(authenticate, authorize('admin'));
+  .get(authenticate, authorize('admin'), trailerController.getTrailerById.bind(trailerController))
+  .patch(authenticate, authorize('admin'), trailerController.updateTrailer.bind(trailerController))
+  .delete(authenticate, authorize('admin'), trailerController.deleteTrailer.bind(trailerController));
 
 export default router;

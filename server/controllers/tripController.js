@@ -1,11 +1,11 @@
-import Trip from '../models/Trip.js';
+import tripService from '../services/tripService.js';
 
 class TripController {
   //  Admin creates a trip
   // route POST /api/trips
   async createTrip(req, res) {
     try {
-      const trip = await Trip.create(req.body);
+      const trip = await tripService.create(req.body);
       res.status(201).json(trip);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -17,10 +17,7 @@ class TripController {
   async getAllTrips(req, res) {
     try {
       const filter = req.user.role === 'chauffeur' ? { assignedTo: req.user.id } : {};
-      const trips = await Trip.find(filter)
-        .populate('assignedTo', 'firstname lastname')
-        .populate('vehicleRef', 'plateNumber')
-        .populate('trailerRef', 'plateNumber');
+      const trips = await tripService.findAll(filter);
       res.json(trips);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -31,10 +28,7 @@ class TripController {
   // route GET /api/trips/:id
   async getTripById(req, res) {
     try {
-      const trip = await Trip.findById(req.params.id)
-        .populate('assignedTo', 'firstname lastname')
-        .populate('vehicleRef', 'plateNumber')
-        .populate('trailerRef', 'plateNumber');
+      const trip = await tripService.findById(req.params.id);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -49,7 +43,7 @@ class TripController {
 
   async updateTrip(req, res) {
     try {
-      const trip = await Trip.findByIdAndUpdate(req.params.id, req.body, { new: true });
+      const trip = await tripService.update(req.params.id, req.body);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -63,7 +57,7 @@ class TripController {
   // route DELETE /api/trips/:id
   async deleteTrip(req, res) {
     try {
-      const trip = await Trip.findByIdAndDelete(req.params.id);
+      const trip = await tripService.delete(req.params.id);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -78,11 +72,7 @@ class TripController {
   async updateStatus(req, res) {
     try {
       const { status } = req.body;
-      const trip = await Trip.findByIdAndUpdate(
-        req.params.id,
-        { status },
-        { new: true }
-      );
+      const trip = await tripService.updateStatus(req.params.id, status);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -97,11 +87,7 @@ class TripController {
   async updateMileage(req, res) {
     try {
       const { startKm, endKm } = req.body;
-      const trip = await Trip.findByIdAndUpdate(
-        req.params.id,
-        { startKm, endKm },
-        { new: true }
-      );
+      const trip = await tripService.updateMileage(req.params.id, startKm, endKm);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -115,11 +101,7 @@ class TripController {
   async updateFuel(req, res) {
     try {
       const { fuelVolume } = req.body;
-      const trip = await Trip.findByIdAndUpdate(
-        req.params.id,
-        { fuelVolume },
-        { new: true }
-      );
+      const trip = await tripService.updateFuel(req.params.id, fuelVolume);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -133,11 +115,7 @@ class TripController {
   async updateRemarks(req, res) {
     try {
       const { remarks } = req.body;
-      const trip = await Trip.findByIdAndUpdate(
-        req.params.id,
-        { remarks },
-        { new: true }
-      );
+      const trip = await tripService.updateRemarks(req.params.id, remarks);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }

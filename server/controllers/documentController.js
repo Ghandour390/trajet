@@ -1,7 +1,6 @@
-import Document from '../models/Document.js';
+import documentService from '../services/documentService.js';
 import multer from 'multer';
 import path from 'path';
-import { minioClient, BUCKET_NAME } from '../config/minio.js';
 
 // Configuration multer pour upload en mémoire
 const storage = multer.memoryStorage();
@@ -30,29 +29,18 @@ export const uploadDocument = async (req, res) => {
       return res.status(400).json({ message: 'Aucun fichier fourni' });
     }
 
-    // Générer nom unique
     const filename = `${Date.now()}-${req.file.originalname}`;
     
-    // Upload vers MinIO
-    await minioClient.putObject(
-      BUCKET_NAME,
-      filename,
-      req.file.buffer,
-      req.file.size,
-      { 'Content-Type': req.file.mimetype }
-    );
-
-    const document = await Document.create({
+    const document = await documentService.create({
       filename,
       originalName: req.file.originalname,
       mimeType: req.file.mimetype,
       size: req.file.size,
-      path: `${BUCKET_NAME}/${filename}`,
-      uploadedBy: req.user.id,
+      buffer: req.file.buffer,
       relatedTo,
       relatedId,
       description
-    });
+    }, req.user.id);
 
     res.status(201).json(document);
   } catch (error) {
@@ -69,10 +57,7 @@ export const getDocuments = async (req, res) => {
     if (relatedTo) filter.relatedTo = relatedTo;
     if (relatedId) filter.relatedId = relatedId;
 
-    const documents = await Document.find(filter)
-      .populate('uploadedBy', 'firstname lastname')
-      .sort({ createdAt: -1 });
-
+    const documents = await documentService.findAll(filter);
     res.json(documents);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -82,16 +67,12 @@ export const getDocuments = async (req, res) => {
 // Delete document
 export const deleteDocument = async (req, res) => {
   try {
-    const document = await Document.findById(req.params.id);
+    const document = await documentService.delete(req.params.id);
     
     if (!document) {
       return res.status(404).json({ message: 'Document non trouvé' });
     }
 
-    // Supprimer de MinIO
-    await minioClient.removeObject(BUCKET_NAME, document.filename);
-
-    await document.deleteOne();
     res.json({ message: 'Document supprimé' });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -101,14 +82,13 @@ export const deleteDocument = async (req, res) => {
 // Download document
 export const downloadDocument = async (req, res) => {
   try {
-    const document = await Document.findById(req.params.id);
+    const document = await documentService.findById(req.params.id);
     
     if (!document) {
       return res.status(404).json({ message: 'Document non trouvé' });
     }
 
-    // Télécharger depuis MinIO
-    const dataStream = await minioClient.getObject(BUCKET_NAME, document.filename);
+    const dataStream = await documentService.getFileStream(document.filename);
     
     res.setHeader('Content-Type', document.mimeType);
     res.setHeader('Content-Disposition', `attachment; filename="${document.originalName}"`);

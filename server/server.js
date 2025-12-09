@@ -9,6 +9,7 @@ import trailerRoutes from './routes/trailerRoutes.js';
 import tripRoutes from './routes/tripRoutes.js';
 import maintenanceRoutes from './routes/maintenanceRoutes.js';
 import documentRoutes from './routes/documentRoutes.js';
+import tireRoutes from './routes/tireRoutes.js';
 import swaggerSpec from './config/swagger.js';
 
 
@@ -32,6 +33,7 @@ app.use('/api/trailers', trailerRoutes);
 app.use('/api/trips', tripRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/documents', documentRoutes);
+app.use('/api/tires', tireRoutes);
 
 // Error Handler
 app.use(errorHandler);
