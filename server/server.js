@@ -1,7 +1,16 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
 import userRoutes from './routes/userRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import vehicleRoutes from './routes/vihicleRoutes.js';
+import trailerRoutes from './routes/trailerRoutes.js';
+import tripRoutes from './routes/tripRoutes.js';
+import maintenanceRoutes from './routes/maintenanceRoutes.js';
+import documentRoutes from './routes/documentRoutes.js';
+import swaggerSpec from './config/swagger.js';
+
 
 const app = express();
 
@@ -12,8 +21,17 @@ connectDB();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/vehicles', vehicleRoutes);
+app.use('/api/trailers', trailerRoutes);
+app.use('/api/trips', tripRoutes);
+app.use('/api/maintenance', maintenanceRoutes);
+app.use('/api/documents', documentRoutes);
 
 // Error Handler
 app.use(errorHandler);

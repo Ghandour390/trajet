@@ -23,6 +23,10 @@ class UserService {
   async delete(id) {
     return await User.findByIdAndDelete(id);
   }
+  async getMyTrips() {
+    trips = this.find({ role: 'chauffeur' });
+    return trips;
+  }
 }
 
 export default new UserService();

@@ -39,14 +39,20 @@ describe('AuthService', () => {
 
   describe('register', () => {
     it('should register a new user with hashed password', async () => {
-      const userData = { email: 'test@test.com', password: 'password123' };
+      const userData = { email: 'test@test.com', password: 'password123', firstname: 'John', lastname: 'Doe' };
       mockBcrypt.hash.mockResolvedValue('hashedPassword');
-      mockUser.save.mockResolvedValue({ ...userData, password: 'hashedPassword' });
+      mockUser.save.mockResolvedValue({
+        ...userData,
+        passwordHash: 'hashedPassword',
+        role: 'chauffeur',
+        toObject: () => ({ ...userData, passwordHash: 'hashedPassword', role: 'chauffeur' })
+      });
 
-      await AuthService.register(userData);
+      const result = await AuthService.register(userData);
 
       expect(mockBcrypt.hash).toHaveBeenCalledWith('password123', 10);
       expect(mockUser.save).toHaveBeenCalled();
+      expect(result).not.toHaveProperty('passwordHash');
     });
   });
 
@@ -55,7 +61,7 @@ describe('AuthService', () => {
       const user = {
         _id: 'userId',
         email: 'test@test.com',
-        password: 'hashedPassword',
+        passwordHash: 'hashedPassword',
         firstname: 'John',
         lastname: 'Doe',
         role: 'user'
@@ -80,7 +86,7 @@ describe('AuthService', () => {
     });
 
     it('should throw error if password is invalid', async () => {
-      mockUser.findOne.mockResolvedValue({ email: 'test@test.com', password: 'hashedPassword' });
+      mockUser.findOne.mockResolvedValue({ email: 'test@test.com', passwordHash: 'hashedPassword' });
       mockBcrypt.compare.mockResolvedValue(false);
 
       await expect(AuthService.login('test@test.com', 'wrongPassword'))

@@ -6,10 +6,14 @@ import jwt from "jsonwebtoken";
 class AuthService {
   async register(userData) {
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    userData.password = hashedPassword;
-    const user = new User(userData);
-    user.role = 'chauffeur'; // Default role
-    return await user.save();
+    const user = new User({
+      ...userData,
+      passwordHash: hashedPassword,
+      role: userData.role || 'chauffeur'
+    });
+    const savedUser = await user.save();
+    const { passwordHash: _passwordHash, ...userWithoutPassword } = savedUser.toObject();
+    return userWithoutPassword;
   }
   async login(email, password) {
     const user = await User.findOne({ email });
@@ -17,7 +21,7 @@ class AuthService {
       throw new Error("Invalid email or password");
     }
     
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordValid) {
       throw new Error("Invalid email or password");
     }
@@ -71,13 +75,10 @@ class AuthService {
     }
   }
   async logout(refreshToken) {
-    // In a stateless JWT implementation, logout is typically handled client-side
-    // However, you could implement a token blacklist here if needed
-    // For now, we'll just verify the token is valid before "logging out"
     try {
       jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
       return { message: "Logged out successfully" };
-    } catch (error) {
+    } catch {
       throw new Error("Invalid refresh token");
     }
   }

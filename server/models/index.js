@@ -4,3 +4,4 @@ export { default as Trailer } from './Trailer.js';
 export { default as Tire } from './Tire.js';
 export { default as Trip } from './Trip.js';
 export { default as Maintenance } from './Maintenance.js';
+export { default as Document } from './Document.js';
