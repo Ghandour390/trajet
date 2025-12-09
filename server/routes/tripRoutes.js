@@ -1,5 +1,6 @@
 import express from 'express';
 import { authenticate, authorize } from '../middleware/auth.js';
+import tripController from '../controllers/tripController.js';
 
 const router = express.Router();
 
@@ -28,8 +29,8 @@ const router = express.Router();
  *         description: Liste des trajets
  */
 router.route('/')
-  .post(authenticate, authorize('admin'))
-  .get(authenticate, authorize('admin', 'chauffeur'));
+  .post(authenticate, authorize('admin'), tripController.createTrip.bind(tripController))
+  .get(authenticate, authorize('admin', 'chauffeur'), tripController.getAllTrips.bind(tripController));
 
 /**
  * @swagger
@@ -43,7 +44,7 @@ router.route('/')
  *       200:
  *         description: Statut mis à jour
  */
-router.patch('/:id/status', authenticate, authorize('chauffeur'));
+router.patch('/:id/status', authenticate, authorize('chauffeur'), tripController.updateStatus.bind(tripController));
 
 /**
  * @swagger
@@ -57,7 +58,7 @@ router.patch('/:id/status', authenticate, authorize('chauffeur'));
  *       200:
  *         description: Kilométrage enregistré
  */
-router.patch('/:id/mileage', authenticate, authorize('chauffeur'));
+router.patch('/:id/mileage', authenticate, authorize('chauffeur'), tripController.updateMileage.bind(tripController));
 
 /**
  * @swagger
@@ -71,7 +72,7 @@ router.patch('/:id/mileage', authenticate, authorize('chauffeur'));
  *       200:
  *         description: Gasoil enregistré
  */
-router.patch('/:id/fuel', authenticate, authorize('chauffeur'));
+router.patch('/:id/fuel', authenticate, authorize('chauffeur'), tripController.updateFuel.bind(tripController));
 
 /**
  * @swagger
@@ -85,11 +86,11 @@ router.patch('/:id/fuel', authenticate, authorize('chauffeur'));
  *       200:
  *         description: Remarques ajoutées
  */
-router.patch('/:id/remarks', authenticate, authorize('chauffeur'));
+router.patch('/:id/remarks', authenticate, authorize('chauffeur'), tripController.updateRemarks.bind(tripController));
 
 router.route('/:id')
-  .get(authenticate, authorize('admin', 'chauffeur'))
-  .patch(authenticate, authorize('admin'))
-  .delete(authenticate, authorize('admin'));
+  .get(authenticate, authorize('admin', 'chauffeur'), tripController.getTripById.bind(tripController))
+  .patch(authenticate, authorize('admin'), tripController.updateTrip.bind(tripController))
+  .delete(authenticate, authorize('admin'), tripController.deleteTrip.bind(tripController));
 
 export default router;
