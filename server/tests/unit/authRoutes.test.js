@@ -5,7 +5,8 @@ import request from 'supertest';
 const mockAuthController = {
   login: jest.fn(),
   register: jest.fn(),
-  logout: jest.fn()
+  logout: jest.fn(),
+  refreshToken: jest.fn()
 };
 
 jest.unstable_mockModule('../../controllers/authController.js', () => ({

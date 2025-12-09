@@ -37,7 +37,7 @@ const router = express.Router();
  *       400:
  *         description: Erreur de validation
  */
-router.post("/register", authController.register);
+router.post("/register", authController.register.bind(authController));
 
 /**
  * @swagger
@@ -76,7 +76,7 @@ router.post("/register", authController.register);
  *       401:
  *         description: Identifiants invalides
  */
-router.post("/login", authController.login);
+router.post("/login", authController.login.bind(authController));
 
 /**
  * @swagger
@@ -101,7 +101,7 @@ router.post("/login", authController.login);
  *       400:
  *         description: Token invalide
  */
-router.post("/logout", authController.logout);
+router.post("/logout", authController.logout.bind(authController));
 
 /**
  * @swagger
@@ -133,7 +133,7 @@ router.post("/logout", authController.logout);
  *       401:
  *         description: Token invalide
  */
-router.post("/refresh", authController.refreshToken);
+router.post("/refresh", authController.refreshToken.bind(authController));
 
 export default router;
 

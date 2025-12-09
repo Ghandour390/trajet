@@ -1,7 +1,15 @@
-const userService = require('../../services/userService');
-const User = require('../../models/User');
+import { jest, describe, it, expect, afterEach } from '@jest/globals';
 
-jest.mock('../../models/User');
+const mockUser = {
+  find: jest.fn(),
+  create: jest.fn()
+};
+
+jest.unstable_mockModule('../../models/User.js', () => ({
+  default: mockUser
+}));
+
+const { default: userService } = await import('../../services/userService.js');
 
 describe('UserService', () => {
   afterEach(() => {
@@ -14,27 +22,27 @@ describe('UserService', () => {
         { name: 'User 1', email: 'user1@test.com' },
         { name: 'User 2', email: 'user2@test.com' }
       ];
-      User.find.mockReturnValue({
+      mockUser.find.mockReturnValue({
         select: jest.fn().mockResolvedValue(mockUsers)
       });
 
       const result = await userService.findAll();
 
       expect(result).toEqual(mockUsers);
-      expect(User.find).toHaveBeenCalledTimes(1);
+      expect(mockUser.find).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('create', () => {
     it('should create a new user', async () => {
       const userData = { name: 'New User', email: 'new@test.com', password: '123456' };
-      const mockUser = { _id: '123', ...userData };
-      User.create.mockResolvedValue(mockUser);
+      const createdUser = { _id: '123', ...userData };
+      mockUser.create.mockResolvedValue(createdUser);
 
       const result = await userService.create(userData);
 
-      expect(result).toEqual(mockUser);
-      expect(User.create).toHaveBeenCalledWith(userData);
+      expect(result).toEqual(createdUser);
+      expect(mockUser.create).toHaveBeenCalledWith(userData);
     });
   });
 });
