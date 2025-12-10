@@ -13,6 +13,8 @@ import tireRoutes from './routes/tireRoutes.js';
 import swaggerSpec from './config/swagger.js';
 import cors from 'cors';
 
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 

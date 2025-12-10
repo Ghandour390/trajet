@@ -1,29 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../api/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { login, selectIsAuthenticated, selectAuthError, selectAuthLoading, clearError } from '../store/slices/authSlice';
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const error = useSelector(selectAuthError);
+  const loading = useSelector(selectAuthLoading);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const data = await login(formData.email, formData.password);
-      localStorage.setItem('accessToken', data.accessToken);
-      localStorage.setItem('refreshToken', data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Erreur de connexion');
-    } finally {
-      setLoading(false);
-    }
+    dispatch(login({ email: formData.email, password: formData.password }));
   };
 
   return (

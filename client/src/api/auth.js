@@ -6,9 +6,7 @@ export const login = async (email, password) => {
 };
 
 export const register = async (userData) => {
-  // console.log('Sending data:', userData);
   const response = await api.post('/auth/register', userData);
-  console.log('Received response:', response.data);
   return response.data;
 };
 
@@ -16,3 +14,19 @@ export const logout = async (refreshToken) => {
   const response = await api.post('/auth/logout', { refreshToken });
   return response.data;
 };
+
+export const refreshToken = async (token) => {
+  const response = await api.post('/auth/refresh', { refreshToken: token });
+  return response.data;
+};
+
+export const forgotPassword = async (email) => {
+  const response = await api.post('/auth/forgot-password', { email });
+  return response.data;
+};
+
+export const resetPassword = async (token, password) => {
+  const response = await api.post('/auth/reset-password', { token, password });
+  return response.data;
+};
+

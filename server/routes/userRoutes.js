@@ -97,8 +97,10 @@ router.route('/')
  *         description: Utilisateur supprimé
  */
 router.route('/:id')
-  .get(authenticate, authorize('admin'), userController.getUserById.bind(userController))
-  .put(authenticate, authorize('admin'), userController.updateUser.bind(userController))
+  .get(authenticate, authorize('admin'), userController.getUserById.bind(userController));
+
+router.route('/:id')
+  .patch(authenticate, userController.updateUser.bind(userController))
   .delete(authenticate, authorize('admin'), userController.deleteUser.bind(userController));
 
 export default router;

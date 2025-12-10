@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../api/auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { register, selectIsAuthenticated, selectAuthError, selectAuthLoading, clearError } from '../store/slices/authSlice';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -11,39 +12,47 @@ export default function Register() {
     confirmPassword: '',
     phone: ''
   });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [validationError, setValidationError] = useState('');
+  
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const error = useSelector(selectAuthError);
+  const loading = useSelector(selectAuthLoading);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/admin/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
+
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("submitted"); 
-    setError('');
+    setValidationError('');
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Les mots de passe ne correspondent pas');
+      setValidationError('Les mots de passe ne correspondent pas');
       return;
     }
 
-    setLoading(true);
-    try {
-      const { confirmPassword, ...userData } = formData;
-      const cleanData = {
-        firstname: userData.firstname.trim(),
-        lastname: userData.lastname.trim(),
-        email: userData.email.trim().toLowerCase(),
-        password: userData.password,
-        phone: userData.phone.trim()
-      };
-      // console.log('Data to send:', cleanData);
-      await register(cleanData);
-      navigate('/login');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Erreur lors de l\'inscription');
-    } finally {
-      setLoading(false);
-    }
+    const { confirmPassword: _, ...userData } = formData;
+    const cleanData = {
+      firstname: userData.firstname.trim(),
+      lastname: userData.lastname.trim(),
+      email: userData.email.trim().toLowerCase(),
+      password: userData.password,
+      phone: userData.phone.trim()
+    };
+    
+    dispatch(register(cleanData));
   };
+
+  const displayError = validationError || error;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B4F6C] to-[#1976A5] flex items-center justify-center p-4">
@@ -53,9 +62,9 @@ export default function Register() {
           <p className="text-gray-600">Rejoignez TrajetCamen dès aujourd'hui</p>
         </div>
 
-        {error && (
+        {displayError && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-            {error}
+            {displayError}
           </div>
         )}
 

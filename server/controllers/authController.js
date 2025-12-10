@@ -1,4 +1,5 @@
 import AuthService from "../services/authService.js";
+import userService from "../services/userService.js";
 
 
 class AuthController {
@@ -40,6 +41,27 @@ class AuthController {
             res.status(200).json(result);
         } catch (error) {
             res.status(401).json({ message: error.message });
+        }
+    }
+    //@ api / auth / my
+    async my(req, res) {
+        try {
+            const userId = req.user.id;
+            const user = await userService.getUserById(userId);
+            res.status(200).json(user);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }   
+    }
+    // @ api / auth /change-password
+    async changePassword(req, res) {
+        try {
+            const userId = req.user.id;
+            const { currentPassword, newPassword } = req.body;
+            const result = await AuthService.changePassword(userId, currentPassword, newPassword);
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(400).json({ message: error.message });
         }
     }
 }

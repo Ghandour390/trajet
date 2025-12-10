@@ -15,6 +15,7 @@ class AuthService {
     const { passwordHash: _passwordHash, ...userWithoutPassword } = savedUser.toObject();
     return userWithoutPassword;
   }
+
   async login(email, password) {
     const user = await User.findOne({ email });
     if (!user) {
@@ -81,6 +82,20 @@ class AuthService {
     } catch {
       throw new Error("Invalid refresh token");
     }
+  }
+    async changePassword(userId, currentPassword, newPassword) {
+    const user = await User.findById(userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isCurrentPasswordValid) {
+      throw new Error("Current password is incorrect");
+    }
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    user.passwordHash = hashedNewPassword;
+    await user.save();
+    return { message: "Password changed successfully" };
   }
 }
 

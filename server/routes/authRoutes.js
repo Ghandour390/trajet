@@ -1,5 +1,6 @@
 import authController from "../controllers/authController.js";
 import express from "express";
+import { authenticate } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -136,6 +137,68 @@ router.post("/logout", authController.logout.bind(authController));
  */
 router.post("/refresh", authController.refreshToken.bind(authController));
 
+/**
+ * @swagger
+ * /api/auth/my:
+ *  get:
+ *    summary: Récupérer les informations de l'utilisateur connecté
+ *   tags: [Auth]
+ *   security:
+ *     - bearerAuth: []
+ *   responses:
+ *    200:
+ *     description: Informations de l'utilisateur récupérées avec succès
+ *    content:
+ *      application/json:
+ *       schema:
+ *        type: object
+ *   properties:
+ *      id:
+ *       type: string
+ *     firstname:
+ *      type: string
+ *    lastname:
+ *    type: string
+ *   email:
+ *    type: string
+ *  role:
+ *   type: string
+ *      500:
+ *    description: Erreur serveur
+ */
+router.get("/my",authenticate, authController.my.bind(authController));
+
+/**
+ * @swagger
+ * /api/auth/change-password:   
+ *  post:
+ *   summary: Changer le mot de passe de l'utilisateur connecté
+ *  tags: [Auth]
+ *  security:
+ *   - bearerAuth: []
+ *  requestBody:
+ *    required: true
+ *   content:
+ *    application/json:
+ *     schema:
+ *      type: object
+ *     required:
+ *      - currentPassword
+ *     - newPassword
+ *    properties:
+ *     currentPassword:
+ *     type: string
+ *    newPassword:
+ *    type: string
+ *  responses:
+ *   200:
+ *   description: Mot de passe changé avec succès
+ *  400:
+ *  description: Erreur lors du changement de mot de passe
+ * 500:
+ *  description: Erreur serveur
+ */
+router.post("/change-password", authenticate, authController.changePassword.bind(authController));  
 export default router;
 
 
