@@ -11,6 +11,7 @@ import maintenanceRoutes from './routes/maintenanceRoutes.js';
 import documentRoutes from './routes/documentRoutes.js';
 import tireRoutes from './routes/tireRoutes.js';
 import swaggerSpec from './config/swagger.js';
+import cors from 'cors';
 
 
 const app = express();
@@ -21,6 +22,7 @@ connectDB();
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));

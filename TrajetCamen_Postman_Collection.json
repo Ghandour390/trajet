@@ -1,0 +1,983 @@
+{
+  "info": {
+    "name": "TrajetCamen API",
+    "description": "Collection complète pour tester l'API TrajetCamen",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    console.log('User registered successfully');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstname\": \"Mohamed\",\n  \"lastname\": \"Alami\",\n  \"email\": \"mohamed@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"0612345678\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', jsonData.accessToken);",
+                  "    pm.collectionVariables.set('refreshToken', jsonData.refreshToken);",
+                  "    console.log('Tokens saved');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"mohamed@example.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "refresh"]
+            }
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "logout"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstname\": \"Ahmed\",\n  \"lastname\": \"Benali\",\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"chauffeur\",\n  \"phone\": \"0623456789\",\n  \"licence\": \"ABC123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "USER_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstname\": \"Ahmed Updated\",\n  \"phone\": \"0698765432\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "USER_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "USER_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Get All Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["vehicles"]
+            }
+          }
+        },
+        {
+          "name": "Create Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationNumber\": \"ABC-123-MA\",\n  \"brand\": \"Mercedes\",\n  \"model\": \"Actros\",\n  \"year\": 2022,\n  \"mileage\": 50000,\n  \"fuelType\": \"diesel\",\n  \"status\": \"disponible\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vehicles",
+              "host": ["{{baseUrl}}"],
+              "path": ["vehicles"]
+            }
+          }
+        },
+        {
+          "name": "Get Vehicle By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/vehicles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["vehicles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "VEHICLE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Vehicle",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mileage\": 55000,\n  \"status\": \"en_mission\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/vehicles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["vehicles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "VEHICLE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Vehicle",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/vehicles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["vehicles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "VEHICLE_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trailers",
+      "item": [
+        {
+          "name": "Get All Trailers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trailers",
+              "host": ["{{baseUrl}}"],
+              "path": ["trailers"]
+            }
+          }
+        },
+        {
+          "name": "Create Trailer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"registrationNumber\": \"TRL-456-MA\",\n  \"type\": \"frigorifique\",\n  \"capacity\": 25000,\n  \"status\": \"disponible\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trailers",
+              "host": ["{{baseUrl}}"],
+              "path": ["trailers"]
+            }
+          }
+        },
+        {
+          "name": "Get Trailer By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trailers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trailers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRAILER_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Trailer",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"en_mission\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trailers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trailers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRAILER_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Trailer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trailers/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trailers", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRAILER_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trips",
+      "item": [
+        {
+          "name": "Get All Trips",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips"]
+            }
+          }
+        },
+        {
+          "name": "Create Trip",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"driver\": \"USER_ID\",\n  \"vehicle\": \"VEHICLE_ID\",\n  \"trailer\": \"TRAILER_ID\",\n  \"origin\": \"Casablanca\",\n  \"destination\": \"Marrakech\",\n  \"departureDate\": \"2024-01-20T08:00:00Z\",\n  \"estimatedArrival\": \"2024-01-20T12:00:00Z\",\n  \"cargo\": \"Marchandises diverses\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips"]
+            }
+          }
+        },
+        {
+          "name": "Get Trip By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Trip",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"en_cours\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Trip Status",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"termine\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id", "status"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Trip Mileage",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startMileage\": 50000,\n  \"endMileage\": 50250\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id/mileage",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id", "mileage"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Trip Fuel",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fuelConsumed\": 45.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id/fuel",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id", "fuel"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Trip Remarks",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"Livraison effectuée sans problème\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id/remarks",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id", "remarks"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Trip",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/trips/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["trips", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TRIP_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Maintenance",
+      "item": [
+        {
+          "name": "Get All Maintenance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/maintenance",
+              "host": ["{{baseUrl}}"],
+              "path": ["maintenance"]
+            }
+          }
+        },
+        {
+          "name": "Create Maintenance",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicle\": \"VEHICLE_ID\",\n  \"type\": \"preventive\",\n  \"description\": \"Vidange et révision\",\n  \"scheduledDate\": \"2024-02-01T09:00:00Z\",\n  \"mileageThreshold\": 60000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/maintenance",
+              "host": ["{{baseUrl}}"],
+              "path": ["maintenance"]
+            }
+          }
+        },
+        {
+          "name": "Get Maintenance By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/maintenance/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["maintenance", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "MAINTENANCE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Maintenance",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"completedDate\": \"2024-02-01T11:00:00Z\",\n  \"cost\": 1500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/maintenance/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["maintenance", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "MAINTENANCE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Maintenance",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/maintenance/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["maintenance", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "MAINTENANCE_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tires",
+      "item": [
+        {
+          "name": "Get All Tires",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tires",
+              "host": ["{{baseUrl}}"],
+              "path": ["tires"]
+            }
+          }
+        },
+        {
+          "name": "Create Tire",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serialNumber\": \"TIRE-001\",\n  \"brand\": \"Michelin\",\n  \"model\": \"XZE\",\n  \"size\": \"315/80R22.5\",\n  \"purchaseDate\": \"2024-01-01\",\n  \"status\": \"en_stock\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tires",
+              "host": ["{{baseUrl}}"],
+              "path": ["tires"]
+            }
+          }
+        },
+        {
+          "name": "Get Tire By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tires/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tires", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TIRE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Tire",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"monte\",\n  \"currentMileage\": 15000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tires/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tires", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TIRE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Link Tire to Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vehicleId\": \"VEHICLE_ID\",\n  \"position\": \"avant_gauche\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/tires/:id/link",
+              "host": ["{{baseUrl}}"],
+              "path": ["tires", ":id", "link"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TIRE_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Tire",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/tires/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["tires", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "TIRE_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "Get All Documents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents"]
+            }
+          }
+        },
+        {
+          "name": "Upload Document",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "entityType",
+                  "value": "vehicle",
+                  "type": "text"
+                },
+                {
+                  "key": "entityId",
+                  "value": "VEHICLE_ID",
+                  "type": "text"
+                },
+                {
+                  "key": "documentType",
+                  "value": "assurance",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents"]
+            }
+          }
+        },
+        {
+          "name": "Download Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/:id/download",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", ":id", "download"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "DOCUMENT_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["documents", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "DOCUMENT_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

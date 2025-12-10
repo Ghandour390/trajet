@@ -37,7 +37,8 @@ const router = express.Router();
  *       400:
  *         description: Erreur de validation
  */
-router.post("/register", authController.register.bind(authController));
+// router.post("/register", authController.register.bind(authController));
+router.post("/register", authController.register.bind((res, req)=>{return res.json("hello world", req.body)}));
 
 /**
  * @swagger
