@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
-import { Menu, Bell, User } from 'lucide-react';
+import { Menu, Bell, User, Moon, Sun } from 'lucide-react';
 import { selectUser } from '../../store/slices/authSlice';
+import { useTheme } from '../../contexts/ThemeContext';
 
 /**
  * AdminHeader Component
@@ -8,13 +9,14 @@ import { selectUser } from '../../store/slices/authSlice';
  */
 export default function AdminHeader({ onMenuClick }) {
   const user = useSelector(selectUser);
+  const { isDark, toggleTheme } = useTheme();
 
   return (
-    <header className="bg-white shadow-sm px-6 py-4 flex items-center justify-between">
+    <header className="bg-white dark:bg-gray-800 shadow-sm px-6 py-4 flex items-center justify-between">
       {/* Menu Toggle */}
       <button
         onClick={onMenuClick}
-        className="p-2 rounded-lg hover:bg-gray-100 transition-colors lg:hidden"
+        className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors lg:hidden"
       >
         <Menu size={24} />
       </button>
@@ -24,14 +26,23 @@ export default function AdminHeader({ onMenuClick }) {
         <input
           type="text"
           placeholder="Rechercher..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
         />
       </div>
 
       {/* Right Section */}
       <div className="flex items-center gap-4">
+        {/* Dark Mode Toggle */}
+        <button 
+          onClick={toggleTheme}
+          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          title={isDark ? 'Mode clair' : 'Mode sombre'}
+        >
+          {isDark ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+
         {/* Notifications */}
-        <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors relative">
+        <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors relative">
           <Bell size={20} />
           <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
         </button>
@@ -42,10 +53,10 @@ export default function AdminHeader({ onMenuClick }) {
             <User size={20} />
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-semibold text-gray-800">
+            <p className="text-sm font-semibold text-gray-800 dark:text-white">
               {user?.firstname} {user?.lastname}
             </p>
-            <p className="text-xs text-gray-500">Admin</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Admin</p>
           </div>
         </div>
       </div>

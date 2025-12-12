@@ -38,18 +38,18 @@ export default function AdminSidebar({ isOpen, onToggle }) {
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-primary-500 text-white transition-all duration-300 z-40 ${
+      className={`fixed left-0 top-0 h-full bg-primary-500 dark:bg-gray-800 text-white transition-all duration-300 z-40 ${
         isOpen ? 'w-64' : 'w-20'
       }`}
     >
       {/* Logo */}
-      <div className="flex items-center justify-between px-4 py-6 border-b border-primary-400">
+      <div className="flex items-center justify-between px-4 py-6 border-b border-primary-400 dark:border-gray-700">
         {isOpen && (
           <h1 className="text-xl font-bold">TrajetCamen</h1>
         )}
         <button
           onClick={onToggle}
-          className="p-2 rounded-lg hover:bg-primary-400 transition-colors"
+          className="p-2 rounded-lg hover:bg-primary-400 dark:hover:bg-gray-700 transition-colors"
         >
           {isOpen ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
         </button>
@@ -57,9 +57,9 @@ export default function AdminSidebar({ isOpen, onToggle }) {
 
       {/* User Info */}
       {isOpen && user && (
-        <div className="px-4 py-4 border-b border-primary-400">
+        <div className="px-4 py-4 border-b border-primary-400 dark:border-gray-700">
           <p className="font-semibold">{user.firstname} {user.lastname}</p>
-          <p className="text-sm text-primary-200">Administrateur</p>
+          <p className="text-sm text-primary-200 dark:text-gray-400">Administrateur</p>
         </div>
       )}
 
@@ -72,8 +72,8 @@ export default function AdminSidebar({ isOpen, onToggle }) {
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-lg mb-1 transition-colors ${
                 isActive
-                  ? 'bg-primary-600 text-white'
-                  : 'text-primary-100 hover:bg-primary-400'
+                  ? 'bg-primary-600 dark:bg-gray-700 text-white'
+                  : 'text-primary-100 dark:text-gray-300 hover:bg-primary-400 dark:hover:bg-gray-700'
               }`
             }
           >
@@ -87,7 +87,7 @@ export default function AdminSidebar({ isOpen, onToggle }) {
       <div className="absolute bottom-4 left-0 right-0 px-2">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-400 transition-colors"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-primary-100 dark:text-gray-300 hover:bg-primary-400 dark:hover:bg-gray-700 transition-colors"
         >
           <LogOut size={20} />
           {isOpen && <span>Déconnexion</span>}
