@@ -22,7 +22,7 @@ export default function Button({
     outline: 'border-2 border-primary-500 text-primary-500 hover:bg-primary-50 focus:ring-primary-500',
     danger: 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
     success: 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500',
-    ghost: 'text-gray-600 hover:bg-gray-100 focus:ring-gray-500',
+    ghost: 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-gray-500',
   };
 
   const sizes = {

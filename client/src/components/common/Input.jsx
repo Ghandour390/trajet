@@ -20,7 +20,7 @@ export default function Input({
       {label && (
         <label
           htmlFor={name}
-          className="block text-sm font-semibold text-gray-700 mb-2"
+          className="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2"
         >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
@@ -39,8 +39,9 @@ export default function Input({
           w-full px-4 py-3 border rounded-lg
           focus:ring-2 focus:ring-primary-500 focus:border-transparent
           outline-none transition
+          dark:bg-gray-700 dark:text-white dark:border-gray-600
           ${error ? 'border-red-500' : 'border-gray-300'}
-          ${disabled ? 'bg-gray-100 cursor-not-allowed' : ''}
+          ${disabled ? 'bg-gray-100 dark:bg-gray-600 cursor-not-allowed' : ''}
         `}
         {...props}
       />

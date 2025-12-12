@@ -52,19 +52,19 @@ export default function Modal({
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
         <div
-          className={`relative bg-white rounded-xl shadow-xl w-full ${sizes[size]} transform transition-all`}
+          className={`relative bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full ${sizes[size]} transform transition-all`}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           {(title || showClose) && (
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-700">
               {title && (
-                <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{title}</h3>
               )}
               {showClose && (
                 <button
                   onClick={onClose}
-                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                  className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 >
                   <X size={24} />
                 </button>
@@ -79,7 +79,7 @@ export default function Modal({
           
           {/* Footer */}
           {footer && (
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 rounded-b-xl">
+            <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-100 dark:border-gray-700 rounded-b-xl">
               {footer}
             </div>
           )}
