@@ -42,6 +42,13 @@ class TripService {
   async updateRemarks(id, remarks) {
     return await Trip.findByIdAndUpdate(id, { remarks }, { new: true });
   }
+  // Find trips by driver ID
+  async findByDriverId(chauffeurId) {
+    return await Trip.find({ assignedTo: chauffeurId })
+      .populate('assignedTo', 'firstname lastname')
+      .populate('vehicleRef', 'plateNumber')
+      .populate('trailerRef', 'plateNumber');
+  }
 }
 
 export default new TripService();

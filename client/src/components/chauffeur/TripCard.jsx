@@ -7,6 +7,7 @@ import { MapPin, Calendar, ChevronRight } from 'lucide-react';
 export default function TripCard({ trip, onClick }) {
   const getStatusBadge = (status) => {
     const statusStyles = {
+      planned: 'bg-yellow-100 text-yellow-800',
       pending: 'bg-yellow-100 text-yellow-800',
       in_progress: 'bg-blue-100 text-blue-800',
       completed: 'bg-green-100 text-green-800',
@@ -14,6 +15,7 @@ export default function TripCard({ trip, onClick }) {
     };
 
     const statusLabels = {
+      planned: 'Planifié',
       pending: 'En attente',
       in_progress: 'En cours',
       completed: 'Terminé',
@@ -77,11 +79,11 @@ export default function TripCard({ trip, onClick }) {
       <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-sm text-gray-500">
         <div className="flex items-center gap-1">
           <Calendar size={16} />
-          <span>{formatDate(trip.date || trip.startDate)}</span>
+          <span>{trip.startAt ? formatDate(trip.startAt) : 'Date invalide'}</span>
         </div>
         <div className="flex items-center gap-1">
           <MapPin size={16} />
-          <span>{trip.distance || 0} km</span>
+          <span>{trip.distimatedKm || 0} km</span>
         </div>
       </div>
     </div>

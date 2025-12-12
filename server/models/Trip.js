@@ -18,12 +18,12 @@ const tripSchema = new mongoose.Schema({
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false
   },
   vehicleRef: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicle',
-    required: true
+    required: false
   },
   trailerRef: {
     type: mongoose.Schema.Types.ObjectId,
@@ -31,10 +31,14 @@ const tripSchema = new mongoose.Schema({
   },
   startKm: {
     type: Number,
-    required: true
+    required: false
   },
   endKm: {
     type: Number
+  },
+  distimatedKm: {
+    type: Number ,
+    required: true
   },
   fuelVolume: {
     type: Number
@@ -51,6 +55,9 @@ const tripSchema = new mongoose.Schema({
     type: Date
   },
   notes: {
+    type: String
+  },
+  description: {
     type: String
   }
 }, {

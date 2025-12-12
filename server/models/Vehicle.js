@@ -25,8 +25,8 @@ const vehicleSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['available', 'in_use', 'maintenance'],
-    default: 'available'
+    enum: ['active', 'in_use', 'maintenance', 'inactive'],
+    default: 'active'
   },
   tires: [{
     type: mongoose.Schema.Types.ObjectId,

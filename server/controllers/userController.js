@@ -70,6 +70,21 @@ class UserController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  // @desc    Get available chauffeurs for a date
+  // @route   GET /api/users/disponibles?startAt=YYYY-MM-DD&endAt=YYYY-MM-DD
+  async getAvailableChauffeurs(req, res) {
+    try {
+      const { startAt, endAt } = req.query;
+      if (!startAt) {
+        return res.status(400).json({ message: 'startAt est obligatoire' });
+      }
+      const chauffeurs = await userService.findAvailableChauffeurs(startAt, endAt);
+      res.status(200).json(chauffeurs);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 export default new UserController();

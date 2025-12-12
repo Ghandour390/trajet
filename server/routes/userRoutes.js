@@ -42,6 +42,30 @@ router.route('/')
 
 /**
  * @swagger
+ * /api/users/disponibles:
+ *   get:
+ *     summary: Obtenir les chauffeurs disponibles pour une date
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Date au format YYYY-MM-DD
+ *     responses:
+ *       200:
+ *         description: Liste des chauffeurs disponibles
+ *       400:
+ *         description: Date manquante
+ */
+router.get('/disponibles', authenticate, authorize('admin'), userController.getAvailableChauffeurs.bind(userController));
+
+/**
+ * @swagger
  * /api/users/{id}:
  *   get:
  *     summary: Obtenir un utilisateur par ID

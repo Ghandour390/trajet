@@ -32,6 +32,32 @@ router.route('/')
   .post(authenticate, authorize('admin'), trailerController.createTrailer.bind(trailerController))
   .get(authenticate, authorize('admin'), trailerController.getAllTrailers.bind(trailerController));
 
+/**
+ * @swagger
+ * /api/trailers/disponibles:
+ *   get:
+ *     summary: Obtenir les remorques disponibles pour une période
+ *     tags: [Trailers]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: startAt
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *       - in: query
+ *         name: endAt
+ *         schema:
+ *           type: string
+ *           format: date-time
+ *     responses:
+ *       200:
+ *         description: Liste des remorques disponibles
+ */
+router.get('/disponibles', authenticate, authorize('admin'), trailerController.getAvailableTrailers.bind(trailerController));
+
 router.route('/:id')
   .get(authenticate, authorize('admin'), trailerController.getTrailerById.bind(trailerController))
   .patch(authenticate, authorize('admin'), trailerController.updateTrailer.bind(trailerController))

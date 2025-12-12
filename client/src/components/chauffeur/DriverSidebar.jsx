@@ -81,7 +81,7 @@ export default function DriverSidebar({ isOpen, onToggle }) {
       <div className="absolute bottom-4 left-0 right-0 px-2">
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-primary-100 hover:bg-primary-400 transition-colors"
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-primary-900 bg-danger-400 hover:bg-primary-400 transition-colors"
         >
           <LogOut size={20} />
           {isOpen && <span>Déconnexion</span>}

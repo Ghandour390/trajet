@@ -15,14 +15,16 @@ export default function VehicleTable({
   const getStatusBadge = (status) => {
     const statusStyles = {
       active: 'bg-green-100 text-green-800',
-      inactive: 'bg-gray-100 text-gray-800',
+      in_use: 'bg-blue-100 text-blue-800',
       maintenance: 'bg-yellow-100 text-yellow-800',
+      inactive: 'bg-gray-100 text-gray-800',
     };
 
     const statusLabels = {
       active: 'Actif',
-      inactive: 'Inactif',
+      in_use: 'En utilisation',
       maintenance: 'En maintenance',
+      inactive: 'Inactif',
     };
 
     return (
@@ -35,16 +37,18 @@ export default function VehicleTable({
   const columns = [
     {
       header: 'Matricule',
-      accessor: 'matricule',
+      accessor: 'plateNumber',
       render: (row) => (
-        <span className="font-medium text-gray-900">{row.matricule}</span>
+        <span className="font-medium text-gray-900">{row.plateNumber}</span>
       ),
     },
     {
-      header: 'Marque / Modèle',
-      render: (row) => (
-        <span>{row.brand} {row.model}</span>
-      ),
+      header: 'Type',
+      accessor: 'type',
+    },
+    {
+      header: 'Marque',
+      accessor: 'brand',
     },
     {
       header: 'Année',
@@ -53,7 +57,7 @@ export default function VehicleTable({
     {
       header: 'Kilométrage',
       render: (row) => (
-        <span>{row.kilometrage?.toLocaleString() || 0} km</span>
+        <span>{row.currentKm?.toLocaleString() || 0} km</span>
       ),
     },
     {

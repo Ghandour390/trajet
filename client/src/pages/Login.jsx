@@ -14,8 +14,9 @@ export default function Login() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      
-      navigate('/admin/dashboard');
+      const role = JSON.parse(localStorage.getItem('user'))?.role;
+      if (role === 'chauffeur') navigate('/chauffeur/dashboard');
+      else if (role === 'admin') navigate('/admin/dashboard');
     }
   }, [isAuthenticated, navigate]);
 

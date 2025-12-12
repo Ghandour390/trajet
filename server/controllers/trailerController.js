@@ -55,6 +55,20 @@ class TrailerController {
       res.status(500).json({ message: error.message });
     }
   }
+
+  // @route GET api/trailers/disponibles?startAt=YYYY-MM-DD&endAt=YYYY-MM-DD
+  async getAvailableTrailers(req, res) {
+    try {
+      const { startAt, endAt } = req.query;
+      if (!startAt) {
+        return res.status(400).json({ message: 'startAt est obligatoire' });
+      }
+      const trailers = await trailerService.findAvailableTrailers(startAt, endAt);
+      res.status(200).json(trailers);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }
 
 export default new TrailerController();

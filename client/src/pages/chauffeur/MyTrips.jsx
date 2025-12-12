@@ -40,7 +40,7 @@ export default function MyTrips() {
 
   const statusOptions = [
     { value: '', label: 'Tous' },
-    { value: 'pending', label: 'En attente' },
+    { value: 'planned', label: 'Planifié' },
     { value: 'in_progress', label: 'En cours' },
     { value: 'completed', label: 'Terminé' },
   ];

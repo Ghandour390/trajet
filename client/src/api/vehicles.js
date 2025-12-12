@@ -20,7 +20,7 @@ export const createVehicle = async (vehicleData) => {
 
 // Update vehicle
 export const updateVehicle = async (id, data) => {
-  const response = await api.put(`/vehicles/${id}`, data);
+  const response = await api.patch(`/vehicles/${id}`, data);
   return response.data;
 };
 

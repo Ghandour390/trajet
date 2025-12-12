@@ -15,6 +15,10 @@ const trailerSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  tires: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Tire'
+  }],
   attachedTo: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicle'

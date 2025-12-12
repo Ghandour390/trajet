@@ -88,6 +88,20 @@ router.patch('/:id/fuel', authenticate, authorize('chauffeur'), tripController.u
  */
 router.patch('/:id/remarks', authenticate, authorize('chauffeur'), tripController.updateRemarks.bind(tripController));
 
+/**
+ * @swagger
+ * /api/trips/my:
+ *   get:
+ *     summary: Récupérer mes trajets (Chauffeur)
+ *     tags: [Trips]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Trajets récupérés
+ */
+router.get('/my', authenticate, authorize('chauffeur'), tripController.getMyTrips.bind(tripController));
+
 router.route('/:id')
   .get(authenticate, authorize('admin', 'chauffeur'), tripController.getTripById.bind(tripController))
   .patch(authenticate, authorize('admin'), tripController.updateTrip.bind(tripController))

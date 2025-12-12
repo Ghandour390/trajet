@@ -13,6 +13,7 @@ import {
 } from '../../store/slices/tripsSlice';
 import { createFuelRecord } from '../../store/slices/fuelSlice';
 import { notify } from '../../utils/notifications';
+import { updateTripMileage } from '../../api/trips';
 
 /**
  * TripDetails Page
@@ -58,8 +59,8 @@ export default function TripDetails() {
     if (trip) {
       setFormData({
         status: trip.status || '',
-        startKilometrage: trip.startKilometrage || '',
-        endKilometrage: trip.endKilometrage || '',
+        startKilometrage: trip.startKm || '',
+        endKilometrage: trip.endKm || '',
         notes: trip.notes || '',
       });
     }
@@ -91,10 +92,11 @@ export default function TripDetails() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await dispatch(updateTrip({ id, data: formData })).unwrap();
+      await updateTripMileage(id, formData.startKilometrage, formData.endKilometrage, formData.notes);
       notify.success('Trajet mis à jour avec succès');
+      dispatch(getTripById(id));
     } catch (error) {
-      notify.error(error || 'Erreur lors de la mise à jour');
+      notify.error(error?.response?.data?.message || 'Erreur lors de la mise à jour');
     }
   };
 
@@ -105,6 +107,8 @@ export default function TripDetails() {
       await dispatch(
         createFuelRecord({
           trip: id,
+          vehicle: trip.vehicleRef?._id,
+          driver: trip.assignedTo?._id,
           ...fuelData,
         })
       ).unwrap();
@@ -118,6 +122,7 @@ export default function TripDetails() {
 
   const getStatusBadge = (status) => {
     const statusStyles = {
+      planned: 'bg-yellow-100 text-yellow-800',
       pending: 'bg-yellow-100 text-yellow-800',
       in_progress: 'bg-blue-100 text-blue-800',
       completed: 'bg-green-100 text-green-800',
@@ -125,6 +130,7 @@ export default function TripDetails() {
     };
 
     const statusLabels = {
+      planned: 'Planifié',
       pending: 'En attente',
       in_progress: 'En cours',
       completed: 'Terminé',
@@ -218,22 +224,22 @@ export default function TripDetails() {
         {/* Additional Info */}
         <div className="mt-6 pt-6 border-t border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-4">
           <div>
-            <p className="text-sm text-gray-500">Distance</p>
-            <p className="font-semibold">{trip.distance || 0} km</p>
+            <p className="text-sm text-gray-500">Distance estimée</p>
+            <p className="font-semibold">{trip.distimatedKm || 0} km</p>
           </div>
           <div>
             <p className="text-sm text-gray-500">Véhicule</p>
-            <p className="font-semibold">{trip.vehicle?.matricule || '-'}</p>
+            <p className="font-semibold">{trip.vehicleRef?.plateNumber || '-'}</p>
           </div>
           <div>
-            <p className="text-sm text-gray-500">Date</p>
+            <p className="text-sm text-gray-500">Remorque</p>
+            <p className="font-semibold">{trip.trailerRef?.plateNumber || '-'}</p>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500">Date début</p>
             <p className="font-semibold">
-              {new Date(trip.date || trip.startDate).toLocaleDateString('fr-FR')}
+              {trip.startAt ? new Date(trip.startAt).toLocaleDateString('fr-FR') : 'Invalid Date'}
             </p>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500">Statut</p>
-            <p className="font-semibold">{getStatusBadge(trip.status)}</p>
           </div>
         </div>
       </Card>
@@ -242,7 +248,7 @@ export default function TripDetails() {
       {trip.status !== 'completed' && trip.status !== 'cancelled' && (
         <Card title="Actions rapides">
           <div className="flex flex-wrap gap-3">
-            {trip.status === 'pending' && (
+            {trip.status === 'planned' && (
               <Button
                 variant="primary"
                 onClick={() => handleStatusUpdate('in_progress')}

@@ -10,6 +10,7 @@ import tripRoutes from './routes/tripRoutes.js';
 import maintenanceRoutes from './routes/maintenanceRoutes.js';
 import documentRoutes from './routes/documentRoutes.js';
 import tireRoutes from './routes/tireRoutes.js';
+import fuelRoutes from './routes/fuelRoutes.js';
 import swaggerSpec from './config/swagger.js';
 import cors from 'cors';
 
@@ -38,6 +39,7 @@ app.use('/api/trips', tripRoutes);
 app.use('/api/maintenance', maintenanceRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/tires', tireRoutes);
+app.use('/api/fuel', fuelRoutes);
 
 // Error Handler
 app.use(errorHandler);

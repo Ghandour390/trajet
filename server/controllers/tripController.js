@@ -86,8 +86,8 @@ class TripController {
   // route PATCH /api/trips/:id/mileage
   async updateMileage(req, res) {
     try {
-      const { startKm, endKm } = req.body;
-      const trip = await tripService.updateMileage(req.params.id, startKm, endKm);
+      const { startKm, endKm, description } = req.body;
+      const trip = await tripService.updateMileage(req.params.id, startKm, endKm, description);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }
@@ -122,6 +122,16 @@ class TripController {
       res.json(trip);
     } catch (error) {
       res.status(400).json({ message: error.message });
+    }
+  }
+  // Get my trips (for drivers)
+  // route GET /api/trips/my
+  async getMyTrips(req, res) {
+    try {
+      const trips = await tripService.findByDriverId(req.user.id);
+      res.json(trips);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
   }
 }

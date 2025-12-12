@@ -29,11 +29,11 @@ export default function AdminVehicles() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [formData, setFormData] = useState({
-    matricule: '',
+    plateNumber: '',
+    type: '',
     brand: '',
-    model: '',
     year: '',
-    kilometrage: '',
+    currentKm: '',
     status: 'active',
   });
 
@@ -45,9 +45,9 @@ export default function AdminVehicles() {
   // Filter vehicles
   const filteredVehicles = vehicles.filter((vehicle) => {
     const matchesSearch =
-      vehicle.matricule?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      vehicle.plateNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       vehicle.brand?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      vehicle.model?.toLowerCase().includes(searchTerm.toLowerCase());
+      vehicle.type?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = !statusFilter || vehicle.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -63,21 +63,21 @@ export default function AdminVehicles() {
     if (vehicle) {
       setSelectedVehicle(vehicle);
       setFormData({
-        matricule: vehicle.matricule || '',
+        plateNumber: vehicle.plateNumber || '',
+        type: vehicle.type || '',
         brand: vehicle.brand || '',
-        model: vehicle.model || '',
         year: vehicle.year || '',
-        kilometrage: vehicle.kilometrage || '',
+        currentKm: vehicle.currentKm || '',
         status: vehicle.status || 'active',
       });
     } else {
       setSelectedVehicle(null);
       setFormData({
-        matricule: '',
+        plateNumber: '',
+        type: '',
         brand: '',
-        model: '',
         year: '',
-        kilometrage: '',
+        currentKm: '',
         status: 'active',
       });
     }
@@ -116,8 +116,14 @@ export default function AdminVehicles() {
 
   const statusOptions = [
     { value: 'active', label: 'Actif' },
-    { value: 'inactive', label: 'Inactif' },
+    { value: 'in_use', label: 'En utilisation' },
     { value: 'maintenance', label: 'En maintenance' },
+    { value: 'inactive', label: 'Inactif' },
+  ];
+
+  const typeOptions = [
+    { value: 'Camion', label: 'Camion' },
+    { value: 'Remorque', label: 'Remorque' },
   ];
 
   return (
@@ -189,11 +195,19 @@ export default function AdminVehicles() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Matricule"
-              name="matricule"
-              value={formData.matricule}
+              name="plateNumber"
+              value={formData.plateNumber}
               onChange={handleInputChange}
               required
               placeholder="AA-123-BB"
+            />
+            <Select
+              label="Type"
+              name="type"
+              value={formData.type}
+              onChange={handleInputChange}
+              options={typeOptions}
+              required
             />
             <Input
               label="Marque"
@@ -202,14 +216,6 @@ export default function AdminVehicles() {
               onChange={handleInputChange}
               required
               placeholder="Mercedes"
-            />
-            <Input
-              label="Modèle"
-              name="model"
-              value={formData.model}
-              onChange={handleInputChange}
-              required
-              placeholder="Actros"
             />
             <Input
               label="Année"
@@ -221,10 +227,10 @@ export default function AdminVehicles() {
               placeholder="2023"
             />
             <Input
-              label="Kilométrage"
-              name="kilometrage"
+              label="Kilométrage actuel"
+              name="currentKm"
               type="number"
-              value={formData.kilometrage}
+              value={formData.currentKm}
               onChange={handleInputChange}
               required
               placeholder="50000"
@@ -258,7 +264,7 @@ export default function AdminVehicles() {
       >
         <p className="text-gray-600 mb-6">
           Êtes-vous sûr de vouloir supprimer le véhicule{' '}
-          <span className="font-semibold">{selectedVehicle?.matricule}</span> ?
+          <span className="font-semibold">{selectedVehicle?.plateNumber}</span> ?
           Cette action est irréversible.
         </p>
         <div className="flex justify-end gap-3">

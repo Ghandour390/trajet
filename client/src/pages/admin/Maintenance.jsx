@@ -26,12 +26,12 @@ export default function AdminMaintenance() {
   const [statusFilter, setStatusFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
-    vehicle: '',
+    vehicleRef: '',
     type: '',
-    description: '',
+    notes: '',
     cost: '',
-    scheduledDate: '',
-    status: 'pending',
+    date: '',
+    km: '',
   });
 
   // Fetch data on mount
@@ -44,9 +44,8 @@ export default function AdminMaintenance() {
   const filteredRecords = maintenanceRecords.filter((record) => {
     const matchesSearch =
       record.type?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      record.vehicle?.matricule?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = !statusFilter || record.status === statusFilter;
-    return matchesSearch && matchesStatus;
+      record.vehicleRef?.plateNumber?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
   // Handle form input change
@@ -63,12 +62,12 @@ export default function AdminMaintenance() {
       notify.success('Maintenance créée avec succès');
       setIsModalOpen(false);
       setFormData({
-        vehicle: '',
+        vehicleRef: '',
         type: '',
-        description: '',
+        notes: '',
         cost: '',
-        scheduledDate: '',
-        status: 'pending',
+        date: '',
+        km: '',
       });
       dispatch(getMaintenanceRecords());
     } catch (error) {
@@ -76,42 +75,28 @@ export default function AdminMaintenance() {
     }
   };
 
-  const getStatusBadge = (status) => {
-    const statusStyles = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      in_progress: 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800',
-    };
-
-    const statusLabels = {
-      pending: 'En attente',
-      in_progress: 'En cours',
-      completed: 'Terminée',
-      cancelled: 'Annulée',
-    };
-
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100'}`}>
-        {statusLabels[status] || status}
-      </span>
-    );
-  };
-
   const columns = [
     {
       header: 'Véhicule',
-      render: (row) => row.vehicle?.matricule || '-',
+      render: (row) => row.vehicleRef?.plateNumber || '-',
+    },
+    {
+      header: 'Marque',
+      render: (row) => row.vehicleRef?.brand || '-',
     },
     {
       header: 'Type',
       accessor: 'type',
     },
     {
-      header: 'Description',
-      accessor: 'description',
+      header: 'Kilométrage',
+      render: (row) => row.km ? `${row.km.toLocaleString()} km` : '-',
+    },
+    {
+      header: 'Notes',
+      accessor: 'notes',
       render: (row) => (
-        <span className="truncate max-w-xs block">{row.description || '-'}</span>
+        <span className="truncate max-w-xs block">{row.notes || '-'}</span>
       ),
     },
     {
@@ -119,37 +104,27 @@ export default function AdminMaintenance() {
       render: (row) => row.cost ? `${row.cost.toLocaleString()} MAD` : '-',
     },
     {
-      header: 'Date prévue',
+      header: 'Date',
       render: (row) =>
-        row.scheduledDate
-          ? new Date(row.scheduledDate).toLocaleDateString('fr-FR')
+        row.date
+          ? new Date(row.date).toLocaleDateString('fr-FR')
           : '-',
     },
-    {
-      header: 'Statut',
-      render: (row) => getStatusBadge(row.status),
-    },
-  ];
-
-  const statusOptions = [
-    { value: 'pending', label: 'En attente' },
-    { value: 'in_progress', label: 'En cours' },
-    { value: 'completed', label: 'Terminée' },
-    { value: 'cancelled', label: 'Annulée' },
   ];
 
   const typeOptions = [
-    { value: 'oil_change', label: 'Vidange' },
-    { value: 'tire_change', label: 'Changement pneus' },
-    { value: 'brake_service', label: 'Freins' },
-    { value: 'engine_repair', label: 'Moteur' },
-    { value: 'inspection', label: 'Contrôle technique' },
-    { value: 'other', label: 'Autre' },
+    { value: 'Vidange', label: 'Vidange' },
+    { value: 'Révision', label: 'Révision' },
+    { value: 'Changement pneus', label: 'Changement pneus' },
+    { value: 'Freins', label: 'Freins' },
+    { value: 'Moteur', label: 'Moteur' },
+    { value: 'Contrôle technique', label: 'Contrôle technique' },
+    { value: 'Autre', label: 'Autre' },
   ];
 
   const vehicleOptions = vehicles.map((v) => ({
     value: v._id,
-    label: `${v.matricule} - ${v.brand} ${v.model}`,
+    label: `${v.plateNumber} - ${v.brand}`,
   }));
 
   return (
@@ -168,31 +143,15 @@ export default function AdminMaintenance() {
 
       {/* Filters */}
       <Card>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Rechercher par type ou véhicule..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-          <div className="sm:w-48">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            >
-              <option value="">Tous les statuts</option>
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="flex-1 relative">
+          <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Rechercher par type ou véhicule..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+          />
         </div>
       </Card>
 
@@ -217,8 +176,8 @@ export default function AdminMaintenance() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select
               label="Véhicule"
-              name="vehicle"
-              value={formData.vehicle}
+              name="vehicleRef"
+              value={formData.vehicleRef}
               onChange={handleInputChange}
               options={vehicleOptions}
               required
@@ -232,7 +191,16 @@ export default function AdminMaintenance() {
               required
             />
             <Input
-              label="Coût estimé (MAD)"
+              label="Kilométrage"
+              name="km"
+              type="number"
+              value={formData.km}
+              onChange={handleInputChange}
+              required
+              placeholder="45000"
+            />
+            <Input
+              label="Coût (MAD)"
               name="cost"
               type="number"
               value={formData.cost}
@@ -240,26 +208,18 @@ export default function AdminMaintenance() {
               placeholder="1500"
             />
             <Input
-              label="Date prévue"
-              name="scheduledDate"
+              label="Date"
+              name="date"
               type="date"
-              value={formData.scheduledDate}
+              value={formData.date}
               onChange={handleInputChange}
-              required
-            />
-            <Select
-              label="Statut"
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              options={statusOptions}
               required
             />
           </div>
           <Input
-            label="Description"
-            name="description"
-            value={formData.description}
+            label="Notes"
+            name="notes"
+            value={formData.notes}
             onChange={handleInputChange}
             placeholder="Détails de la maintenance..."
           />

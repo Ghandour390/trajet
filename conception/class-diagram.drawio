@@ -1,0 +1,174 @@
+<mxfile host="65bd71144e">
+    <diagram name="Class Diagram" id="class-diagram">
+        <mxGraphModel dx="1104" dy="594" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="user-class" value="&lt;&lt;Entity&gt;&gt;&#xa;User" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="80" width="220" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="user-attrs" value="- id: ObjectId&#xa;- firstname: String&#xa;- lastname: String&#xa;- email: String&#xa;- passwordHash: String&#xa;- role: String&#xa;- phone: String&#xa;- licence: String&#xa;- createdAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="user-class" vertex="1">
+                    <mxGeometry y="40" width="220" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="user-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="user-class" vertex="1">
+                    <mxGeometry y="180" width="220" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="user-methods" value="+ login(): Token&#xa;+ updateProfile(): void&#xa;+ changePassword(): void&#xa;+ getAssignedTrips(): Trip[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="user-class" vertex="1">
+                    <mxGeometry y="188" width="220" height="92" as="geometry"/>
+                </mxCell>
+                <mxCell id="vehicle-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Vehicle" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="50" width="240" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="vehicle-attrs" value="- id: ObjectId&#xa;- plateNumber: String&#xa;- type: String&#xa;- brand: String&#xa;- year: Number&#xa;- currentKm: Number&#xa;- status: String&#xa;- tires: Tire[]&#xa;- maintenanceDueDates: Date[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="vehicle-class" vertex="1">
+                    <mxGeometry y="40" width="240" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="vehicle-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="vehicle-class" vertex="1">
+                    <mxGeometry y="190" width="240" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="vehicle-methods" value="+ updateKilometrage(km: Number): void&#xa;+ addTire(tire: Tire): void&#xa;+ removeTire(tireId: ObjectId): void&#xa;+ scheduleMaintenance(date: Date): void&#xa;+ updateStatus(status: String): void&#xa;+ getMaintenanceHistory(): Maintenance[]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="vehicle-class" vertex="1">
+                    <mxGeometry y="198" width="240" height="122" as="geometry"/>
+                </mxCell>
+                <mxCell id="trailer-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Trailer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+                    <mxGeometry x="890" y="60" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="trailer-attrs" value="- id: ObjectId&#xa;- plateNumber: String&#xa;- type: String&#xa;- currentKm: Number&#xa;- attachedTo: Vehicle" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="trailer-class" vertex="1">
+                    <mxGeometry y="40" width="220" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="trailer-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="trailer-class" vertex="1">
+                    <mxGeometry y="130" width="220" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="trailer-methods" value="+ attachToVehicle(vehicle: Vehicle): void&#xa;+ detach(): void&#xa;+ updateKilometrage(km: Number): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="trailer-class" vertex="1">
+                    <mxGeometry y="138" width="220" height="102" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Tire" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+                    <mxGeometry x="740" y="380" width="220" height="260" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-attrs" value="- id: ObjectId&#xa;- serial: String&#xa;- position: String&#xa;- wearPercent: Number&#xa;- installedAt: Date&#xa;- nextCheckKm: Number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="tire-class" vertex="1">
+                    <mxGeometry y="40" width="220" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="tire-class" vertex="1">
+                    <mxGeometry y="150" width="220" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-methods" value="+ updateWear(percent: Number): void&#xa;+ scheduleCheck(km: Number): void&#xa;+ replace(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="tire-class" vertex="1">
+                    <mxGeometry y="158" width="220" height="102" as="geometry"/>
+                </mxCell>
+                <mxCell id="trip-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Trip" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="420" width="240" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="trip-attrs" value="- id: ObjectId&#xa;- reference: String&#xa;- origin: String&#xa;- destination: String&#xa;- assignedTo: User&#xa;- vehicle: Vehicle&#xa;- trailer: Trailer&#xa;- startKm: Number&#xa;- endKm: Number&#xa;- fuelVolume: Number&#xa;- status: String&#xa;- startAt: Date&#xa;- endAt: Date&#xa;- notes: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="trip-class" vertex="1">
+                    <mxGeometry y="40" width="240" height="210" as="geometry"/>
+                </mxCell>
+                <mxCell id="trip-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="trip-class" vertex="1">
+                    <mxGeometry y="250" width="240" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="trip-methods" value="+ start(): void&#xa;+ complete(): void&#xa;+ updateStatus(status: String): void&#xa;+ addFuel(volume: Number): void&#xa;+ updateKilometrage(km: Number): void&#xa;+ generatePDF(): File" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="trip-class" vertex="1">
+                    <mxGeometry y="258" width="240" height="122" as="geometry"/>
+                </mxCell>
+                <mxCell id="maintenance-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Maintenance" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="460" width="240" height="280" as="geometry"/>
+                </mxCell>
+                <mxCell id="maintenance-attrs" value="- id: ObjectId&#xa;- vehicle: Vehicle&#xa;- type: String&#xa;- date: Date&#xa;- km: Number&#xa;- notes: String&#xa;- cost: Number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="maintenance-class" vertex="1">
+                    <mxGeometry y="40" width="240" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="maintenance-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="maintenance-class" vertex="1">
+                    <mxGeometry y="160" width="240" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="maintenance-methods" value="+ schedule(date: Date): void&#xa;+ complete(): void&#xa;+ updateCost(cost: Number): void&#xa;+ addNotes(notes: String): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="maintenance-class" vertex="1">
+                    <mxGeometry y="168" width="240" height="112" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel1" value="" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="trip-class" target="user-attrs" edge="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="400" y="500" as="sourcePoint"/>
+                        <mxPoint x="560" y="500" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="40" y="525"/>
+                            <mxPoint x="40" y="190"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel1-label" value="assignedTo&#xa;1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" parent="rel1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.8" y="1" relative="1" as="geometry">
+                        <mxPoint x="-8" y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel2" value="" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;startArrow=none;startFill=0;" parent="1" source="trip-class" target="vehicle-attrs" edge="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="320" y="520" as="sourcePoint"/>
+                        <mxPoint x="400" y="180" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="360" y="525"/>
+                            <mxPoint x="360" y="175"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel2-label" value="vehicle&#xa;1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" parent="rel2" vertex="1" connectable="0">
+                    <mxGeometry x="0.7" y="1" relative="1" as="geometry">
+                        <mxPoint x="10" y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel3" value="" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=1;exitY=0.35;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="trip-class" target="trailer-attrs" edge="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="320" y="560" as="sourcePoint"/>
+                        <mxPoint x="740" y="180" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="320" y="380"/>
+                            <mxPoint x="710" y="380"/>
+                            <mxPoint x="700" y="165"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel3-label" value="trailer&#xa;0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" parent="rel3" vertex="1" connectable="0">
+                    <mxGeometry x="0.8" y="2" relative="1" as="geometry">
+                        <mxPoint x="10" y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel4" value="" style="endArrow=diamond;endFill=1;endSize=12;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="vehicle-attrs" target="tire-class" edge="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="640" y="220" as="sourcePoint"/>
+                        <mxPoint x="740" y="450" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="700" y="175"/>
+                            <mxPoint x="700" y="445"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel4-label" value="tires&#xa;0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" parent="rel4" vertex="1" connectable="0">
+                    <mxGeometry x="0.7" y="1" relative="1" as="geometry">
+                        <mxPoint x="10" y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="rel4">
+                    <mxGeometry x="0.7131" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel5" value="" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="trailer-class" target="vehicle-class" edge="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="740" y="240" as="sourcePoint"/>
+                        <mxPoint x="640" y="140" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="680" y="260"/>
+                            <mxPoint x="680" y="140"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel5-label" value="attachedTo&#xa;0..1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" parent="rel5" vertex="1" connectable="0">
+                    <mxGeometry x="0.3" y="1" relative="1" as="geometry">
+                        <mxPoint x="10" y="-10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel6" value="" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="maintenance-class" target="vehicle-class" edge="1">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="520" y="460" as="sourcePoint"/>
+                        <mxPoint x="520" y="380" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel6-label" value="vehicle&#xa;1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" parent="rel6" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+                        <mxPoint x="20" y="10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

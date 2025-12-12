@@ -26,7 +26,7 @@ export const createTrip = async (tripData) => {
 
 // Update trip
 export const updateTrip = async (id, data) => {
-  const response = await api.put(`/trips/${id}`, data);
+  const response = await api.patch(`/trips/${id}`, data);
   return response.data;
 };
 
@@ -35,7 +35,11 @@ export const updateTripStatus = async (id, status) => {
   const response = await api.patch(`/trips/${id}/status`, { status });
   return response.data;
 };
-
+// sesir kilométrage
+export const updateTripMileage = async (id, startKm, endKm ,description) => {
+  const response = await api.patch(`/trips/${id}/mileage`, { startKm, endKm, description });
+  return response.data;
+};
 // Delete trip
 export const deleteTrip = async (id) => {
   const response = await api.delete(`/trips/${id}`);
@@ -45,5 +49,23 @@ export const deleteTrip = async (id) => {
 // Get trip statistics
 export const getTripStats = async (params = {}) => {
   const response = await api.get('/trips/stats', { params });
+  return response.data;
+};
+
+// Get available drivers for a date
+export const getAvailableDrivers = async (startAt, endAt) => {
+  const response = await api.get('/users/disponibles', { params: { startAt, endAt } });
+  return response.data;
+};
+
+// Get available vehicles for a date
+export const getAvailableVehicles = async (startAt, endAt) => {
+  const response = await api.get('/vehicles/disponibles', { params: { startAt, endAt } });
+  return response.data;
+};
+
+// Get available trailers for a date
+export const getAvailableTrailers = async (startAt, endAt) => {
+  const response = await api.get('/trailers/disponibles', { params: { startAt, endAt } });
   return response.data;
 };

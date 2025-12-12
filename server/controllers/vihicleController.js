@@ -62,6 +62,21 @@ class VehicleController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    // @desc    Get available vehicles for a date
+    // @route   GET /api/vehicles/disponibles?startAt=YYYY-MM-DD&endAt=YYYY-MM-DD
+    async getAvailableVehicles(req, res) {
+        try {
+            const { startAt, endAt } = req.query;
+            if (!startAt) {
+                return res.status(400).json({ message: 'startAt est obligatoire' });
+            }
+            const vehicles = await vehicleService.findAvailableVehicles(startAt, endAt);
+            res.status(200).json(vehicles);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 export default new VehicleController();
