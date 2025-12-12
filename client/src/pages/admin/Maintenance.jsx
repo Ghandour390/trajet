@@ -69,8 +69,8 @@ export default function AdminMaintenance() {
         km: '',
       });
       dispatch(getMaintenanceRecords());
-    } catch (error) {
-      notify.error(error || 'Erreur lors de la création');
+    } catch (_error) {
+      notify.error(_error || 'Erreur lors de la création');
     }
   };
 
