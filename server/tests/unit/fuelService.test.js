@@ -94,6 +94,8 @@ describe('FuelService', () => {
       const mockQuery = {
         populate: jest.fn().mockReturnThis()
       };
+      mockQuery.populate.mockReturnThis();
+      mockQuery.populate.mockReturnThis();
       mockQuery.populate.mockResolvedValue(mockRecord);
 
       Fuel.findById.mockReturnValue(mockQuery);
