@@ -2,6 +2,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Select from '../components/common/Select';
 
 describe('Select Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   const options = [
     { value: '1', label: 'Option 1' },
     { value: '2', label: 'Option 2' },
@@ -54,7 +57,7 @@ describe('Select Component', () => {
   it('should apply error styling when error exists', () => {
     render(<Select name="test" options={options} error="Error" />);
     const select = screen.getByRole('combobox');
-    expect(select).toHaveClass('border-red-500');
+    expect(select.className).toContain('border-red-500');
   });
 
   it('should render with selected value', () => {

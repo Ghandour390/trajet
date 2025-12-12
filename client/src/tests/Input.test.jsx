@@ -2,6 +2,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import Input from '../components/common/Input';
 
 describe('Input Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   it('should render input with label', () => {
     render(<Input label="Username" name="username" />);
     expect(screen.getByLabelText('Username')).toBeInTheDocument();
@@ -30,7 +33,7 @@ describe('Input Component', () => {
   it('should apply error styling when error exists', () => {
     render(<Input name="test" error="Error" />);
     const input = screen.getByRole('textbox');
-    expect(input).toHaveClass('border-red-500');
+    expect(input.className).toContain('border-red-500');
   });
 
   it('should be disabled when disabled prop is true', () => {
@@ -44,11 +47,13 @@ describe('Input Component', () => {
     expect(screen.getByPlaceholderText('Enter text')).toBeInTheDocument();
   });
 
-  it('should render different input types', () => {
-    const { rerender } = render(<Input name="test" type="email" />);
+  it('should render with email type', () => {
+    render(<Input name="test" type="email" />);
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'email');
+  });
 
-    rerender(<Input name="test" type="password" />);
+  it('should render with password type', () => {
+    render(<Input name="test" type="password" />);
     const passwordInput = document.querySelector('input[type="password"]');
     expect(passwordInput).toBeInTheDocument();
   });

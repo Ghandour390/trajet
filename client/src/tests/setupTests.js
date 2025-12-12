@@ -1,5 +1,14 @@
 import '@testing-library/jest-dom';
 
+// Mock import.meta.env (Vite)
+global.import = {
+  meta: {
+    env: {
+      VITE_API_URL: 'http://localhost:5000/api'
+    }
+  }
+};
+
 // Mock localStorage
 const localStorageMock = {
   getItem: jest.fn(),

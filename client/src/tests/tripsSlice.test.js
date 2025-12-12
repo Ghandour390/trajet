@@ -1,3 +1,11 @@
+// Mock API
+jest.mock('../api/trips', () => ({
+  getTrips: jest.fn(),
+  createTrip: jest.fn(),
+  updateTrip: jest.fn(),
+  deleteTrip: jest.fn()
+}));
+
 import tripsReducer, {
   getTrips,
   createTrip,

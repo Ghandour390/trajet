@@ -1,3 +1,11 @@
+// Mock API
+jest.mock('../api/fuel', () => ({
+  getFuelRecords: jest.fn(),
+  createFuelRecord: jest.fn(),
+  deleteFuelRecord: jest.fn(),
+  getFuelStats: jest.fn()
+}));
+
 import fuelReducer, {
   getFuelRecords,
   createFuelRecord,
