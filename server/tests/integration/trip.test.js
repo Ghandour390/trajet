@@ -65,7 +65,8 @@ describe('Trip Integration Tests', () => {
         destination: 'Marrakech',
         assignedTo: chauffeurUser._id,
         vehicleRef: testVehicle._id,
-        startKm: 1000
+        startKm: 1000,
+        distimatedKm: 250
       };
 
       const response = await request(app)
@@ -91,8 +92,8 @@ describe('Trip Integration Tests', () => {
   describe('GET /api/trips', () => {
     it('should return all trips for admin', async () => {
       await Trip.create([
-        { reference: 'T1', origin: 'A', destination: 'B', assignedTo: chauffeurUser._id, vehicleRef: testVehicle._id, startKm: 1000 },
-        { reference: 'T2', origin: 'C', destination: 'D', assignedTo: chauffeurUser._id, vehicleRef: testVehicle._id, startKm: 1000 }
+        { reference: 'T1', origin: 'A', destination: 'B', assignedTo: chauffeurUser._id, vehicleRef: testVehicle._id, startKm: 1000, distimatedKm: 100 },
+        { reference: 'T2', origin: 'C', destination: 'D', assignedTo: chauffeurUser._id, vehicleRef: testVehicle._id, startKm: 1000, distimatedKm: 100 }
       ]);
 
       const response = await request(app)
@@ -113,8 +114,8 @@ describe('Trip Integration Tests', () => {
       });
 
       await Trip.create([
-        { reference: 'T1', origin: 'A', destination: 'B', assignedTo: chauffeurUser._id, vehicleRef: testVehicle._id, startKm: 1000 },
-        { reference: 'T2', origin: 'C', destination: 'D', assignedTo: otherUser._id, vehicleRef: testVehicle._id, startKm: 1000 }
+        { reference: 'T1', origin: 'A', destination: 'B', assignedTo: chauffeurUser._id, vehicleRef: testVehicle._id, startKm: 1000, distimatedKm: 100 },
+        { reference: 'T2', origin: 'C', destination: 'D', assignedTo: otherUser._id, vehicleRef: testVehicle._id, startKm: 1000, distimatedKm: 100 }
       ]);
 
       const response = await request(app)
@@ -135,7 +136,8 @@ describe('Trip Integration Tests', () => {
         destination: 'Marrakech',
         assignedTo: chauffeurUser._id,
         vehicleRef: testVehicle._id,
-        startKm: 1000
+        startKm: 1000,
+        distimatedKm: 250
       });
 
       const response = await request(app)
@@ -157,6 +159,7 @@ describe('Trip Integration Tests', () => {
         assignedTo: chauffeurUser._id,
         vehicleRef: testVehicle._id,
         startKm: 1000,
+        distimatedKm: 250,
         status: 'planned'
       });
 
@@ -178,7 +181,8 @@ describe('Trip Integration Tests', () => {
         destination: 'Marrakech',
         assignedTo: chauffeurUser._id,
         vehicleRef: testVehicle._id,
-        startKm: 1000
+        startKm: 1000,
+        distimatedKm: 250
       });
 
       const response = await request(app)
@@ -200,7 +204,8 @@ describe('Trip Integration Tests', () => {
         destination: 'Marrakech',
         assignedTo: chauffeurUser._id,
         vehicleRef: testVehicle._id,
-        startKm: 1000
+        startKm: 1000,
+        distimatedKm: 250
       });
 
       const response = await request(app)

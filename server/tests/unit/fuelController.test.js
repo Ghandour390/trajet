@@ -1,9 +1,31 @@
+import { jest } from '@jest/globals';
 import fuelController from '../../controllers/fuelController.js';
 import fuelService from '../../services/fuelService.js';
 
-jest.mock('../../services/fuelService.js');
+jest.unstable_mockModule('../../services/fuelService.js', () => ({
+  default: {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    findByTrip: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    getStats: jest.fn(),
+    getConsumptionByVehicle: jest.fn()
+  }
+}));
 
 describe('FuelController', () => {
+  beforeAll(() => {
+    fuelService.create = jest.fn();
+    fuelService.findAll = jest.fn();
+    fuelService.findById = jest.fn();
+    fuelService.findByTrip = jest.fn();
+    fuelService.update = jest.fn();
+    fuelService.delete = jest.fn();
+    fuelService.getStats = jest.fn();
+    fuelService.getConsumptionByVehicle = jest.fn();
+  });
   let req, res;
 
   beforeEach(() => {

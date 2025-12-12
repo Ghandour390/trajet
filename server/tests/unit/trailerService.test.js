@@ -1,13 +1,20 @@
+import { jest } from '@jest/globals';
 import trailerService from '../../services/trailerService.js';
 import Trailer from '../../models/Trailer.js';
 import Tire from '../../models/Tire.js';
 import Trip from '../../models/Trip.js';
 
-jest.mock('../../models/Trailer.js');
-jest.mock('../../models/Tire.js');
-jest.mock('../../models/Trip.js');
-
 describe('TrailerService', () => {
+  beforeAll(() => {
+    Trailer.findOne = jest.fn();
+    Trailer.create = jest.fn();
+    Trailer.find = jest.fn();
+    Trailer.findById = jest.fn();
+    Trailer.findByIdAndUpdate = jest.fn();
+    Trailer.findByIdAndDelete = jest.fn();
+    Tire.create = jest.fn();
+    Trip.find = jest.fn();
+  });
   afterEach(() => {
     jest.clearAllMocks();
   });

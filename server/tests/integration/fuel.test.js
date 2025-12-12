@@ -1,9 +1,8 @@
+import { jest } from '@jest/globals';
 import request from 'supertest';
 import express from 'express';
 import fuelRoutes from '../../routes/fuelRoutes.js';
 import { authenticate, authorize } from '../../middleware/auth.js';
-
-jest.mock('../../middleware/auth.js');
 
 const app = express();
 app.use(express.json());

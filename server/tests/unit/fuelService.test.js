@@ -1,9 +1,27 @@
+import { jest } from '@jest/globals';
 import fuelService from '../../services/fuelService.js';
 import Fuel from '../../models/Fuel.js';
 
-jest.mock('../../models/Fuel.js');
+jest.unstable_mockModule('../../models/Fuel.js', () => ({
+  default: {
+    create: jest.fn(),
+    find: jest.fn(),
+    findById: jest.fn(),
+    findByIdAndUpdate: jest.fn(),
+    findByIdAndDelete: jest.fn(),
+    aggregate: jest.fn()
+  }
+}));
 
 describe('FuelService', () => {
+  beforeAll(() => {
+    Fuel.create = jest.fn();
+    Fuel.find = jest.fn();
+    Fuel.findById = jest.fn();
+    Fuel.findByIdAndUpdate = jest.fn();
+    Fuel.findByIdAndDelete = jest.fn();
+    Fuel.aggregate = jest.fn();
+  });
   afterEach(() => {
     jest.clearAllMocks();
   });

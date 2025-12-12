@@ -1,13 +1,20 @@
+import { jest } from '@jest/globals';
 import vehicleService from '../../services/vehicleService.js';
 import Vehicle from '../../models/Vehicle.js';
 import Tire from '../../models/Tire.js';
 import Trip from '../../models/Trip.js';
 
-jest.mock('../../models/Vehicle.js');
-jest.mock('../../models/Tire.js');
-jest.mock('../../models/Trip.js');
-
 describe('VehicleService', () => {
+  beforeAll(() => {
+    Vehicle.findOne = jest.fn();
+    Vehicle.create = jest.fn();
+    Vehicle.find = jest.fn();
+    Vehicle.findById = jest.fn();
+    Vehicle.findByIdAndUpdate = jest.fn();
+    Vehicle.findByIdAndDelete = jest.fn();
+    Tire.create = jest.fn();
+    Trip.find = jest.fn();
+  });
   afterEach(() => {
     jest.clearAllMocks();
   });
