@@ -5,7 +5,6 @@ import { ArrowLeft, Fuel, Save } from 'lucide-react';
 import { Button, Card, Input } from '../../components/common';
 import {
   getTripById,
-  updateTrip,
   updateTripStatus,
   selectCurrentTrip,
   selectTripsLoading,
@@ -56,15 +55,16 @@ export default function TripDetails() {
 
   // Update form when trip loads
   useEffect(() => {
-    if (trip) {
-      setFormData({
+    if (trip && trip._id) {
+      const newFormData = {
         status: trip.status || '',
         startKilometrage: trip.startKm || '',
         endKilometrage: trip.endKm || '',
         notes: trip.notes || '',
-      });
+      };
+      setFormData(newFormData);
     }
-  }, [trip]);
+  }, [trip?._id]);
 
   // Handle form input change
   const handleInputChange = (e) => {

@@ -9,7 +9,7 @@ import {
   selectTrips,
   selectTripsLoading,
 } from '../../store/slices/tripsSlice';
-import { getVehicles, selectVehicles } from '../../store/slices/vehiclesSlice';
+
 import { notify } from '../../utils/notifications';
 import { getAvailableDrivers, getAvailableVehicles, getAvailableTrailers } from '../../api/trips';
 
@@ -20,7 +20,6 @@ import { getAvailableDrivers, getAvailableVehicles, getAvailableTrailers } from 
 export default function AdminTrips() {
   const dispatch = useDispatch();
   const trips = useSelector(selectTrips);
-  const vehicles = useSelector(selectVehicles);
   const loading = useSelector(selectTripsLoading);
 
   // Local state
@@ -48,7 +47,6 @@ export default function AdminTrips() {
   // Fetch data on mount
   useEffect(() => {
     dispatch(getTrips());
-    dispatch(getVehicles());
   }, [dispatch]);
 
   // Filter trips

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Truck, MapPin, Users, Wrench, TrendingUp, AlertTriangle } from 'lucide-react';
 import { StatsCard } from '../../components/admin';
@@ -20,13 +20,7 @@ export default function AdminDashboard() {
   const tripsLoading = useSelector(selectTripsLoading);
   const maintenanceRecords = useSelector(selectMaintenanceRecords);
 
-  // Local state for dashboard stats
-  const [stats, setStats] = useState({
-    totalVehicles: 0,
-    activeTrips: 0,
-    totalDrivers: 0,
-    pendingMaintenance: 0,
-  });
+
 
   // Fetch data on mount
   useEffect(() => {
@@ -36,14 +30,12 @@ export default function AdminDashboard() {
   }, [dispatch]);
 
   // Calculate stats when data changes
-  useEffect(() => {
-    setStats({
-      totalVehicles: vehicles.length,
-      activeTrips: trips.filter(t => t.status === 'in_progress').length,
-      totalDrivers: new Set(trips.map(t => t.driver?._id).filter(Boolean)).size,
-      pendingMaintenance: maintenanceRecords.filter(m => m.status === 'pending').length,
-    });
-  }, [vehicles, trips, maintenanceRecords]);
+  const stats = {
+    totalVehicles: vehicles.length,
+    activeTrips: trips.filter(t => t.status === 'in_progress').length,
+    totalDrivers: new Set(trips.map(t => t.driver?._id).filter(Boolean)).size,
+    pendingMaintenance: maintenanceRecords.filter(m => m.status === 'pending').length,
+  };
 
   // Recent trips for display
   const recentTrips = trips.slice(0, 5);

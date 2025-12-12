@@ -1,18 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
-
+  const userData = localStorage.getItem('user');
+  
   useEffect(() => {
-    const userData = localStorage.getItem('user');
     if (!userData) {
       navigate('/login');
-      return;
     }
-    setUser(JSON.parse(userData));
-  }, [navigate]);
+  }, [navigate, userData]);
+
+  const user = userData ? JSON.parse(userData) : null;
 
   const handleLogout = () => {
     localStorage.clear();

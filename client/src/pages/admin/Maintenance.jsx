@@ -23,7 +23,6 @@ export default function AdminMaintenance() {
 
   // Local state
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     vehicleRef: '',

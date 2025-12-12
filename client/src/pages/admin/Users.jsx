@@ -34,7 +34,7 @@ export default function AdminUsers() {
     try {
       const response = await usersAPI.getUsers();
       setUsers(response.users || response);
-    } catch (error) {
+    } catch {
       notify.error('Erreur lors du chargement des utilisateurs');
     } finally {
       setLoading(false);
@@ -79,7 +79,7 @@ export default function AdminUsers() {
       notify.success('Utilisateur mis à jour avec succès');
       setIsModalOpen(false);
       fetchUsers();
-    } catch (error) {
+    } catch {
       notify.error('Erreur lors de la mise à jour');
     } finally {
       setLoading(false);
