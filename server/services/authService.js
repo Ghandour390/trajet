@@ -5,6 +5,11 @@ import jwt from "jsonwebtoken";
 
 class AuthService {
   async register(userData) {
+    const existingUser = await User.findOne({ email: userData.email });
+    if (existingUser) {
+      throw new Error('Email already exists');
+    }
+    
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const user = new User({
       ...userData,

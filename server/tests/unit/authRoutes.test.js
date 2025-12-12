@@ -6,7 +6,9 @@ const mockAuthController = {
   login: jest.fn(),
   register: jest.fn(),
   logout: jest.fn(),
-  refreshToken: jest.fn()
+  refreshToken: jest.fn(),
+  my: jest.fn(),
+  changePassword: jest.fn()
 };
 
 jest.unstable_mockModule('../../controllers/authController.js', () => ({
