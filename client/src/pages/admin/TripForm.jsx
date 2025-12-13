@@ -64,7 +64,7 @@ export default function TripForm() {
         setAvailableDrivers(drivers);
         setAvailableVehicles(vehicles);
         setAvailableTrailers(trailers);
-      } catch (error) {
+      } catch {
         notify.error('Erreur lors du chargement des disponibilités');
       }
     }
@@ -81,8 +81,8 @@ export default function TripForm() {
         notify.success('Trajet créé avec succès');
       }
       navigate('/admin/trips');
-    } catch (error) {
-      notify.error(error || 'Erreur lors de la création');
+    } catch {
+      notify.error('Erreur lors de la création');
     }
   };
 

@@ -27,7 +27,7 @@ export default function AdminUsers() {
     try {
       const response = await usersAPI.getUsers();
       setUsers(response.users || response);
-    } catch (_error) {
+    } catch {
       notify.error('Erreur lors du chargement des utilisateurs');
     } finally {
       setLoading(false);

@@ -38,7 +38,7 @@ export default function UserForm() {
           role: user.role || 'chauffeur',
         });
       }
-    } catch (error) {
+    } catch {
       notify.error('Erreur lors du chargement de l\'utilisateur');
     } finally {
       setLoading(false);
@@ -57,7 +57,7 @@ export default function UserForm() {
       await usersAPI.updateUser(id, formData);
       notify.success('Utilisateur mis à jour avec succès');
       navigate('/admin/users');
-    } catch (error) {
+    } catch {
       notify.error('Erreur lors de la mise à jour');
     } finally {
       setLoading(false);

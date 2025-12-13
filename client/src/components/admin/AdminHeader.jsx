@@ -8,7 +8,7 @@ import { useTheme } from '../../contexts/ThemeContext';
  * AdminHeader Component
  * Top header bar for admin panel - Fully responsive with dark mode
  */
-export default function AdminHeader({ onMenuClick, sidebarOpen }) {
+export default function AdminHeader({ onMenuClick }) {
   const user = useSelector(selectUser);
   const { isDark, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);

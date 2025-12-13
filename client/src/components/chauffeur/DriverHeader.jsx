@@ -8,7 +8,7 @@ import { useTheme } from '../../contexts/ThemeContext';
  * DriverHeader Component
  * Top header bar for driver panel - Fully responsive with dark mode
  */
-export default function DriverHeader({ onMenuClick, sidebarOpen }) {
+export default function DriverHeader({ onMenuClick }) {
   const user = useSelector(selectUser);
   const { isDark, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
