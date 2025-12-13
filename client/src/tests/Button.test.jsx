@@ -18,13 +18,13 @@ describe('Button Component', () => {
   it('should apply primary variant class', () => {
     render(<Button variant="primary">Primary</Button>);
     const button = screen.getByText('Primary');
-    expect(button.className).toContain('bg-primary-500');
+    expect(button.className).toContain('from-primary-500');
   });
 
   it('should apply secondary variant class', () => {
     render(<Button variant="secondary">Secondary</Button>);
     const button = screen.getByText('Secondary');
-    expect(button.className).toContain('bg-secondary-500');
+    expect(button.className).toContain('from-secondary-500');
   });
 
   it('should be disabled when disabled prop is true', () => {
