@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Search } from 'lucide-react';
-import { Button, Card, Modal, Input, Select } from '../../components/common';
+import { Button, Card } from '../../components/common';
 import { VehicleTable } from '../../components/admin';
 import {
   getVehicles,
-  createVehicle,
-  updateVehicle,
   deleteVehicle,
   selectVehicles,
   selectVehiclesLoading,
 } from '../../store/slices/vehiclesSlice';
 import { notify } from '../../utils/notifications';
+import { Modal } from '../../components/common';
 
 /**
  * AdminVehicles Page
@@ -19,23 +19,15 @@ import { notify } from '../../utils/notifications';
  */
 export default function AdminVehicles() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const vehicles = useSelector(selectVehicles);
   const loading = useSelector(selectVehiclesLoading);
 
   // Local state
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [formData, setFormData] = useState({
-    plateNumber: '',
-    type: '',
-    brand: '',
-    year: '',
-    currentKm: '',
-    status: 'active',
-  });
 
   // Fetch vehicles on mount
   useEffect(() => {
@@ -52,55 +44,7 @@ export default function AdminVehicles() {
     return matchesSearch && matchesStatus;
   });
 
-  // Handle form input change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
-  // Open modal for create/edit
-  const openModal = (vehicle = null) => {
-    if (vehicle) {
-      setSelectedVehicle(vehicle);
-      setFormData({
-        plateNumber: vehicle.plateNumber || '',
-        type: vehicle.type || '',
-        brand: vehicle.brand || '',
-        year: vehicle.year || '',
-        currentKm: vehicle.currentKm || '',
-        status: vehicle.status || 'active',
-      });
-    } else {
-      setSelectedVehicle(null);
-      setFormData({
-        plateNumber: '',
-        type: '',
-        brand: '',
-        year: '',
-        currentKm: '',
-        status: 'active',
-      });
-    }
-    setIsModalOpen(true);
-  };
-
-  // Handle form submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (selectedVehicle) {
-        await dispatch(updateVehicle({ id: selectedVehicle._id, data: formData })).unwrap();
-        notify.success('Véhicule mis à jour avec succès');
-      } else {
-        await dispatch(createVehicle(formData)).unwrap();
-        notify.success('Véhicule créé avec succès');
-      }
-      setIsModalOpen(false);
-      dispatch(getVehicles());
-    } catch (error) {
-      notify.error(error || 'Erreur lors de l\'opération');
-    }
-  };
 
   // Handle delete
   const handleDelete = async () => {
@@ -121,20 +65,15 @@ export default function AdminVehicles() {
     { value: 'inactive', label: 'Inactif' },
   ];
 
-  const typeOptions = [
-    { value: 'Camion', label: 'Camion' },
-    { value: 'Remorque', label: 'Remorque' },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Véhicules</h1>
-          <p className="text-gray-600">Gérez votre flotte de véhicules</p>
+          <h1 className="text-2xl font-bold dark:text-primary-100 text-gray-800">Véhicules</h1>
+          <p className="text-gray-600 dark:text-primary-100">Gérez votre flotte de véhicules</p>
         </div>
-        <Button onClick={() => openModal()} variant="primary">
+        <Button onClick={() => navigate('/admin/vehicles/create')} variant="primary">
           <Plus size={20} className="mr-2" />
           Ajouter un véhicule
         </Button>
@@ -142,18 +81,18 @@ export default function AdminVehicles() {
 
       {/* Filters */}
       <Card>
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col dark:text-primary-100 sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-200" />
             <input
               type="text"
               placeholder="Rechercher par matricule, marque, modèle..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg dark:text-primary-100rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
-          <div className="sm:w-48">
+          <div className="sm:w-48 dark:text-primary-100">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -175,85 +114,14 @@ export default function AdminVehicles() {
         <VehicleTable
           vehicles={filteredVehicles}
           loading={loading}
-          onView={(vehicle) => openModal(vehicle)}
-          onEdit={(vehicle) => openModal(vehicle)}
+          onView={(vehicle) => navigate(`/admin/vehicles/edit/${vehicle._id}`)}
+          onEdit={(vehicle) => navigate(`/admin/vehicles/edit/${vehicle._id}`)}
           onDelete={(vehicle) => {
             setSelectedVehicle(vehicle);
             setIsDeleteModalOpen(true);
           }}
         />
       </Card>
-
-      {/* Create/Edit Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={selectedVehicle ? 'Modifier le véhicule' : 'Ajouter un véhicule'}
-        size="lg"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Matricule"
-              name="plateNumber"
-              value={formData.plateNumber}
-              onChange={handleInputChange}
-              required
-              placeholder="AA-123-BB"
-            />
-            <Select
-              label="Type"
-              name="type"
-              value={formData.type}
-              onChange={handleInputChange}
-              options={typeOptions}
-              required
-            />
-            <Input
-              label="Marque"
-              name="brand"
-              value={formData.brand}
-              onChange={handleInputChange}
-              required
-              placeholder="Mercedes"
-            />
-            <Input
-              label="Année"
-              name="year"
-              type="number"
-              value={formData.year}
-              onChange={handleInputChange}
-              required
-              placeholder="2023"
-            />
-            <Input
-              label="Kilométrage actuel"
-              name="currentKm"
-              type="number"
-              value={formData.currentKm}
-              onChange={handleInputChange}
-              required
-              placeholder="50000"
-            />
-            <Select
-              label="Statut"
-              name="status"
-              value={formData.status}
-              onChange={handleInputChange}
-              options={statusOptions}
-              required
-            />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" variant="primary" loading={loading}>
-              {selectedVehicle ? 'Mettre à jour' : 'Créer'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
 
       {/* Delete Confirmation Modal */}
       <Modal

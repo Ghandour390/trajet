@@ -1,15 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Search } from 'lucide-react';
-import { Button, Card, Modal, Input, Select, Table } from '../../components/common';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Search, Wrench, Truck, Calendar, Gauge, Banknote, FileText } from 'lucide-react';
+import { Button, Card, Table } from '../../components/common';
 import {
   getMaintenanceRecords,
-  createMaintenance,
   selectMaintenanceRecords,
   selectMaintenanceLoading,
 } from '../../store/slices/maintenanceSlice';
-import { getVehicles, selectVehicles } from '../../store/slices/vehiclesSlice';
-import { notify } from '../../utils/notifications';
 
 /**
  * AdminMaintenance Page
@@ -17,26 +15,16 @@ import { notify } from '../../utils/notifications';
  */
 export default function AdminMaintenance() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const maintenanceRecords = useSelector(selectMaintenanceRecords);
-  const vehicles = useSelector(selectVehicles);
   const loading = useSelector(selectMaintenanceLoading);
 
   // Local state
   const [searchTerm, setSearchTerm] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    vehicleRef: '',
-    type: '',
-    notes: '',
-    cost: '',
-    date: '',
-    km: '',
-  });
 
   // Fetch data on mount
   useEffect(() => {
     dispatch(getMaintenanceRecords());
-    dispatch(getVehicles());
   }, [dispatch]);
 
   // Filter records
@@ -47,94 +35,166 @@ export default function AdminMaintenance() {
     return matchesSearch;
   });
 
-  // Handle form input change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
 
-  // Handle form submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await dispatch(createMaintenance(formData)).unwrap();
-      notify.success('Maintenance créée avec succès');
-      setIsModalOpen(false);
-      setFormData({
-        vehicleRef: '',
-        type: '',
-        notes: '',
-        cost: '',
-        date: '',
-        km: '',
-      });
-      dispatch(getMaintenanceRecords());
-    } catch (_error) {
-      notify.error(_error || 'Erreur lors de la création');
-    }
-  };
 
   const columns = [
     {
       header: 'Véhicule',
-      render: (row) => row.vehicleRef?.plateNumber || '-',
+      render: (row) => (
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+            <Truck size={16} className="text-primary-600 dark:text-primary-400" />
+          </div>
+          <span className="font-semibold text-gray-900 dark:text-white">{row.vehicleRef?.plateNumber || '-'}</span>
+        </div>
+      ),
     },
     {
       header: 'Marque',
-      render: (row) => row.vehicleRef?.brand || '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.vehicleRef?.brand || '-'}</span>
+      ),
     },
     {
       header: 'Type',
       accessor: 'type',
+      render: (row) => (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">
+          <Wrench size={12} />
+          {row.type}
+        </span>
+      ),
     },
     {
       header: 'Kilométrage',
-      render: (row) => row.km ? `${row.km.toLocaleString()} km` : '-',
+      render: (row) => (
+        <span className="font-medium text-gray-900 dark:text-white">
+          {row.km ? `${row.km.toLocaleString()} km` : '-'}
+        </span>
+      ),
     },
     {
       header: 'Notes',
       accessor: 'notes',
       render: (row) => (
-        <span className="truncate max-w-xs block">{row.notes || '-'}</span>
+        <span className="truncate max-w-xs block text-gray-600 dark:text-gray-300">{row.notes || '-'}</span>
       ),
     },
     {
       header: 'Coût',
-      render: (row) => row.cost ? `${row.cost.toLocaleString()} MAD` : '-',
+      render: (row) => (
+        <span className="font-semibold text-green-600 dark:text-green-400">
+          {row.cost ? `${row.cost.toLocaleString()} MAD` : '-'}
+        </span>
+      ),
     },
     {
       header: 'Date',
-      render: (row) =>
-        row.date
-          ? new Date(row.date).toLocaleDateString('fr-FR')
-          : '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">
+          {row.date ? new Date(row.date).toLocaleDateString('fr-FR') : '-'}
+        </span>
+      ),
     },
   ];
 
-  const typeOptions = [
-    { value: 'Vidange', label: 'Vidange' },
-    { value: 'Révision', label: 'Révision' },
-    { value: 'Changement pneus', label: 'Changement pneus' },
-    { value: 'Freins', label: 'Freins' },
-    { value: 'Moteur', label: 'Moteur' },
-    { value: 'Contrôle technique', label: 'Contrôle technique' },
-    { value: 'Autre', label: 'Autre' },
-  ];
+  // Get type color
+  const getTypeColor = (type) => {
+    const colors = {
+      'Vidange': { bg: 'from-blue-500 to-blue-600', icon: 'bg-blue-400/20' },
+      'Révision': { bg: 'from-purple-500 to-purple-600', icon: 'bg-purple-400/20' },
+      'Changement pneus': { bg: 'from-amber-500 to-amber-600', icon: 'bg-amber-400/20' },
+      'Freins': { bg: 'from-red-500 to-red-600', icon: 'bg-red-400/20' },
+      'Moteur': { bg: 'from-gray-600 to-gray-700', icon: 'bg-gray-400/20' },
+      'Contrôle technique': { bg: 'from-green-500 to-green-600', icon: 'bg-green-400/20' },
+    };
+    return colors[type] || { bg: 'from-slate-500 to-slate-600', icon: 'bg-slate-400/20' };
+  };
 
-  const vehicleOptions = vehicles.map((v) => ({
-    value: v._id,
-    label: `${v.plateNumber} - ${v.brand}`,
-  }));
+  // Mobile Card Renderer for Maintenance
+  const renderMobileCard = (row, index) => {
+    const typeColor = getTypeColor(row.type);
+    
+    return (
+      <div
+        key={row._id || index}
+        className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden"
+      >
+        {/* Card Header */}
+        <div className={`bg-gradient-to-r ${typeColor.bg} px-4 py-3`}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className={`w-10 h-10 rounded-xl ${typeColor.icon} flex items-center justify-center`}>
+                <Wrench size={20} className="text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-white text-lg">{row.type}</h3>
+                <p className="text-white/80 text-sm">{row.vehicleRef?.plateNumber || 'N/A'}</p>
+              </div>
+            </div>
+            {row.cost && (
+              <span className="px-3 py-1 bg-white/20 rounded-full text-white font-semibold text-sm">
+                {row.cost.toLocaleString()} MAD
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Card Body */}
+        <div className="p-4 space-y-3">
+          {/* Vehicle Brand */}
+          {row.vehicleRef?.brand && (
+            <div className="flex items-center gap-2 text-sm">
+              <Truck size={16} className="text-gray-400 dark:text-slate-500" />
+              <span className="text-gray-500 dark:text-slate-400">Marque:</span>
+              <span className="font-medium text-gray-900 dark:text-white">{row.vehicleRef.brand}</span>
+            </div>
+          )}
+
+          {/* Km & Date Row */}
+          <div className="grid grid-cols-2 gap-3">
+            {row.km && (
+              <div className="flex items-center gap-2 text-sm">
+                <Gauge size={16} className="text-gray-400 dark:text-slate-500" />
+                <span className="text-gray-500 dark:text-slate-400">Km:</span>
+                <span className="font-medium text-gray-900 dark:text-white">{row.km.toLocaleString()}</span>
+              </div>
+            )}
+            {row.date && (
+              <div className="flex items-center gap-2 text-sm">
+                <Calendar size={16} className="text-gray-400 dark:text-slate-500" />
+                <span className="text-gray-500 dark:text-slate-400">Date:</span>
+                <span className="font-medium text-gray-900 dark:text-white">
+                  {new Date(row.date).toLocaleDateString('fr-FR')}
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Notes */}
+          {row.notes && (
+            <div className="flex items-start gap-2 text-sm pt-2 border-t border-gray-100 dark:border-slate-700">
+              <FileText size={16} className="text-gray-400 dark:text-slate-500 mt-0.5" />
+              <div>
+                <span className="text-gray-500 dark:text-slate-400 block">Notes:</span>
+                <span className="text-gray-700 dark:text-gray-300">{row.notes}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Maintenance</h1>
-          <p className="text-gray-600">Gérez les maintenances de vos véhicules</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Maintenance</h1>
+          <p className="text-gray-600 dark:text-slate-400">Gérez les maintenances de vos véhicules</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)} variant="primary">
+        <Button onClick={() => navigate('/admin/maintenance/create')} variant="primary">
           <Plus size={20} className="mr-2" />
           Planifier une maintenance
         </Button>
@@ -143,13 +203,13 @@ export default function AdminMaintenance() {
       {/* Filters */}
       <Card>
         <div className="flex-1 relative">
-          <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
           <input
             type="text"
             placeholder="Rechercher par type ou véhicule..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+            className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
           />
         </div>
       </Card>
@@ -161,77 +221,11 @@ export default function AdminMaintenance() {
           data={filteredRecords}
           loading={loading}
           emptyMessage="Aucune maintenance trouvée"
+          mobileCard={renderMobileCard}
         />
       </Card>
 
-      {/* Create Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Planifier une maintenance"
-        size="lg"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select
-              label="Véhicule"
-              name="vehicleRef"
-              value={formData.vehicleRef}
-              onChange={handleInputChange}
-              options={vehicleOptions}
-              required
-            />
-            <Select
-              label="Type de maintenance"
-              name="type"
-              value={formData.type}
-              onChange={handleInputChange}
-              options={typeOptions}
-              required
-            />
-            <Input
-              label="Kilométrage"
-              name="km"
-              type="number"
-              value={formData.km}
-              onChange={handleInputChange}
-              required
-              placeholder="45000"
-            />
-            <Input
-              label="Coût (MAD)"
-              name="cost"
-              type="number"
-              value={formData.cost}
-              onChange={handleInputChange}
-              placeholder="1500"
-            />
-            <Input
-              label="Date"
-              name="date"
-              type="date"
-              value={formData.date}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <Input
-            label="Notes"
-            name="notes"
-            value={formData.notes}
-            onChange={handleInputChange}
-            placeholder="Détails de la maintenance..."
-          />
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" variant="primary" loading={loading}>
-              Créer
-            </Button>
-          </div>
-        </form>
-      </Modal>
+
     </div>
   );
 }

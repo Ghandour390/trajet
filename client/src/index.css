@@ -3,8 +3,7 @@
 @theme {
   /* =============================================
    * PALETTE DE COULEURS - TrajetCamen
-   * Modifiez ces valeurs pour changer les couleurs
-   * dans toute l'application
+   * Professional Design System with Dark Mode
    * ============================================= */
 
   /* Couleur Principale - Bleu foncé */
@@ -103,10 +102,190 @@
   --color-text-light: #546E7A;
   --color-text-lighter: #78909C;
   --color-text-muted: #90A4AE;
+
+  /* Dark Mode Colors */
+  --color-dark-bg: #0f172a;
+  --color-dark-bg-secondary: #1e293b;
+  --color-dark-bg-tertiary: #334155;
+  --color-dark-surface: #1e293b;
+  --color-dark-border: #334155;
+  --color-dark-text: #f1f5f9;
+  --color-dark-text-secondary: #94a3b8;
+  --color-dark-text-muted: #64748b;
 }
 
-/* Styles de base */
+/* =============================================
+ * BASE STYLES & TRANSITIONS
+ * ============================================= */
+* {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Light Mode - Default */
+:root {
+  color-scheme: light;
+}
+
 body {
-  @apply bg-bg text-text antialiased;
+  background-color: #F7FAFC;
+  color: #263238;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark Mode */
+:root.dark {
+  color-scheme: dark;
+}
+
+.dark body,
+html.dark body {
+  background-color: #0f172a;
+  color: #f1f5f9;
+}
+
+/* =============================================
+ * SCROLLBAR STYLING
+ * ============================================= */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* =============================================
+ * GLASS MORPHISM EFFECTS
+ * ============================================= */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dark .glass {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+/* =============================================
+ * CARD SHADOWS & HOVER EFFECTS
+ * ============================================= */
+.card-shadow {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.card-shadow-hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.dark .card-shadow {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+}
+
+.dark .card-shadow-hover {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+}
+
+/* =============================================
+ * GRADIENT BACKGROUNDS
+ * ============================================= */
+.gradient-primary {
+  background: linear-gradient(135deg, #0B4F6C 0%, #1976A5 100%);
+}
+
+.gradient-secondary {
+  background: linear-gradient(135deg, #FF8A00 0%, #ffad33 100%);
+}
+
+.gradient-success {
+  background: linear-gradient(135deg, #2E7D32 0%, #66bb6a 100%);
+}
+
+.gradient-dark {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* =============================================
+ * ANIMATIONS
+ * ============================================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(11, 79, 108, 0.4); }
+  50% { box-shadow: 0 0 0 8px rgba(11, 79, 108, 0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.3s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s infinite;
+}
+
+/* =============================================
+ * SIDEBAR OVERLAY FOR MOBILE
+ * ============================================= */
+.sidebar-overlay {
+  @apply fixed inset-0 bg-black/50 z-30 lg:hidden;
+  backdrop-filter: blur(4px);
+}
+
+/* =============================================
+ * FOCUS STATES
+ * ============================================= */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900;
+}
+
+/* =============================================
+ * RESPONSIVE UTILITIES
+ * ============================================= */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
 }
 

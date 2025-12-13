@@ -1,9 +1,10 @@
 import { Table } from '../common';
-import { Eye, Edit, Trash2 } from 'lucide-react';
+import { Eye, Edit, Trash2, Truck, Calendar, Gauge } from 'lucide-react';
 
 /**
  * VehicleTable Component
- * Table for displaying vehicles list with actions
+ * Table for displaying vehicles list with actions - Professional design with dark mode
+ * Shows cards on mobile for better UX
  */
 export default function VehicleTable({
   vehicles,
@@ -14,10 +15,26 @@ export default function VehicleTable({
 }) {
   const getStatusBadge = (status) => {
     const statusStyles = {
-      active: 'bg-green-100 text-green-800',
-      in_use: 'bg-blue-100 text-blue-800',
-      maintenance: 'bg-yellow-100 text-yellow-800',
-      inactive: 'bg-gray-100 text-gray-800',
+      active: {
+        bg: 'bg-green-100 dark:bg-green-900/30',
+        text: 'text-green-700 dark:text-green-400',
+        dot: 'bg-green-500'
+      },
+      in_use: {
+        bg: 'bg-blue-100 dark:bg-blue-900/30',
+        text: 'text-blue-700 dark:text-blue-400',
+        dot: 'bg-blue-500'
+      },
+      maintenance: {
+        bg: 'bg-amber-100 dark:bg-amber-900/30',
+        text: 'text-amber-700 dark:text-amber-400',
+        dot: 'bg-amber-500'
+      },
+      inactive: {
+        bg: 'bg-gray-100 dark:bg-gray-800',
+        text: 'text-gray-600 dark:text-gray-400',
+        dot: 'bg-gray-400'
+      },
     };
 
     const statusLabels = {
@@ -27,8 +44,11 @@ export default function VehicleTable({
       inactive: 'Inactif',
     };
 
+    const style = statusStyles[status] || statusStyles.inactive;
+
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status] || statusStyles.inactive}`}>
+      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`}></span>
         {statusLabels[status] || status}
       </span>
     );
@@ -39,25 +59,43 @@ export default function VehicleTable({
       header: 'Matricule',
       accessor: 'plateNumber',
       render: (row) => (
-        <span className="font-medium text-gray-900">{row.plateNumber}</span>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center">
+            <span className="text-sm font-bold text-primary-600 dark:text-primary-400">
+              {row.plateNumber?.slice(0, 2)}
+            </span>
+          </div>
+          <span className="font-semibold text-gray-900 dark:text-white">{row.plateNumber}</span>
+        </div>
       ),
     },
     {
       header: 'Type',
       accessor: 'type',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.type}</span>
+      ),
     },
     {
       header: 'Marque',
       accessor: 'brand',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.brand}</span>
+      ),
     },
     {
       header: 'Année',
       accessor: 'year',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.year}</span>
+      ),
     },
     {
       header: 'Kilométrage',
       render: (row) => (
-        <span>{row.currentKm?.toLocaleString() || 0} km</span>
+        <span className="font-medium text-gray-900 dark:text-white">
+          {row.currentKm?.toLocaleString() || 0} <span className="text-gray-400 dark:text-gray-500 text-xs">km</span>
+        </span>
       ),
     },
     {
@@ -67,13 +105,13 @@ export default function VehicleTable({
     {
       header: 'Actions',
       render: (row) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           <button
             onClick={(e) => {
               e.stopPropagation();
               onView(row);
             }}
-            className="p-1 text-blue-600 hover:bg-blue-50 rounded transition-colors"
+            className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-all duration-200 hover:scale-110"
             title="Voir"
           >
             <Eye size={18} />
@@ -83,7 +121,7 @@ export default function VehicleTable({
               e.stopPropagation();
               onEdit(row);
             }}
-            className="p-1 text-yellow-600 hover:bg-yellow-50 rounded transition-colors"
+            className="p-2 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-all duration-200 hover:scale-110"
             title="Modifier"
           >
             <Edit size={18} />
@@ -93,7 +131,7 @@ export default function VehicleTable({
               e.stopPropagation();
               onDelete(row);
             }}
-            className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
+            className="p-2 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-all duration-200 hover:scale-110"
             title="Supprimer"
           >
             <Trash2 size={18} />
@@ -103,6 +141,71 @@ export default function VehicleTable({
     },
   ];
 
+  // Mobile Card Renderer
+  const renderMobileCard = (row, index) => (
+    <div
+      key={row._id || index}
+      className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden"
+    >
+      {/* Card Header with gradient */}
+      <div className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+              <Truck size={20} className="text-white" />
+            </div>
+            <div>
+              <h3 className="font-bold text-white text-lg">{row.plateNumber}</h3>
+              <p className="text-primary-100 text-sm">{row.brand} - {row.type}</p>
+            </div>
+          </div>
+          {getStatusBadge(row.status)}
+        </div>
+      </div>
+
+      {/* Card Body */}
+      <div className="p-4 space-y-3">
+        {/* Info Grid */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar size={16} className="text-gray-400 dark:text-slate-500" />
+            <span className="text-gray-500 dark:text-slate-400">Année:</span>
+            <span className="font-semibold text-gray-900 dark:text-white">{row.year || '-'}</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <Gauge size={16} className="text-gray-400 dark:text-slate-500" />
+            <span className="text-gray-500 dark:text-slate-400">Km:</span>
+            <span className="font-semibold text-gray-900 dark:text-white">{row.currentKm?.toLocaleString() || 0}</span>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-slate-700">
+          <button
+            onClick={() => onView(row)}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+          >
+            <Eye size={16} />
+            Voir
+          </button>
+          <button
+            onClick={() => onEdit(row)}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-xl font-medium text-sm hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
+          >
+            <Edit size={16} />
+            Modifier
+          </button>
+          <button
+            onClick={() => onDelete(row)}
+            className="p-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
+          >
+            <Trash2 size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <Table
       columns={columns}
@@ -110,6 +213,7 @@ export default function VehicleTable({
       loading={loading}
       emptyMessage="Aucun véhicule trouvé"
       onRowClick={onView}
+      mobileCard={renderMobileCard}
     />
   );
 }

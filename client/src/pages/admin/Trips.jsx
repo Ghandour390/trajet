@@ -1,17 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Plus, Search, Edit, Eye } from 'lucide-react';
-import { Button, Card, Modal, Input, Select, Table } from '../../components/common';
+import { useNavigate } from 'react-router-dom';
+import { Plus, Search, Edit, Eye, MapPin, Truck, User, Calendar, Fuel, Route } from 'lucide-react';
+import { Button, Card, Table } from '../../components/common';
 import {
   getTrips,
-  createTrip,
-  updateTrip,
   selectTrips,
   selectTripsLoading,
 } from '../../store/slices/tripsSlice';
-
-import { notify } from '../../utils/notifications';
-import { getAvailableDrivers, getAvailableVehicles, getAvailableTrailers } from '../../api/trips';
 
 /**
  * AdminTrips Page
@@ -19,30 +15,13 @@ import { getAvailableDrivers, getAvailableVehicles, getAvailableTrailers } from 
  */
 export default function AdminTrips() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const trips = useSelector(selectTrips);
   const loading = useSelector(selectTripsLoading);
 
   // Local state
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedTrip, setSelectedTrip] = useState(null);
-  const [availableDrivers, setAvailableDrivers] = useState([]);
-  const [availableVehicles, setAvailableVehicles] = useState([]);
-  const [availableTrailers, setAvailableTrailers] = useState([]);
-  const [formData, setFormData] = useState({
-    reference: '',
-    origin: '',
-    destination: '',
-    vehicleRef: '',
-    trailerRef: '',
-    assignedTo: '',
-    startAt: '',
-    endAt: '',
-    distimatedKm: '',
-  });
 
   // Fetch data on mount
   useEffect(() => {
@@ -58,94 +37,36 @@ export default function AdminTrips() {
     return matchesSearch && matchesStatus;
   });
 
-  // Handle form input change
-  const handleInputChange = async (e) => {
-    const { name, value } = e.target;
-    const newFormData = { ...formData, [name]: value };
-    setFormData(newFormData);
-
-    if ((name === 'startAt' || name === 'endAt') && newFormData.startAt && newFormData.endAt) {
-      try {
-        const [drivers, vehicles, trailers] = await Promise.all([
-          getAvailableDrivers(newFormData.startAt, newFormData.endAt),
-          getAvailableVehicles(newFormData.startAt, newFormData.endAt),
-          getAvailableTrailers(newFormData.startAt, newFormData.endAt)
-        ]);
-        setAvailableDrivers(drivers);
-        setAvailableVehicles(vehicles);
-        setAvailableTrailers(trailers);
-        console.log('Chauffeurs disponibles:', drivers);
-        console.log('Véhicules disponibles:', vehicles);
-        console.log('Remorques disponibles:', trailers);
-      } catch (error) {
-        console.error('Erreur:', error);
-        notify.error('Erreur lors du chargement des disponibilités');
-      }
-    }
-  };
-
-  // Handle form submit
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (isEditMode) {
-        await dispatch(updateTrip({ id: selectedTrip._id, data: formData })).unwrap();
-        notify.success('Trajet modifié avec succès');
-      } else {
-        await dispatch(createTrip(formData)).unwrap();
-        notify.success('Trajet créé avec succès');
-      }
-      setIsModalOpen(false);
-      setIsEditMode(false);
-      setSelectedTrip(null);
-      setFormData({
-        reference: '',
-        origin: '',
-        destination: '',
-        vehicleRef: '',
-        trailerRef: '',
-        assignedTo: '',
-        startAt: '',
-        endAt: '',
-        distimatedKm: '',
-      });
-      setAvailableDrivers([]);
-      setAvailableVehicles([]);
-      setAvailableTrailers([]);
-      dispatch(getTrips());
-    } catch (error) {
-      notify.error(error || 'Erreur lors de la création');
-    }
-  };
-
   const handleEdit = (trip) => {
-    setSelectedTrip(trip);
-    setIsEditMode(true);
-    setFormData({
-      reference: trip.reference,
-      origin: trip.origin,
-      destination: trip.destination,
-      vehicleRef: trip.vehicleRef?._id || '',
-      trailerRef: trip.trailerRef?._id || '',
-      assignedTo: trip.assignedTo?._id || '',
-      startAt: trip.startAt ? new Date(trip.startAt).toISOString().slice(0, 16) : '',
-      endAt: trip.endAt ? new Date(trip.endAt).toISOString().slice(0, 16) : '',
-      distimatedKm: trip.distimatedKm || '',
-    });
-    setIsModalOpen(true);
+    navigate(`/admin/trips/edit/${trip._id}`);
   };
 
   const handleView = (trip) => {
-    setSelectedTrip(trip);
-    setIsViewModalOpen(true);
+    navigate(`/admin/trips/view/${trip._id}`);
   };
 
   const getStatusBadge = (status) => {
     const statusStyles = {
-      planned: 'bg-yellow-100 text-yellow-800',
-      in_progress: 'bg-blue-100 text-blue-800',
-      completed: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800',
+      planned: {
+        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
+        text: 'text-yellow-700 dark:text-yellow-400',
+        dot: 'bg-yellow-500'
+      },
+      in_progress: {
+        bg: 'bg-blue-100 dark:bg-blue-900/30',
+        text: 'text-blue-700 dark:text-blue-400',
+        dot: 'bg-blue-500'
+      },
+      completed: {
+        bg: 'bg-green-100 dark:bg-green-900/30',
+        text: 'text-green-700 dark:text-green-400',
+        dot: 'bg-green-500'
+      },
+      cancelled: {
+        bg: 'bg-red-100 dark:bg-red-900/30',
+        text: 'text-red-700 dark:text-red-400',
+        dot: 'bg-red-500'
+      },
     };
 
     const statusLabels = {
@@ -155,8 +76,11 @@ export default function AdminTrips() {
       cancelled: 'Annulé',
     };
 
+    const style = statusStyles[status] || { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', dot: 'bg-gray-400' };
+
     return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100'}`}>
+      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}>
+        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`}></span>
         {statusLabels[status] || status}
       </span>
     );
@@ -166,40 +90,65 @@ export default function AdminTrips() {
     {
       header: 'Référence',
       accessor: 'reference',
+      render: (row) => (
+        <span className="font-semibold text-gray-900 dark:text-white">{row.reference}</span>
+      ),
     },
     {
       header: 'Origine',
       accessor: 'origin',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.origin}</span>
+      ),
     },
     {
       header: 'Destination',
       accessor: 'destination',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.destination}</span>
+      ),
     },
     {
       header: 'Véhicule',
-      render: (row) => row.vehicleRef?.plateNumber || '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.vehicleRef?.plateNumber || '-'}</span>
+      ),
     },
     {
       header: 'Remorque',
-      render: (row) => row.trailerRef?.plateNumber || '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.trailerRef?.plateNumber || '-'}</span>
+      ),
     },
     {
       header: 'Chauffeur',
-      render: (row) =>
-        row.assignedTo ? `${row.assignedTo.firstname} ${row.assignedTo.lastname}` : '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">
+          {row.assignedTo ? `${row.assignedTo.firstname} ${row.assignedTo.lastname}` : '-'}
+        </span>
+      ),
     },
     {
       header: 'Distance',
-      render: (row) => row.endKm && row.startKm ? `${row.endKm - row.startKm} km` : `${row.startKm || 0} km`,
+      render: (row) => (
+        <span className="font-medium text-gray-900 dark:text-white">
+          {row.endKm && row.startKm ? `${row.endKm - row.startKm} km` : `${row.startKm || 0} km`}
+        </span>
+      ),
     },
     {
       header: 'Carburant',
-      render: (row) => row.fuelVolume ? `${row.fuelVolume} L` : '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">{row.fuelVolume ? `${row.fuelVolume} L` : '-'}</span>
+      ),
     },
     {
       header: 'Date début',
-      render: (row) =>
-        row.startAt ? new Date(row.startAt).toLocaleDateString('fr-FR') : '-',
+      render: (row) => (
+        <span className="text-gray-600 dark:text-gray-300">
+          {row.startAt ? new Date(row.startAt).toLocaleDateString('fr-FR') : '-'}
+        </span>
+      ),
     },
     {
       header: 'Statut',
@@ -208,17 +157,17 @@ export default function AdminTrips() {
     {
       header: 'Actions',
       render: (row) => (
-        <div className="flex gap-2">
+        <div className="flex gap-1">
           <button
             onClick={() => handleView(row)}
-            className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+            className="p-2 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
             title="Voir détails"
           >
             <Eye size={18} />
           </button>
           <button
             onClick={() => handleEdit(row)}
-            className="p-2 text-green-600 hover:bg-green-50 rounded"
+            className="p-2 text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
             title="Modifier"
           >
             <Edit size={18} />
@@ -228,6 +177,96 @@ export default function AdminTrips() {
     },
   ];
 
+  // Mobile Card Renderer for Trips
+  const renderMobileCard = (row, index) => (
+    <div
+      key={row._id || index}
+      className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 overflow-hidden"
+    >
+      {/* Card Header with route */}
+      <div className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-4 py-3">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-white/80 text-sm font-medium">{row.reference}</span>
+          {getStatusBadge(row.status)}
+        </div>
+        <div className="flex items-center gap-2 text-white">
+          <MapPin size={16} className="text-white/70" />
+          <span className="font-semibold">{row.origin}</span>
+          <Route size={16} className="text-white/70" />
+          <span className="font-semibold">{row.destination}</span>
+        </div>
+      </div>
+
+      {/* Card Body */}
+      <div className="p-4 space-y-3">
+        {/* Vehicle & Driver Row */}
+        <div className="grid grid-cols-2 gap-3">
+          {row.vehicleRef && (
+            <div className="flex items-center gap-2 text-sm">
+              <Truck size={16} className="text-gray-400 dark:text-slate-500" />
+              <span className="text-gray-500 dark:text-slate-400">Véhicule:</span>
+              <span className="font-medium text-gray-900 dark:text-white truncate">{row.vehicleRef.plateNumber}</span>
+            </div>
+          )}
+          {row.assignedTo && (
+            <div className="flex items-center gap-2 text-sm">
+              <User size={16} className="text-gray-400 dark:text-slate-500" />
+              <span className="text-gray-500 dark:text-slate-400">Chauffeur:</span>
+              <span className="font-medium text-gray-900 dark:text-white truncate">{row.assignedTo.firstname}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Distance & Fuel Row */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex items-center gap-2 text-sm">
+            <Route size={16} className="text-gray-400 dark:text-slate-500" />
+            <span className="text-gray-500 dark:text-slate-400">Distance:</span>
+            <span className="font-medium text-gray-900 dark:text-white">
+              {row.endKm && row.startKm ? `${row.endKm - row.startKm}` : row.startKm || 0} km
+            </span>
+          </div>
+          {row.fuelVolume && (
+            <div className="flex items-center gap-2 text-sm">
+              <Fuel size={16} className="text-gray-400 dark:text-slate-500" />
+              <span className="text-gray-500 dark:text-slate-400">Carburant:</span>
+              <span className="font-medium text-gray-900 dark:text-white">{row.fuelVolume} L</span>
+            </div>
+          )}
+        </div>
+
+        {/* Date */}
+        {row.startAt && (
+          <div className="flex items-center gap-2 text-sm">
+            <Calendar size={16} className="text-gray-400 dark:text-slate-500" />
+            <span className="text-gray-500 dark:text-slate-400">Date début:</span>
+            <span className="font-medium text-gray-900 dark:text-white">
+              {new Date(row.startAt).toLocaleDateString('fr-FR')}
+            </span>
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-slate-700">
+          <button
+            onClick={() => handleView(row)}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-xl font-medium text-sm hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+          >
+            <Eye size={16} />
+            Voir
+          </button>
+          <button
+            onClick={() => handleEdit(row)}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 rounded-xl font-medium text-sm hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors"
+          >
+            <Edit size={16} />
+            Modifier
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   const statusOptions = [
     { value: 'planned', label: 'Planifié' },
     { value: 'in_progress', label: 'En cours' },
@@ -235,30 +274,15 @@ export default function AdminTrips() {
     { value: 'cancelled', label: 'Annulé' },
   ];
 
-  const vehicleOptions = availableVehicles.map((v) => ({
-    value: v._id,
-    label: `${v.plateNumber} - ${v.brand}`,
-  }));
-
-  const driverOptions = availableDrivers.map((d) => ({
-    value: d._id,
-    label: `${d.firstname} ${d.lastname}`,
-  }));
-
-  const trailerOptions = availableTrailers.map((t) => ({
-    value: t._id,
-    label: `${t.plateNumber} - ${t.type}`,
-  }));
-
   return (
     <div className="space-y-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Trajets</h1>
-          <p className="text-gray-600">Gérez les trajets de votre flotte</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Trajets</h1>
+          <p className="text-gray-600 dark:text-slate-400">Gérez les trajets de votre flotte</p>
         </div>
-        <Button onClick={() => setIsModalOpen(true)} variant="primary">
+        <Button onClick={() => navigate('/admin/trips/create')} variant="primary">
           <Plus size={20} className="mr-2" />
           Créer un trajet
         </Button>
@@ -268,20 +292,20 @@ export default function AdminTrips() {
       <Card>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Rechercher par origine ou destination..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
           <div className="sm:w-48">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
               <option value="">Tous les statuts</option>
               {statusOptions.map((option) => (
@@ -301,193 +325,11 @@ export default function AdminTrips() {
           data={filteredTrips}
           loading={loading}
           emptyMessage="Aucun trajet trouvé"
+          mobileCard={renderMobileCard}
         />
       </Card>
 
-      {/* Create/Edit Modal */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setIsEditMode(false);
-          setSelectedTrip(null);
-        }}
-        title={isEditMode ? 'Modifier un trajet' : 'Créer un trajet'}
-        size="lg"
-      >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Input
-              label="Référence"
-              name="reference"
-              value={formData.reference}
-              onChange={handleInputChange}
-              required
-              placeholder="TRIP001"
-            />
-            {/* <Input
-              label="Kilométrage départ"
-              name="startKm"
-              type="number"
-              value={formData.startKm}
-              onChange={handleInputChange}
-              placeholder="45000"
-            /> */}
-            <Input
-              label="Origine"
-              name="origin"
-              value={formData.origin}
-              onChange={handleInputChange}
-              required
-              placeholder="Casablanca"
-            />
-            <Input
-              label="Destination"
-              name="destination"
-              value={formData.destination}
-              onChange={handleInputChange}
-              required
-              placeholder="Rabat"
-            />
-            <Input
-              label="Date début"
-              name="startAt"
-              type="datetime-local"
-              value={formData.startAt}
-              onChange={handleInputChange}
-              required
-            />
-            <Input
-              label="Date fin"
-              name="endAt"
-              type="datetime-local"
-              value={formData.endAt}
-              onChange={handleInputChange}
-              required
-            />
-            <Select
-              label="Véhicule disponible"
-              name="vehicleRef"
-              value={formData.vehicleRef}
-              onChange={handleInputChange}
-              options={vehicleOptions}
-              disabled={!formData.startAt || !formData.endAt}
-              placeholder={formData.startAt && formData.endAt ? "Sélectionner un véhicule" : "Choisir dates d'abord"}
-            />
-            <Select
-              label="Chauffeur disponible"
-              name="assignedTo"
-              value={formData.assignedTo}
-              onChange={handleInputChange}
-              options={driverOptions}
-              disabled={!formData.startAt || !formData.endAt}
-              placeholder={formData.startAt && formData.endAt ? "Sélectionner un chauffeur" : "Choisir dates d'abord"}
-            />
-            <Select
-              label="Remorque disponible"
-              name="trailerRef"
-              value={formData.trailerRef}
-              onChange={handleInputChange}
-              options={trailerOptions}
-              disabled={!formData.startAt || !formData.endAt}
-              placeholder={formData.startAt && formData.endAt ? "Sélectionner une remorque" : "Choisir dates d'abord"}
-            />
-            <Input
-              label="Distance (km)"
-              name="distimatedKm"
-              type="number"
-              value={formData.distimatedKm}
-              onChange={handleInputChange}
-              placeholder="150"
-            />
-          </div>
-          <div className="flex justify-end gap-3 pt-4">
-            <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>
-              Annuler
-            </Button>
-            <Button type="submit" variant="primary" loading={loading}>
-              {isEditMode ? 'Modifier' : 'Créer'}
-            </Button>
-          </div>
-        </form>
-      </Modal>
 
-      {/* View Modal */}
-      <Modal
-        isOpen={isViewModalOpen}
-        onClose={() => {
-          setIsViewModalOpen(false);
-          setSelectedTrip(null);
-        }}
-        title="Détails du trajet"
-        size="lg"
-      >
-        {selectedTrip && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-sm text-gray-600">Référence</p>
-                <p className="font-semibold">{selectedTrip.reference}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Statut</p>
-                {getStatusBadge(selectedTrip.status)}
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Origine</p>
-                <p className="font-semibold">{selectedTrip.origin}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Destination</p>
-                <p className="font-semibold">{selectedTrip.destination}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Date début</p>
-                <p className="font-semibold">
-                  {selectedTrip.startAt ? new Date(selectedTrip.startAt).toLocaleString('fr-FR') : '-'}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Date fin</p>
-                <p className="font-semibold">
-                  {selectedTrip.endAt ? new Date(selectedTrip.endAt).toLocaleString('fr-FR') : '-'}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Véhicule</p>
-                <p className="font-semibold">{selectedTrip.vehicleRef?.plateNumber || '-'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Remorque</p>
-                <p className="font-semibold">{selectedTrip.trailerRef?.plateNumber || '-'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Chauffeur</p>
-                <p className="font-semibold">
-                  {selectedTrip.assignedTo
-                    ? `${selectedTrip.assignedTo.firstname} ${selectedTrip.assignedTo.lastname}`
-                    : '-'}
-                </p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Distance estimée</p>
-                <p className="font-semibold">{selectedTrip.distimatedKm} km</p>
-              </div>
-            </div>
-            <div className="flex justify-end pt-4">
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setIsViewModalOpen(false);
-                  setSelectedTrip(null);
-                }}
-              >
-                Fermer
-              </Button>
-            </div>
-          </div>
-        )}
-      </Modal>
     </div>
   );
 }

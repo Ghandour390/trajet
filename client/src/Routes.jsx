@@ -19,6 +19,11 @@ import AdminTrips from './pages/admin/Trips';
 import AdminMaintenance from './pages/admin/Maintenance';
 import AdminReports from './pages/admin/Reports';
 import AdminUsers from './pages/admin/Users';
+import TripForm from './pages/admin/TripForm';
+import TripView from './pages/admin/TripView';
+import VehicleForm from './pages/admin/VehicleForm';
+import MaintenanceForm from './pages/admin/MaintenanceForm';
+import UserForm from './pages/admin/UserForm';
 
 // Chauffeur Pages
 import ChauffeurDashboard from './pages/chauffeur/Dashboard';
@@ -86,10 +91,17 @@ export default function AppRoutes() {
         <Route index element={<Navigate to="dashboard" replace />} />
         <Route path="dashboard" element={<AdminDashboard />} />
         <Route path="vehicles" element={<AdminVehicles />} />
+        <Route path="vehicles/create" element={<VehicleForm />} />
+        <Route path="vehicles/edit/:id" element={<VehicleForm />} />
         <Route path="trips" element={<AdminTrips />} />
+        <Route path="trips/create" element={<TripForm />} />
+        <Route path="trips/edit/:id" element={<TripForm />} />
+        <Route path="trips/view/:id" element={<TripView />} />
         <Route path="maintenance" element={<AdminMaintenance />} />
+        <Route path="maintenance/create" element={<MaintenanceForm />} />
         <Route path="reports" element={<AdminReports />} />
         <Route path="users" element={<AdminUsers />} />
+        <Route path="users/edit/:id" element={<UserForm />} />
       </Route>
 
       {/* Chauffeur Routes */}
