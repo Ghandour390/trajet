@@ -83,7 +83,7 @@ export default function Profile() {
       const response = await usersAPI.uploadProfileImage(user?.id, formData);
       dispatch(updateProfileImage(response.profileImage));
       notify.success('Photo de profil mise à jour');
-    } catch (error) {
+    } catch {
       notify.error('Erreur lors de l\'upload');
     } finally {
       setLoading(false);
