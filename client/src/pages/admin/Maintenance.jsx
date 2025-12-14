@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Wrench, Truck, Calendar, Gauge, Banknote, FileText } from 'lucide-react';
+import { Plus, Search, Wrench, Truck, Calendar, Gauge, FileText } from 'lucide-react';
 import { Button, Card, Table } from '../../components/common';
 import {
   getMaintenanceRecords,

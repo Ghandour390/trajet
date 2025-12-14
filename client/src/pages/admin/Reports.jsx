@@ -55,8 +55,8 @@ export default function AdminReports() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Rapports</h1>
-          <p className="text-gray-600">Analyses et statistiques de votre flotte</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Rapports</h1>
+          <p className="text-gray-600 dark:text-slate-400">Analyses et statistiques de votre flotte</p>
         </div>
         <Button onClick={handleDownloadReport} variant="secondary">
           <Download size={20} className="mr-2" />
@@ -89,20 +89,20 @@ export default function AdminReports() {
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card className="text-center">
-          <p className="text-sm text-gray-500">Distance totale</p>
-          <p className="text-2xl font-bold text-gray-800">{totalDistance.toLocaleString()} km</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Distance totale</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalDistance.toLocaleString()} km</p>
         </Card>
         <Card className="text-center">
-          <p className="text-sm text-gray-500">Carburant consommé</p>
-          <p className="text-2xl font-bold text-gray-800">{totalFuel.toLocaleString()} L</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Carburant consommé</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalFuel.toLocaleString()} L</p>
         </Card>
         <Card className="text-center">
-          <p className="text-sm text-gray-500">Consommation moyenne</p>
-          <p className="text-2xl font-bold text-gray-800">{avgConsumption} L/100km</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Consommation moyenne</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{avgConsumption} L/100km</p>
         </Card>
         <Card className="text-center">
-          <p className="text-sm text-gray-500">Coût total carburant</p>
-          <p className="text-2xl font-bold text-gray-800">{totalCost.toLocaleString()} MAD</p>
+          <p className="text-sm text-gray-500 dark:text-slate-400">Coût total carburant</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalCost.toLocaleString()} MAD</p>
         </Card>
       </div>
 

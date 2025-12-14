@@ -1,6 +1,9 @@
 import express from 'express';
+import multer from 'multer';
 import userController from '../controllers/userController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
@@ -126,5 +129,7 @@ router.route('/:id')
 router.route('/:id')
   .patch(authenticate, userController.updateUser.bind(userController))
   .delete(authenticate, authorize('admin'), userController.deleteUser.bind(userController));
+
+router.post('/:id/profile-image', authenticate, upload.single('image'), userController.uploadProfileImage.bind(userController));
 
 export default router;

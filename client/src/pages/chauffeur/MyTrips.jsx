@@ -49,24 +49,24 @@ export default function MyTrips() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Mes Trajets</h1>
-        <p className="text-gray-600">Consultez et gérez vos trajets</p>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Mes Trajets</h1>
+        <p className="text-gray-600 dark:text-slate-400">Consultez et gérez vos trajets</p>
       </div>
 
       {/* Filters */}
       <Card>
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Rechercher par origine ou destination..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {statusOptions.map((option) => (
               <button
                 key={option.value}
@@ -74,7 +74,7 @@ export default function MyTrips() {
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   statusFilter === option.value
                     ? 'bg-primary-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    : 'bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-600'
                 }`}
               >
                 {option.label}
@@ -91,7 +91,7 @@ export default function MyTrips() {
         </div>
       ) : filteredTrips.length === 0 ? (
         <Card>
-          <div className="text-center py-12 text-gray-500">
+          <div className="text-center py-12 text-gray-500 dark:text-slate-400">
             <p className="text-lg">Aucun trajet trouvé</p>
             <p className="text-sm">Vos trajets assignés apparaîtront ici</p>
           </div>

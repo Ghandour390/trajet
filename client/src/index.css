@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* =============================================
    * PALETTE DE COULEURS - TrajetCamen
@@ -128,6 +131,10 @@
   color-scheme: light;
 }
 
+html {
+  background-color: #F7FAFC;
+}
+
 body {
   background-color: #F7FAFC;
   color: #263238;
@@ -137,14 +144,26 @@ body {
 }
 
 /* Dark Mode */
-:root.dark {
+:root.dark,
+html.dark {
   color-scheme: dark;
+  background-color: #0f172a;
 }
 
-.dark body,
-html.dark body {
+html.dark body,
+.dark body {
   background-color: #0f172a;
   color: #f1f5f9;
+}
+
+/* Force Light Mode when no dark class */
+html:not(.dark) {
+  background-color: #F7FAFC;
+}
+
+html:not(.dark) body {
+  background-color: #F7FAFC;
+  color: #263238;
 }
 
 /* =============================================
@@ -172,8 +191,8 @@ html.dark body {
  * ============================================= */
 .glass {
   background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
@@ -264,6 +283,7 @@ html.dark body {
  * ============================================= */
 .sidebar-overlay {
   @apply fixed inset-0 bg-black/50 z-30 lg:hidden;
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
 }
 

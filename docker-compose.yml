@@ -39,7 +39,7 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=5000
-      - MONGO_URI=mongodb://mongodb:27017/trajet
+      - MONGO_URI=mongodb://localhost:27017/trajet
       - JWT_SECRET=6ba21a62dd9f50fbb177fd1bf9881f1527133b5e122394547a30addf0d8e8822fc6d6ca5a7ceeaca5a2918d30445d0830dd4bd68e55ba9f74e097c678cecf6dd
       - JWT_REFRESH_SECRET=94e3641099e5bc70f14b95effefbdecf958ebe0a0c6b7c95d83277b78fc4ec7cf46ba812fe377b32964f561aaeee2099b8735a2065123e14d22ad2303fc4c2e6
       - MINIO_ENDPOINT=minio

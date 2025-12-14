@@ -70,8 +70,8 @@ export default function AdminVehicles() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold dark:text-primary-100 text-gray-800">Véhicules</h1>
-          <p className="text-gray-600 dark:text-primary-100">Gérez votre flotte de véhicules</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Véhicules</h1>
+          <p className="text-gray-600 dark:text-slate-400">Gérez votre flotte de véhicules</p>
         </div>
         <Button onClick={() => navigate('/admin/vehicles/create')} variant="primary">
           <Plus size={20} className="mr-2" />
@@ -81,22 +81,22 @@ export default function AdminVehicles() {
 
       {/* Filters */}
       <Card>
-        <div className="flex flex-col dark:text-primary-100 sm:flex-row gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-primary-200" />
+            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Rechercher par matricule, marque, modèle..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg dark:text-primary-100rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             />
           </div>
-          <div className="sm:w-48 dark:text-primary-100">
+          <div className="sm:w-48">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full px-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
             >
               <option value="">Tous les statuts</option>
               {statusOptions.map((option) => (

@@ -33,6 +33,10 @@ const userSchema = new mongoose.Schema({
   licence: {
     type: String,
     trim: true
+  },
+  profileImage: {
+    type: String,
+    default: null
   }
 }, {
   timestamps: true

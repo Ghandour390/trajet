@@ -48,3 +48,11 @@ export const changePassword = async (data) => {
   const response = await api.post('/auth/change-password', data);
   return response.data;
 };
+
+// Upload profile image
+export const uploadProfileImage = async (id, formData) => {
+  const response = await api.post(`/users/${id}/profile-image`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+  return response.data;
+};

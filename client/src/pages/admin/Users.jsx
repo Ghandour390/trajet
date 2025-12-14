@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, User, Mail, Phone, Calendar, Edit, Shield } from 'lucide-react';
+import { Search, User, Phone, Calendar, Edit, Shield } from 'lucide-react';
 import { Button, Card, Table } from '../../components/common';
 import * as usersAPI from '../../api/users';
 import { notify } from '../../utils/notifications';
@@ -68,7 +68,7 @@ export default function AdminUsers() {
     const roleLabels = {
       admin: 'Administrateur',
       chauffeur: 'Chauffeur',
-      manager: 'Manager',
+      // manager: 'Manager',
     };
 
     const style = roleStyles[role] || { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', dot: 'bg-gray-400' };
@@ -86,9 +86,13 @@ export default function AdminUsers() {
       header: 'Utilisateur',
       render: (row) => (
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shadow-lg">
-            <User size={20} className="text-white" />
-          </div>
+          {row.profileImage ? (
+            <img src={row.profileImage} alt="profile" className="w-10 h-10 rounded-full object-cover shadow-lg" />
+          ) : (
+            <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shadow-lg">
+              <User size={20} className="text-white" />
+            </div>
+          )}
           <div>
             <p className="font-semibold text-gray-900 dark:text-white">
               {row.firstname} {row.lastname}
@@ -131,7 +135,7 @@ export default function AdminUsers() {
   const roleOptions = [
     { value: 'admin', label: 'Administrateur' },
     { value: 'chauffeur', label: 'Chauffeur' },
-    { value: 'manager', label: 'Manager' },
+    // { value: 'manager', label: 'Manager' },
   ];
 
   // Mobile Card Renderer for Users
@@ -144,9 +148,13 @@ export default function AdminUsers() {
       <div className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-              <User size={24} className="text-white" />
-            </div>
+            {row.profileImage ? (
+              <img src={row.profileImage} alt="profile" className="w-12 h-12 rounded-full object-cover" />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                <User size={24} className="text-white" />
+              </div>
+            )}
             <div>
               <h3 className="font-bold text-white text-lg">{row.firstname} {row.lastname}</h3>
               <p className="text-white/80 text-sm">{row.email}</p>

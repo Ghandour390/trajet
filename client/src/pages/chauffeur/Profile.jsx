@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Lock, Save } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Lock, Save, Camera } from 'lucide-react';
 import { Button, Card, Input } from '../../components/common';
-import { selectUser } from '../../store/slices/authSlice';
+import { selectUser, updateProfileImage } from '../../store/slices/authSlice';
 import * as usersAPI from '../../api/users';
 import { notify } from '../../utils/notifications';
 
@@ -11,6 +11,7 @@ import { notify } from '../../utils/notifications';
  * User profile management for drivers
  */
 export default function Profile() {
+  const dispatch = useDispatch();
   const user = useSelector(selectUser);
 
   // Local state
@@ -27,6 +28,7 @@ export default function Profile() {
     confirmPassword: '',
   });
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Initialize form with user data
   useEffect(() => {
@@ -68,6 +70,26 @@ export default function Profile() {
     }
   };
 
+  // Handle image upload
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImagePreview(URL.createObjectURL(file));
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const response = await usersAPI.uploadProfileImage(user?.id, formData);
+      dispatch(updateProfileImage(response.profileImage));
+      notify.success('Photo de profil mise à jour');
+    } catch (error) {
+      notify.error('Erreur lors de l\'upload');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle password change
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
@@ -97,22 +119,32 @@ export default function Profile() {
     <div className="space-y-6 max-w-2xl">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-800">Mon Profil</h1>
-        <p className="text-gray-600">Gérez vos informations personnelles</p>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Mon Profil</h1>
+        <p className="text-gray-600 dark:text-slate-400">Gérez vos informations personnelles</p>
       </div>
 
       {/* Profile Card */}
       <Card>
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-20 h-20 bg-primary-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-            {user?.firstname?.[0]}{user?.lastname?.[0]}
+          <div className="relative">
+            {imagePreview || user?.profileImage ? (
+              <img src={imagePreview || user?.profileImage} alt="Profile" className="w-20 h-20 rounded-full object-cover shadow-lg" />
+            ) : (
+              <div className="w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
+                {user?.firstname?.[0]}{user?.lastname?.[0]}
+              </div>
+            )}
+            <label className="absolute bottom-0 right-0 bg-white dark:bg-slate-800 p-1.5 rounded-full shadow-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700">
+              <Camera size={16} className="text-gray-600 dark:text-gray-300" />
+              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+            </label>
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               {user?.firstname} {user?.lastname}
             </h2>
-            <p className="text-gray-500">{user?.email}</p>
-            <span className="inline-block mt-1 px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+            <p className="text-gray-500 dark:text-slate-400">{user?.email}</p>
+            <span className="inline-block mt-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-xs font-semibold">
               Chauffeur
             </span>
           </div>
@@ -163,8 +195,8 @@ export default function Profile() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800">Sécurité</h3>
-            <p className="text-sm text-gray-500">Modifier votre mot de passe</p>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Sécurité</h3>
+            <p className="text-sm text-gray-500 dark:text-slate-400">Modifier votre mot de passe</p>
           </div>
           <Button
             variant="outline"
@@ -176,7 +208,7 @@ export default function Profile() {
         </div>
 
         {showPasswordForm && (
-          <form onSubmit={handlePasswordSubmit} className="space-y-4 mt-4 pt-4 border-t border-gray-100">
+          <form onSubmit={handlePasswordSubmit} className="space-y-4 mt-4 pt-4 border-t border-gray-100 dark:border-slate-700">
             <Input
               label="Mot de passe actuel"
               name="currentPassword"

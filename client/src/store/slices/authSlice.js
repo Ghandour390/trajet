@@ -79,6 +79,12 @@ const authSlice = createSlice({
       state.accessToken = action.payload.accessToken;
       state.isAuthenticated = true;
     },
+    updateProfileImage: (state, action) => {
+      if (state.user) {
+        state.user.profileImage = action.payload;
+        localStorage.setItem('user', JSON.stringify(state.user));
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -126,5 +132,5 @@ export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error;
 export const selectUserRole = (state) => state.auth.user?.role;
 
-export const { clearError, setCredentials } = authSlice.actions;
+export const { clearError, setCredentials, updateProfileImage } = authSlice.actions;
 export default authSlice.reducer;

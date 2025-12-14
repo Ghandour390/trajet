@@ -102,6 +102,7 @@ export default function AppRoutes() {
         <Route path="reports" element={<AdminReports />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/edit/:id" element={<UserForm />} />
+        <Route path="profile" element={<Profile />} />
       </Route>
 
       {/* Chauffeur Routes */}

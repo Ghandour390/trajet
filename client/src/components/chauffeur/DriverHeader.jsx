@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Menu, Bell, User, Moon, Sun, ChevronDown, Settings, LogOut } from 'lucide-react';
+import { Menu, Bell, User, Moon, Sun, ChevronDown, Settings } from 'lucide-react';
 import { selectUser } from '../../store/slices/authSlice';
 import { useTheme } from '../../contexts/ThemeContext';
 

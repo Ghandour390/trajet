@@ -52,7 +52,9 @@ class AuthService {
         email: user.email,
         firstname: user.firstname,
         lastname: user.lastname,
-        role: user.role
+        role: user.role,
+        phone: user.phone,
+        profileImage: user.profileImage
       }
     };
   }

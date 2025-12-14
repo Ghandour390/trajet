@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   LayoutDashboard,
   Truck,
@@ -7,12 +7,13 @@ import {
   Wrench,
   FileText,
   Users,
-  LogOut,
-  ChevronLeft,
-  ChevronRight,
-  X,
+  User,
+  LogOut
+  // ChevronLeft,
+  // ChevronRight,
+  // X,
 } from 'lucide-react';
-import { logout, selectUser } from '../../store/slices/authSlice';
+import { logout } from '../../store/slices/authSlice';
 
 /**
  * AdminSidebar Component
@@ -21,7 +22,7 @@ import { logout, selectUser } from '../../store/slices/authSlice';
 export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
+  // const user = useSelector(selectUser);
 
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
@@ -30,6 +31,7 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
     { path: '/admin/maintenance', icon: Wrench, label: 'Maintenance' },
     { path: '/admin/reports', icon: FileText, label: 'Rapports' },
     { path: '/admin/users', icon: Users, label: 'Utilisateurs' },
+    { path: '/admin/profile', icon: User, label: 'Mon Profil' }
   ];
 
   const handleLogout = async () => {
@@ -61,7 +63,7 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
             <span className="text-xl font-bold text-white tracking-tight">TrajetCamen</span>
           </div>
         )}
-        <button
+        {/* <button
           onClick={onToggle}
           className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all duration-200 hover:scale-105"
         >
@@ -72,16 +74,20 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
           ) : (
             <ChevronRight size={20} />
           )}
-        </button>
+        </button> */}
       </div>
 
       {/* User Info */}
-      {isOpen && user && (
+      {/* {isOpen && user && (
         <div className="px-4 py-4 border-b border-primary-500/30 dark:border-slate-700 animate-fade-in">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-secondary-400 to-secondary-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
-              {user.firstname?.[0]}{user.lastname?.[0]}
-            </div>
+            {user.profileImage ? (
+              <img src={user.profileImage} alt="Profile" className="w-12 h-12 rounded-full object-cover shadow-lg" />
+            ) : (
+              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-secondary-400 to-secondary-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                {user.firstname?.[0]}{user.lastname?.[0]}
+              </div>
+            )}
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-white truncate">
                 {user.firstname} {user.lastname}
@@ -90,7 +96,7 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Navigation */}
       <nav className="mt-4 px-3 flex-1 overflow-y-auto">

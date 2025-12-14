@@ -7,12 +7,15 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts';
+import { useTheme } from '../../contexts/ThemeContext';
 
 /**
  * KilometrageChart Component
- * Displays kilometrage evolution over time
+ * Displays kilometrage evolution over time with dark mode support
  */
 export default function KilometrageChart({ data }) {
+  const { isDark } = useTheme();
+
   // Sample data if none provided
   const chartData = data || [
     { month: 'Jan', kilometrage: 12500 },
@@ -23,6 +26,16 @@ export default function KilometrageChart({ data }) {
     { month: 'Juin', kilometrage: 16200 },
   ];
 
+  // Theme-aware colors
+  const colors = {
+    grid: isDark ? '#334155' : '#e5e7eb',
+    tick: isDark ? '#94a3b8' : '#6b7280',
+    tooltipBg: isDark ? '#1e293b' : '#fff',
+    tooltipBorder: isDark ? '#334155' : '#e5e7eb',
+    tooltipText: isDark ? '#f8fafc' : '#1f2937',
+    lineStroke: isDark ? '#60a5fa' : '#0B4F6C',
+  };
+
   return (
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
@@ -30,33 +43,35 @@ export default function KilometrageChart({ data }) {
           data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+          <CartesianGrid strokeDasharray="3 3" stroke={colors.grid} />
           <XAxis
             dataKey="month"
-            tick={{ fill: '#6b7280', fontSize: 12 }}
-            axisLine={{ stroke: '#e5e7eb' }}
+            tick={{ fill: colors.tick, fontSize: 12 }}
+            axisLine={{ stroke: colors.grid }}
           />
           <YAxis
-            tick={{ fill: '#6b7280', fontSize: 12 }}
-            axisLine={{ stroke: '#e5e7eb' }}
+            tick={{ fill: colors.tick, fontSize: 12 }}
+            axisLine={{ stroke: colors.grid }}
             tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#fff',
-              border: '1px solid #e5e7eb',
-              borderRadius: '8px',
+              backgroundColor: colors.tooltipBg,
+              border: `1px solid ${colors.tooltipBorder}`,
+              borderRadius: '12px',
               boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+              color: colors.tooltipText,
             }}
+            labelStyle={{ color: colors.tooltipText }}
             formatter={(value) => [`${value.toLocaleString()} km`, 'Kilométrage']}
           />
           <Line
             type="monotone"
             dataKey="kilometrage"
-            stroke="#0B4F6C"
+            stroke={colors.lineStroke}
             strokeWidth={2}
-            dot={{ fill: '#0B4F6C', strokeWidth: 2, r: 4 }}
-            activeDot={{ r: 6 }}
+            dot={{ fill: colors.lineStroke, strokeWidth: 2, r: 4 }}
+            activeDot={{ r: 6, fill: colors.lineStroke }}
           />
         </LineChart>
       </ResponsiveContainer>
