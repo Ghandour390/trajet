@@ -105,6 +105,15 @@ describe('Tire Integration Tests', () => {
 
   describe('POST /api/tires/:id/link - TRAJ-48', () => {
     it('should link tire to vehicle', async () => {
+      // Create a fresh vehicle for this test
+      const linkTestVehicle = await Vehicle.create({
+        plateNumber: `TIRE-LINK-${Date.now()}`,
+        type: 'Camion',
+        brand: 'Test',
+        year: 2020,
+        currentKm: 1000
+      });
+
       const tire = await Tire.create({
         serial: 'TIRE001',
         position: 'Front Left',
@@ -114,13 +123,16 @@ describe('Tire Integration Tests', () => {
       const response = await request(app)
         .post(`/api/tires/${tire._id}/link`)
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ vehicleId: testVehicle._id });
+        .send({ vehicleId: linkTestVehicle._id });
 
       expect(response.status).toBe(200);
       expect(response.body.message).toBe('Tire linked to vehicle');
 
-      const updatedVehicle = await Vehicle.findById(testVehicle._id);
+      const updatedVehicle = await Vehicle.findById(linkTestVehicle._id);
       expect(updatedVehicle.tires).toContainEqual(tire._id);
+      
+      // Cleanup
+      await Vehicle.findByIdAndDelete(linkTestVehicle._id);
     });
   });
 

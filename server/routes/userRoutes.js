@@ -130,6 +130,6 @@ router.route('/:id')
   .patch(authenticate, userController.updateUser.bind(userController))
   .delete(authenticate, authorize('admin'), userController.deleteUser.bind(userController));
 
-router.post('/:id/profile-image', authenticate, upload.single('image'), userController.uploadProfileImage.bind(userController));
+router.post('/:id/profile-image', upload.single('image'), userController.uploadProfileImage.bind(userController));
 
 export default router;

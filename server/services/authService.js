@@ -11,11 +11,15 @@ class AuthService {
     }
     
     const hashedPassword = await bcrypt.hash(userData.password, 10);
+    
+    // Supprimer le champ password des données utilisateur
+    const { password, ...userDataWithoutPassword } = userData;
+    
     const user = new User({
-      ...userData,
-      passwordHash: hashedPassword,
-      role: userData.role || 'chauffeur'
+      ...userDataWithoutPassword,
+      passwordHash: hashedPassword
     });
+    
     const savedUser = await user.save();
     const { passwordHash: _passwordHash, ...userWithoutPassword } = savedUser.toObject();
     return userWithoutPassword;

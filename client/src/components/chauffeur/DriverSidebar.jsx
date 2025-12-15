@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   MapPin,
   User,
@@ -10,7 +10,7 @@ import {
   X,
   Truck,
 } from 'lucide-react';
-import { logout, selectUser } from '../../store/slices/authSlice';
+import { logout} from '../../store/slices/authSlice';
 
 /**
  * DriverSidebar Component
@@ -19,7 +19,7 @@ import { logout, selectUser } from '../../store/slices/authSlice';
 export default function DriverSidebar({ isOpen, onToggle, isMobile }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const user = useSelector(selectUser);
+  // const user = useSelector(selectUser);
 
   const menuItems = [
     { path: '/chauffeur/dashboard', icon: Home, label: 'Accueil' },
@@ -71,7 +71,7 @@ export default function DriverSidebar({ isOpen, onToggle, isMobile }) {
       </div>
 
       {/* User Info */}
-      {isOpen && user && (
+      {/* {isOpen && user && (
         <div className="px-4 py-4 border-b border-secondary-400/30 dark:border-slate-700 animate-fade-in">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold text-lg shadow-lg">
@@ -85,7 +85,7 @@ export default function DriverSidebar({ isOpen, onToggle, isMobile }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Navigation */}
       <nav className="mt-4 px-3 flex-1 overflow-y-auto">

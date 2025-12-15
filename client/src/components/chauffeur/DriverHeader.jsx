@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Menu, Bell, User, Moon, Sun, ChevronDown, Settings } from 'lucide-react';
 import { selectUser } from '../../store/slices/authSlice';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -9,6 +10,7 @@ import { useTheme } from '../../contexts/ThemeContext';
  * Top header bar for driver panel - Fully responsive with dark mode
  */
 export default function DriverHeader({ onMenuClick }) {
+  const navigate = useNavigate();
   const user = useSelector(selectUser);
   const { isDark, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -96,15 +98,23 @@ export default function DriverHeader({ onMenuClick }) {
                 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 
                 transition-all duration-200"
             >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-700 
-                flex items-center justify-center text-white font-semibold shadow-lg">
-                {user?.firstname?.[0]}{user?.lastname?.[0]}
-              </div>
+              {user?.profileImage ? (
+                <img 
+                  src={user.profileImage} 
+                  alt="Profile" 
+                  className="w-9 h-9 rounded-xl object-cover shadow-lg"
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-secondary-500 to-secondary-700 
+                  flex items-center justify-center text-white font-semibold shadow-lg">
+                  {user?.firstname?.[0]}{user?.lastname?.[0]}
+                </div>
+              )}
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-semibold text-gray-800 dark:text-white leading-tight">
                   {user?.firstname} {user?.lastname}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-slate-400">Chauffeur</p>
+                <p className="text-xs text-gray-500 dark:text-slate-400">{user?.role}</p>
               </div>
               <ChevronDown size={16} className="hidden sm:block text-gray-400 dark:text-slate-500" />
             </button>
@@ -117,7 +127,7 @@ export default function DriverHeader({ onMenuClick }) {
                   <p className="text-sm text-gray-500 dark:text-slate-400">{user?.email}</p>
                 </div>
                 <div className="py-2">
-                  <button className="w-full px-4 py-2.5 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center gap-3 transition-colors">
+                  <button onClick={() => navigate('/chauffeur/profile')} className="w-full px-4 py-2.5 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 flex items-center gap-3 transition-colors">
                     <User size={18} />
                     Mon profil
                   </button>

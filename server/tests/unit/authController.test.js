@@ -39,7 +39,13 @@ describe('AuthController', () => {
 
       expect(mockAuthService.login).toHaveBeenCalledWith('test@test.com', 'password123');
       expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith(mockResponse);
+      expect(res.json).toHaveBeenCalledWith({
+        success: true,
+        token: 'accessToken',
+        accessToken: 'accessToken',
+        refreshToken: 'refreshToken',
+        user: { id: 'userId', email: 'test@test.com' }
+      });
     });
 
     it('should return 401 on invalid credentials', async () => {
@@ -49,7 +55,7 @@ describe('AuthController', () => {
       await AuthController.login(req, res);
 
       expect(res.status).toHaveBeenCalledWith(401);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Invalid email or password' });
+      expect(res.json).toHaveBeenCalledWith({ success: false, message: 'Invalid email or password' });
     });
   });
 
@@ -63,7 +69,7 @@ describe('AuthController', () => {
 
       expect(mockAuthService.register).toHaveBeenCalledWith(req.body);
       expect(res.status).toHaveBeenCalledWith(201);
-      expect(res.json).toHaveBeenCalledWith(mockUser);
+      expect(res.json).toHaveBeenCalledWith({ success: true, user: mockUser });
     });
 
     it('should return 400 on registration error', async () => {
@@ -73,7 +79,7 @@ describe('AuthController', () => {
       await AuthController.register(req, res);
 
       expect(res.status).toHaveBeenCalledWith(400);
-      expect(res.json).toHaveBeenCalledWith({ message: 'Validation error' });
+      expect(res.json).toHaveBeenCalledWith({ success: false, error: 'Validation error' });
     });
   });
 

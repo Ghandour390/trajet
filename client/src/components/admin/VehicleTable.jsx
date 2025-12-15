@@ -1,4 +1,4 @@
-import { Table } from '../common';
+import { Table, StatusBadge } from '../common';
 import { Eye, Edit, Trash2, Truck, Calendar, Gauge } from 'lucide-react';
 
 /**
@@ -13,47 +13,6 @@ export default function VehicleTable({
   onEdit,
   onDelete,
 }) {
-  const getStatusBadge = (status) => {
-    const statusStyles = {
-      active: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-700 dark:text-green-400',
-        dot: 'bg-green-500'
-      },
-      in_use: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-700 dark:text-blue-400',
-        dot: 'bg-blue-500'
-      },
-      maintenance: {
-        bg: 'bg-amber-100 dark:bg-amber-900/30',
-        text: 'text-amber-700 dark:text-amber-400',
-        dot: 'bg-amber-500'
-      },
-      inactive: {
-        bg: 'bg-gray-100 dark:bg-gray-800',
-        text: 'text-gray-600 dark:text-gray-400',
-        dot: 'bg-gray-400'
-      },
-    };
-
-    const statusLabels = {
-      active: 'Actif',
-      in_use: 'En utilisation',
-      maintenance: 'En maintenance',
-      inactive: 'Inactif',
-    };
-
-    const style = statusStyles[status] || statusStyles.inactive;
-
-    return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`}></span>
-        {statusLabels[status] || status}
-      </span>
-    );
-  };
-
   const columns = [
     {
       header: 'Matricule',
@@ -100,7 +59,7 @@ export default function VehicleTable({
     },
     {
       header: 'Statut',
-      render: (row) => getStatusBadge(row.status),
+      render: (row) => <StatusBadge status={row.status} />,
     },
     {
       header: 'Actions',
@@ -159,7 +118,7 @@ export default function VehicleTable({
               <p className="text-primary-100 text-sm">{row.brand} - {row.type}</p>
             </div>
           </div>
-          {getStatusBadge(row.status)}
+          <StatusBadge status={row.status} />
         </div>
       </div>
 

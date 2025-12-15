@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Search } from 'lucide-react';
-import { Card } from '../../components/common';
+import { Card, PageHeader, EmptyState } from '../../components/common';
+import { PageLoader } from '../../components/common/LoadingSpinner';
 import { TripCard } from '../../components/chauffeur';
 import { getMyTrips, selectMyTrips, selectTripsLoading } from '../../store/slices/tripsSlice';
 
@@ -48,10 +49,10 @@ export default function MyTrips() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Mes Trajets</h1>
-        <p className="text-gray-600 dark:text-slate-400">Consultez et gérez vos trajets</p>
-      </div>
+      <PageHeader
+        title="Mes Trajets"
+        subtitle="Consultez et gérez vos trajets"
+      />
 
       {/* Filters */}
       <Card>
@@ -63,7 +64,7 @@ export default function MyTrips() {
               placeholder="Rechercher par origine ou destination..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
@@ -86,15 +87,13 @@ export default function MyTrips() {
 
       {/* Trips List */}
       {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-500"></div>
-        </div>
+        <PageLoader message="Chargement des trajets..." />
       ) : filteredTrips.length === 0 ? (
         <Card>
-          <div className="text-center py-12 text-gray-500 dark:text-slate-400">
-            <p className="text-lg">Aucun trajet trouvé</p>
-            <p className="text-sm">Vos trajets assignés apparaîtront ici</p>
-          </div>
+          <EmptyState
+            title="Aucun trajet trouvé"
+            description="Vos trajets assignés apparaîtront ici"
+          />
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

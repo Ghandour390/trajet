@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search } from 'lucide-react';
-import { Button, Card } from '../../components/common';
+import { Plus } from 'lucide-react';
+import { Card, PageHeader, SearchFilter, ConfirmModal } from '../../components/common';
 import { VehicleTable } from '../../components/admin';
 import {
   getVehicles,
@@ -11,7 +11,6 @@ import {
   selectVehiclesLoading,
 } from '../../store/slices/vehiclesSlice';
 import { notify } from '../../utils/notifications';
-import { Modal } from '../../components/common';
 
 /**
  * AdminVehicles Page
@@ -68,46 +67,24 @@ export default function AdminVehicles() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Véhicules</h1>
-          <p className="text-gray-600 dark:text-slate-400">Gérez votre flotte de véhicules</p>
-        </div>
-        <Button onClick={() => navigate('/admin/vehicles/create')} variant="primary">
-          <Plus size={20} className="mr-2" />
-          Ajouter un véhicule
-        </Button>
-      </div>
+      <PageHeader
+        title="Véhicules"
+        subtitle="Gérez votre flotte de véhicules"
+        actionLabel="Ajouter un véhicule"
+        actionIcon={Plus}
+        onAction={() => navigate('/admin/vehicles/create')}
+      />
 
       {/* Filters */}
-      <Card>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
-            <input
-              type="text"
-              placeholder="Rechercher par matricule, marque, modèle..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-          <div className="sm:w-48">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            >
-              <option value="">Tous les statuts</option>
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </Card>
+      <SearchFilter
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Rechercher par matricule, marque, modèle..."
+        filterValue={statusFilter}
+        onFilterChange={setStatusFilter}
+        filterOptions={statusOptions}
+        filterPlaceholder="Tous les statuts"
+      />
 
       {/* Vehicles Table */}
       <Card padding={false}>
@@ -124,26 +101,14 @@ export default function AdminVehicles() {
       </Card>
 
       {/* Delete Confirmation Modal */}
-      <Modal
+      <ConfirmModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDelete}
         title="Confirmer la suppression"
-        size="sm"
-      >
-        <p className="text-gray-600 mb-6">
-          Êtes-vous sûr de vouloir supprimer le véhicule{' '}
-          <span className="font-semibold">{selectedVehicle?.plateNumber}</span> ?
-          Cette action est irréversible.
-        </p>
-        <div className="flex justify-end gap-3">
-          <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
-            Annuler
-          </Button>
-          <Button variant="danger" onClick={handleDelete} loading={loading}>
-            Supprimer
-          </Button>
-        </div>
-      </Modal>
+        itemName={selectedVehicle?.plateNumber}
+        loading={loading}
+      />
     </div>
   );
 }

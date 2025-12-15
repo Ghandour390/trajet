@@ -85,6 +85,12 @@ const authSlice = createSlice({
         localStorage.setItem('user', JSON.stringify(state.user));
       }
     },
+    updateUserProfile: (state, action) => {
+      if (state.user) {
+        state.user = { ...state.user, ...action.payload };
+        localStorage.setItem('user', JSON.stringify(state.user));
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -132,5 +138,5 @@ export const selectAuthLoading = (state) => state.auth.loading;
 export const selectAuthError = (state) => state.auth.error;
 export const selectUserRole = (state) => state.auth.user?.role;
 
-export const { clearError, setCredentials, updateProfileImage } = authSlice.actions;
+export const { clearError, setCredentials, updateProfileImage, updateUserProfile } = authSlice.actions;
 export default authSlice.reducer;

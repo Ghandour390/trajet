@@ -8,9 +8,9 @@ class AuthController {
         try {
             const { email, password } = req.body;
             const { accessToken, refreshToken, user } = await AuthService.login(email, password);
-            res.status(200).json({ accessToken, refreshToken, user });
+            res.status(200).json({ success: true, token: accessToken, accessToken, refreshToken, user });
         } catch (error) {
-            res.status(401).json({ message: error.message });
+            res.status(401).json({ success: false, message: error.message });
         }
     }
     // @ api / auth / register
@@ -18,9 +18,14 @@ class AuthController {
         try {
             const userData = req.body;
             const user = await AuthService.register(userData);
-            res.status(201).json(user);
+            res.status(201).json({ success: true, user });
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            // Gestion des erreurs de validation Mongoose
+            if (error.name === 'ValidationError') {
+                const errors = Object.values(error.errors).map(err => err.message);
+                return res.status(400).json({ success: false, error: errors });
+            }
+            res.status(400).json({ success: false, error: error.message });
         }
     }
     //@ api / auth / logout

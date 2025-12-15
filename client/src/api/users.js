@@ -56,3 +56,9 @@ export const uploadProfileImage = async (id, formData) => {
   });
   return response.data;
 };
+
+// Get profile image URL
+export const getProfileImageUrl = async (id) => {
+  const response = await api.get(`/users/${id}/profile-image`);
+  return response.data;
+};

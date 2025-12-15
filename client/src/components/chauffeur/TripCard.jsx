@@ -1,34 +1,11 @@
 import { MapPin, Calendar, ChevronRight } from 'lucide-react';
+import { StatusBadge } from '../common';
 
 /**
  * TripCard Component
  * Card for displaying trip information for drivers
  */
 export default function TripCard({ trip, onClick }) {
-  const getStatusBadge = (status) => {
-    const statusStyles = {
-      planned: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400',
-      pending: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-400',
-      in_progress: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400',
-      completed: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400',
-      cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400',
-    };
-
-    const statusLabels = {
-      planned: 'Planifié',
-      pending: 'En attente',
-      in_progress: 'En cours',
-      completed: 'Terminé',
-      cancelled: 'Annulé',
-    };
-
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusStyles[status] || 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-300'}`}>
-        {statusLabels[status] || status}
-      </span>
-    );
-  };
-
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('fr-FR', {
       day: '2-digit',
@@ -44,10 +21,10 @@ export default function TripCard({ trip, onClick }) {
     >
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-gray-800 dark:text-white">
+          <h3 className="font-semibold text-gray-800 dark:text-white mb-2">
             Trajet #{trip._id?.slice(-6).toUpperCase()}
           </h3>
-          {getStatusBadge(trip.status)}
+          <StatusBadge status={trip.status} size="sm" />
         </div>
         <ChevronRight size={20} className="text-gray-400 dark:text-slate-500" />
       </div>

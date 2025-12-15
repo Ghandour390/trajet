@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, User, Phone, Calendar, Edit, Shield } from 'lucide-react';
-import { Button, Card, Table } from '../../components/common';
+import { Phone, Calendar, Edit, Shield } from 'lucide-react';
+import { Button, Card, Table, PageHeader, SearchFilter, StatusBadge, Avatar } from '../../components/common';
 import * as usersAPI from '../../api/users';
 import { notify } from '../../utils/notifications';
 
@@ -44,55 +44,22 @@ export default function AdminUsers() {
     return matchesSearch && matchesRole;
   });
 
-
-
-  const getRoleBadge = (role) => {
-    const roleStyles = {
-      admin: {
-        bg: 'bg-purple-100 dark:bg-purple-900/30',
-        text: 'text-purple-700 dark:text-purple-400',
-        dot: 'bg-purple-500'
-      },
-      chauffeur: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-700 dark:text-blue-400',
-        dot: 'bg-blue-500'
-      },
-      manager: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-700 dark:text-green-400',
-        dot: 'bg-green-500'
-      },
-    };
-
-    const roleLabels = {
-      admin: 'Administrateur',
-      chauffeur: 'Chauffeur',
-      // manager: 'Manager',
-    };
-
-    const style = roleStyles[role] || { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', dot: 'bg-gray-400' };
-
-    return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`}></span>
-        {roleLabels[role] || role}
-      </span>
-    );
-  };
+  // Role options for filter
+  const roleOptions = [
+    { value: 'admin', label: 'Administrateur' },
+    { value: 'chauffeur', label: 'Chauffeur' },
+  ];
 
   const columns = [
     {
       header: 'Utilisateur',
       render: (row) => (
         <div className="flex items-center gap-3">
-          {row.profileImage ? (
-            <img src={row.profileImage} alt="profile" className="w-10 h-10 rounded-full object-cover shadow-lg" />
-          ) : (
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shadow-lg">
-              <User size={20} className="text-white" />
-            </div>
-          )}
+          <Avatar 
+            src={row.profileImage} 
+            name={`${row.firstname} ${row.lastname}`} 
+            size="md" 
+          />
           <div>
             <p className="font-semibold text-gray-900 dark:text-white">
               {row.firstname} {row.lastname}
@@ -111,7 +78,7 @@ export default function AdminUsers() {
     },
     {
       header: 'Rôle',
-      render: (row) => getRoleBadge(row.role),
+      render: (row) => <StatusBadge status={row.role} />,
     },
     {
       header: 'Inscrit le',
@@ -132,12 +99,6 @@ export default function AdminUsers() {
     },
   ];
 
-  const roleOptions = [
-    { value: 'admin', label: 'Administrateur' },
-    { value: 'chauffeur', label: 'Chauffeur' },
-    // { value: 'manager', label: 'Manager' },
-  ];
-
   // Mobile Card Renderer for Users
   const renderMobileCard = (row, index) => (
     <div
@@ -148,13 +109,13 @@ export default function AdminUsers() {
       <div className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {row.profileImage ? (
-              <img src={row.profileImage} alt="profile" className="w-12 h-12 rounded-full object-cover" />
-            ) : (
-              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-                <User size={24} className="text-white" />
-              </div>
-            )}
+            <Avatar 
+              src={row.profileImage} 
+              name={`${row.firstname} ${row.lastname}`} 
+              size="lg"
+              className="border-2 border-white/30"
+              gradient="from-white/30 to-white/20"
+            />
             <div>
               <h3 className="font-bold text-white text-lg">{row.firstname} {row.lastname}</h3>
               <p className="text-white/80 text-sm">{row.email}</p>
@@ -171,7 +132,7 @@ export default function AdminUsers() {
             <Shield size={16} className="text-gray-400 dark:text-slate-500" />
             <span className="text-sm text-gray-500 dark:text-slate-400">Rôle</span>
           </div>
-          {getRoleBadge(row.role)}
+          <StatusBadge status={row.role} />
         </div>
 
         {/* Phone */}
@@ -209,40 +170,21 @@ export default function AdminUsers() {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Utilisateurs</h1>
-        <p className="text-gray-600 dark:text-slate-400">Gérez les utilisateurs de la plateforme</p>
-      </div>
+      <PageHeader
+        title="Utilisateurs"
+        subtitle="Gérez les utilisateurs de la plateforme"
+      />
 
       {/* Filters */}
-      <Card>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
-            <input
-              type="text"
-              placeholder="Rechercher par nom ou email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-          <div className="sm:w-48">
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            >
-              <option value="">Tous les rôles</option>
-              {roleOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </Card>
+      <SearchFilter
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Rechercher par nom ou email..."
+        filterValue={roleFilter}
+        onFilterChange={setRoleFilter}
+        filterOptions={roleOptions}
+        filterPlaceholder="Tous les rôles"
+      />
 
       {/* Users Table */}
       <Card padding={false}>

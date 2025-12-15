@@ -24,7 +24,7 @@ export default function Register() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/admin/dashboard');
+      navigate('/dashboard');
     }
   }, [isAuthenticated, navigate]);
 
@@ -47,10 +47,17 @@ export default function Register() {
       lastname: userData.lastname.trim(),
       email: userData.email.trim().toLowerCase(),
       password: userData.password,
-      phone: userData.phone.trim()
+      phone: userData.phone.trim(),
+      role: 'chauffeur'
     };
     
-    dispatch(register(cleanData));
+    try {
+      await dispatch(register(cleanData)).unwrap();
+      // Redirection vers login après inscription réussie
+      navigate('/login');
+    } catch {
+      // L'erreur sera gérée par le store Redux
+    }
   };
 
   const displayError = validationError || error;

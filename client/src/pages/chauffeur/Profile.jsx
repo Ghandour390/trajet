@@ -75,16 +75,36 @@ export default function Profile() {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Validation du fichier
+    if (!file.type.startsWith('image/')) {
+      notify.error('Veuillez sélectionner une image valide');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) { // 5MB max
+      notify.error('L\'image ne doit pas dépasser 5MB');
+      return;
+    }
+
     setImagePreview(URL.createObjectURL(file));
     setLoading(true);
     try {
       const formData = new FormData();
       formData.append('image', file);
       const response = await usersAPI.uploadProfileImage(user?.id, formData);
+      
+      // Mise à jour du store Redux avec l'URL de l'image
       dispatch(updateProfileImage(response.profileImage));
-      notify.success('Photo de profil mise à jour');
-    } catch {
-      notify.error('Erreur lors de l\'upload');
+      
+      // Forcer la mise à jour de l'aperçu avec la nouvelle URL
+      setImagePreview(response.profileImage);
+      
+      notify.success('Photo de profil mise à jour avec succès');
+    } catch (error) {
+      console.error('Erreur upload:', error);
+      notify.error(error.response?.data?.message || 'Erreur lors de l\'upload');
+      // Réinitialiser l'aperçu en cas d'erreur
+      setImagePreview(null);
     } finally {
       setLoading(false);
     }

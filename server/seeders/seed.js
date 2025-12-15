@@ -73,7 +73,7 @@ const seedDatabase = async () => {
         brand: 'Mercedes',
         year: 2020,
         currentKm: 45000,
-        status: 'available',
+        status: 'active',
         tires: [tires[0]._id, tires[1]._id]
       },
       {
@@ -115,6 +115,7 @@ const seedDatabase = async () => {
         trailerRef: trailers[0]._id,
         startKm: 45000,
         endKm: 45250,
+        distimatedKm: 250,
         fuelVolume: 80,
         status: 'completed',
         startAt: new Date('2024-01-15'),
@@ -127,6 +128,7 @@ const seedDatabase = async () => {
         assignedTo: users[2]._id,
         vehicleRef: vehicles[1]._id,
         startKm: 30000,
+        distimatedKm: 350,
         status: 'in_progress',
         startAt: new Date()
       },
@@ -137,6 +139,7 @@ const seedDatabase = async () => {
         assignedTo: users[1]._id,
         vehicleRef: vehicles[0]._id,
         startKm: 45250,
+        distimatedKm: 500,
         status: 'planned'
       }
     ]);

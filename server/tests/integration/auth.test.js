@@ -37,10 +37,12 @@ describe('Auth Integration Tests', () => {
         .send(userData)
         .expect(201);
 
-      expect(response.body).toHaveProperty('_id');
-      expect(response.body.email).toBe('john@test.com');
-      expect(response.body.role).toBe('chauffeur');
-      expect(response.body).not.toHaveProperty('passwordHash');
+      expect(response.body).toHaveProperty('success', true);
+      expect(response.body).toHaveProperty('user');
+      expect(response.body.user).toHaveProperty('_id');
+      expect(response.body.user.email).toBe('john@test.com');
+      expect(response.body.user.role).toBe('chauffeur');
+      expect(response.body.user).not.toHaveProperty('passwordHash');
     });
 
     it('should return 400 for duplicate email', async () => {
@@ -58,7 +60,8 @@ describe('Auth Integration Tests', () => {
         .send(userData)
         .expect(400);
 
-      expect(response.body).toHaveProperty('message');
+      expect(response.body).toHaveProperty('success', false);
+      expect(response.body).toHaveProperty('error');
     });
   });
 

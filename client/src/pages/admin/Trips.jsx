@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Search, Edit, Eye, MapPin, Truck, User, Calendar, Fuel, Route } from 'lucide-react';
-import { Button, Card, Table } from '../../components/common';
+import { Plus, Edit, Eye, MapPin, Truck, User, Calendar, Fuel, Route } from 'lucide-react';
+import { Card, Table, PageHeader, SearchFilter, StatusBadge } from '../../components/common';
 import {
   getTrips,
   selectTrips,
@@ -45,46 +45,13 @@ export default function AdminTrips() {
     navigate(`/admin/trips/view/${trip._id}`);
   };
 
-  const getStatusBadge = (status) => {
-    const statusStyles = {
-      planned: {
-        bg: 'bg-yellow-100 dark:bg-yellow-900/30',
-        text: 'text-yellow-700 dark:text-yellow-400',
-        dot: 'bg-yellow-500'
-      },
-      in_progress: {
-        bg: 'bg-blue-100 dark:bg-blue-900/30',
-        text: 'text-blue-700 dark:text-blue-400',
-        dot: 'bg-blue-500'
-      },
-      completed: {
-        bg: 'bg-green-100 dark:bg-green-900/30',
-        text: 'text-green-700 dark:text-green-400',
-        dot: 'bg-green-500'
-      },
-      cancelled: {
-        bg: 'bg-red-100 dark:bg-red-900/30',
-        text: 'text-red-700 dark:text-red-400',
-        dot: 'bg-red-500'
-      },
-    };
-
-    const statusLabels = {
-      planned: 'Planifié',
-      in_progress: 'En cours',
-      completed: 'Terminé',
-      cancelled: 'Annulé',
-    };
-
-    const style = statusStyles[status] || { bg: 'bg-gray-100 dark:bg-gray-800', text: 'text-gray-600 dark:text-gray-400', dot: 'bg-gray-400' };
-
-    return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${style.bg} ${style.text}`}>
-        <span className={`w-1.5 h-1.5 rounded-full ${style.dot}`}></span>
-        {statusLabels[status] || status}
-      </span>
-    );
-  };
+  // Status options for filter
+  const statusOptions = [
+    { value: 'planned', label: 'Planifié' },
+    { value: 'in_progress', label: 'En cours' },
+    { value: 'completed', label: 'Terminé' },
+    { value: 'cancelled', label: 'Annulé' },
+  ];
 
   const columns = [
     {
@@ -152,7 +119,7 @@ export default function AdminTrips() {
     },
     {
       header: 'Statut',
-      render: (row) => getStatusBadge(row.status),
+      render: (row) => <StatusBadge status={row.status} />,
     },
     {
       header: 'Actions',
@@ -187,7 +154,7 @@ export default function AdminTrips() {
       <div className="bg-gradient-to-r from-primary-500 to-primary-600 dark:from-primary-600 dark:to-primary-700 px-4 py-3">
         <div className="flex items-center justify-between mb-2">
           <span className="text-white/80 text-sm font-medium">{row.reference}</span>
-          {getStatusBadge(row.status)}
+          <StatusBadge status={row.status} />
         </div>
         <div className="flex items-center gap-2 text-white">
           <MapPin size={16} className="text-white/70" />
@@ -267,56 +234,27 @@ export default function AdminTrips() {
     </div>
   );
 
-  const statusOptions = [
-    { value: 'planned', label: 'Planifié' },
-    { value: 'in_progress', label: 'En cours' },
-    { value: 'completed', label: 'Terminé' },
-    { value: 'cancelled', label: 'Annulé' },
-  ];
-
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Trajets</h1>
-          <p className="text-gray-600 dark:text-slate-400">Gérez les trajets de votre flotte</p>
-        </div>
-        <Button onClick={() => navigate('/admin/trips/create')} variant="primary">
-          <Plus size={20} className="mr-2" />
-          Créer un trajet
-        </Button>
-      </div>
+      <PageHeader
+        title="Trajets"
+        subtitle="Gérez les trajets de votre flotte"
+        actionLabel="Créer un trajet"
+        actionIcon={Plus}
+        onAction={() => navigate('/admin/trips/create')}
+      />
 
       {/* Filters */}
-      <Card>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1 relative">
-            <Search size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" />
-            <input
-              type="text"
-              placeholder="Rechercher par origine ou destination..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            />
-          </div>
-          <div className="sm:w-48">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full px-4 py-2 bg-white dark:bg-slate-700 text-gray-900 dark:text-white border border-gray-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
-            >
-              <option value="">Tous les statuts</option>
-              {statusOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </Card>
+      <SearchFilter
+        searchValue={searchTerm}
+        onSearchChange={setSearchTerm}
+        searchPlaceholder="Rechercher par origine ou destination..."
+        filterValue={statusFilter}
+        onFilterChange={setStatusFilter}
+        filterOptions={statusOptions}
+        filterPlaceholder="Tous les statuts"
+      />
 
       {/* Trips Table */}
       <Card padding={false}>

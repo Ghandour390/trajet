@@ -94,9 +94,17 @@ class UserController {
       if (!req.file) {
         return res.status(400).json({ message: 'Aucune image fournie' });
       }
+      
+      // Upload du fichier et récupération de l'URL publique
       const imageUrl = await uploadToMinio(req.file, 'profiles');
+      
+      // Mise à jour de l'utilisateur avec l'URL de l'image
       const user = await userService.update(req.params.id, { profileImage: imageUrl });
-      res.status(200).json({ profileImage: imageUrl, user });
+      
+      res.status(200).json({ 
+        profileImage: imageUrl,
+        user 
+      });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
