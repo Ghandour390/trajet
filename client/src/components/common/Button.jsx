@@ -2,7 +2,7 @@
  * Button Component
  * Reusable button with variants, sizes and loading state - Professional design with dark mode
  */
-export function Button({
+function Button({
   children,
   type = 'button',
   variant = 'primary',
@@ -139,3 +139,6 @@ export function Button({
     </button>
   );
 }
+
+export default Button;
+export { Button };
