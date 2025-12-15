@@ -6,7 +6,6 @@ import Button from './Button';
  * Reusable empty state display for lists and tables
  */
 export default function EmptyState({
-  icon: Icon = Inbox,
   title = 'Aucune donnée',
   description = 'Aucun élément à afficher pour le moment.',
   actionLabel,
@@ -17,7 +16,7 @@ export default function EmptyState({
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
       {/* Icon */}
       <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-slate-700 flex items-center justify-center mb-4">
-        <Icon size={32} className="text-gray-400 dark:text-slate-500" />
+        <Inbox size={32} className="text-gray-400 dark:text-slate-500" />
       </div>
 
       {/* Title */}

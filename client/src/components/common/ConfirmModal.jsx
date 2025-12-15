@@ -17,7 +17,6 @@ export default function ConfirmModal({
   cancelLabel = 'Annuler',
   variant = 'danger',
   loading = false,
-  icon: Icon = AlertTriangle,
 }) {
   return (
     <Modal
@@ -29,7 +28,7 @@ export default function ConfirmModal({
       <div className="text-center sm:text-left">
         {/* Icon */}
         <div className="mx-auto sm:mx-0 flex items-center justify-center w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 mb-4">
-          <Icon className="w-6 h-6 text-red-600 dark:text-red-400" />
+          <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-400" />
         </div>
 
         {/* Message */}
