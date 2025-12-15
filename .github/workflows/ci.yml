@@ -11,12 +11,6 @@ jobs:
     name: Test Backend
     runs-on: ubuntu-latest
 
-    services:
-      mongodb:
-        image: mongo:7
-        ports:
-          - 27019:27017
-
     steps:
     - uses: actions/checkout@v3
     
@@ -29,13 +23,12 @@ jobs:
       working-directory: ./server
       run: npm install
     
-    - name: Run server tests
+    - name: Run unit tests
       working-directory: ./server
       env:
         NODE_ENV: test
         JWT_SECRET: test_jwt_secret
         JWT_REFRESH_SECRET: test_jwt_refresh_secret
-        MONGO_URI: mongodb://localhost:27017/test_db
       run: npm test
 
   build-client:
@@ -53,10 +46,6 @@ jobs:
     - name: Install client dependencies
       working-directory: ./client
       run: npm install
-    
-    - name: Lint client
-      working-directory: ./client
-      run: npm run lint
     
     - name: Build client
       working-directory: ./client

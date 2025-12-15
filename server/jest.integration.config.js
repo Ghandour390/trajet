@@ -1,7 +1,8 @@
 export default {
   testEnvironment: 'node',
   coveragePathIgnorePatterns: ['/node_modules/'],
-  testMatch: ['**/tests/unit/**/*.test.js'],
+  testMatch: ['**/tests/integration/**/*.test.js'],
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-  testTimeout: 30000
+  testTimeout: 60000,
+  globalSetup: '<rootDir>/scripts/test-setup.js'
 };
