@@ -1,66 +1,39 @@
 import express from 'express';
-import { authenticate, authorize } from '../middleware/auth.js';
 import trailerController from '../controllers/trailerController.js';
+import { authenticate, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-/**
- * @swagger
- * /api/trailers:
- *   post:
- *     summary: Créer une remorque (Admin)
- *     tags: [Trailers]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       201:
- *         description: Remorque créée
- */
-/**
- * @swagger
- * /api/trailers:
- *   get:
- *     summary: Liste des remorques (Admin)
- *     tags: [Trailers]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Liste des remorques
- */
-router.route('/')
-  .post(authenticate, authorize('admin'), trailerController.createTrailer.bind(trailerController))
-  .get(authenticate, authorize('admin'), trailerController.getAllTrailers.bind(trailerController));
+// Admin only - Gérer les remorques
+router.post('/', authenticate, authorize('admin'), trailerController.createTrailer);
+router.get('/', authenticate, authorize('admin'), trailerController.getAllTrailers);
 
 /**
  * @swagger
  * /api/trailers/disponibles:
  *   get:
- *     summary: Obtenir les remorques disponibles pour une période
+ *     summary: Obtenir les remorques disponibles pour une date
  *     tags: [Trailers]
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: startAt
+ *         name: date
  *         required: true
  *         schema:
  *           type: string
- *           format: date-time
- *       - in: query
- *         name: endAt
- *         schema:
- *           type: string
- *           format: date-time
+ *           format: date
+ *         description: Date au format YYYY-MM-DD
  *     responses:
  *       200:
  *         description: Liste des remorques disponibles
+ *       400:
+ *         description: Date manquante
  */
-router.get('/disponibles', authenticate, authorize('admin'), trailerController.getAvailableTrailers.bind(trailerController));
+router.get('/disponibles', authenticate, authorize('admin'), trailerController.getAvailableTrailers);
 
-router.route('/:id')
-  .get(authenticate, authorize('admin'), trailerController.getTrailerById.bind(trailerController))
-  .patch(authenticate, authorize('admin'), trailerController.updateTrailer.bind(trailerController))
-  .delete(authenticate, authorize('admin'), trailerController.deleteTrailer.bind(trailerController));
+router.get('/:id', authenticate, authorize('admin'), trailerController.getTrailerById);
+router.patch('/:id', authenticate, authorize('admin'), trailerController.updateTrailer);
+router.delete('/:id', authenticate, authorize('admin'), trailerController.deleteTrailer);
 
 export default router;

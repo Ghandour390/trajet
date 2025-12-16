@@ -1,9 +1,7 @@
 import express from 'express';
-import multer from 'multer';
 import userController from '../controllers/userController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
-
-const upload = multer({ storage: multer.memoryStorage() });
+import upload, { handleUploadError } from '../middleware/uploadValidation.js';
 
 const router = express.Router();
 
@@ -130,6 +128,44 @@ router.route('/:id')
   .patch(authenticate, userController.updateUser.bind(userController))
   .delete(authenticate, authorize('admin'), userController.deleteUser.bind(userController));
 
-router.post('/:id/profile-image', upload.single('image'), userController.uploadProfileImage.bind(userController));
+/**
+ * @swagger
+ * /api/users/{id}/profile-image:
+ *   post:
+ *     summary: Upload image de profil
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Image uploadée avec succès
+ *       400:
+ *         description: Fichier invalide
+ *       404:
+ *         description: Utilisateur non trouvé
+ */
+router.post(
+  '/:id/profile-image', 
+  authenticate,
+  upload.single('image'), 
+  handleUploadError,
+  userController.uploadProfileImage.bind(userController)
+);
 
 export default router;

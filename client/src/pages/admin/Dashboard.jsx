@@ -1,12 +1,18 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Truck, MapPin, Users, Wrench, TrendingUp, AlertTriangle, ArrowRight, Calendar } from 'lucide-react';
+import { Truck, MapPin, Users, Wrench, TrendingUp, AlertTriangle, ArrowRight, Calendar, Container } from 'lucide-react';
 import { StatsCard } from '../../components/admin';
 import { Card } from '../../components/common';
 import { FuelChart, KilometrageChart } from '../../components/charts';
-import { getVehicles, selectVehicles, selectVehiclesLoading } from '../../store/slices/vehiclesSlice';
-import { getTrips, selectTrips, selectTripsLoading } from '../../store/slices/tripsSlice';
-import { getMaintenanceRecords, selectMaintenanceRecords } from '../../store/slices/maintenanceSlice';
+import {
+  getDashboardStats,
+  getRecentTrips,
+  getVehiclesNeedingAttention,
+  selectDashboardStats,
+  selectRecentTrips,
+  selectVehiclesAttention,
+  selectDashboardLoading
+} from '../../store/slices/dashboardSlice';
 
 /**
  * AdminDashboard Page
@@ -14,34 +20,17 @@ import { getMaintenanceRecords, selectMaintenanceRecords } from '../../store/sli
  */
 export default function AdminDashboard() {
   const dispatch = useDispatch();
-  const vehicles = useSelector(selectVehicles);
-  const vehiclesLoading = useSelector(selectVehiclesLoading);
-  const trips = useSelector(selectTrips);
-  const tripsLoading = useSelector(selectTripsLoading);
-  const maintenanceRecords = useSelector(selectMaintenanceRecords);
+  const stats = useSelector(selectDashboardStats);
+  const recentTrips = useSelector(selectRecentTrips);
+  const vehiclesNeedingAttention = useSelector(selectVehiclesAttention);
+  const loading = useSelector(selectDashboardLoading);
 
   // Fetch data on mount
   useEffect(() => {
-    dispatch(getVehicles());
-    dispatch(getTrips());
-    dispatch(getMaintenanceRecords());
+    dispatch(getDashboardStats());
+    dispatch(getRecentTrips());
+    dispatch(getVehiclesNeedingAttention());
   }, [dispatch]);
-
-  // Calculate stats when data changes
-  const stats = {
-    totalVehicles: vehicles.length,
-    activeTrips: trips.filter(t => t.status === 'in_progress').length,
-    totalDrivers: new Set(trips.map(t => t.driver?._id).filter(Boolean)).size,
-    pendingMaintenance: maintenanceRecords.filter(m => m.status === 'pending').length,
-  };
-
-  // Recent trips for display
-  const recentTrips = trips.slice(0, 5);
-
-  // Vehicles needing attention
-  const vehiclesNeedingAttention = vehicles.filter(
-    v => v.status === 'maintenance' || v.nextMaintenanceKm - v.kilometrage < 1000
-  );
 
   const getStatusConfig = (status) => {
     const configs = {
@@ -83,14 +72,18 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
         <StatsCard
           title="Véhicules"
           value={stats.totalVehicles}
           icon={Truck}
           color="primary"
-          trend="up"
-          trendValue="+2 ce mois"
+        />
+        <StatsCard
+          title="Remorques"
+          value={stats.totalTrailers}
+          icon={Container}
+          color="secondary"
         />
         <StatsCard
           title="Trajets en cours"
@@ -99,13 +92,13 @@ export default function AdminDashboard() {
           color="success"
         />
         <StatsCard
-          title="Chauffeurs actifs"
+          title="Chauffeurs"
           value={stats.totalDrivers}
           icon={Users}
           color="info"
         />
         <StatsCard
-          title="Maintenance en attente"
+          title="Maintenance"
           value={stats.pendingMaintenance}
           icon={Wrench}
           color={stats.pendingMaintenance > 0 ? 'warning' : 'success'}
@@ -139,7 +132,7 @@ export default function AdminDashboard() {
             </button>
           }
         >
-          {tripsLoading ? (
+          {loading ? (
             <div className="flex justify-center py-12">
               <div className="relative">
                 <div className="w-12 h-12 rounded-full border-4 border-primary-200 dark:border-primary-900"></div>
@@ -172,7 +165,7 @@ export default function AdminDashboard() {
                           {trip.origin} → {trip.destination}
                         </p>
                         <p className="text-sm text-gray-500 dark:text-slate-400">
-                          {trip.driver?.firstname} {trip.driver?.lastname}
+                          {trip.assignedTo?.firstname} {trip.assignedTo?.lastname}
                         </p>
                       </div>
                     </div>
@@ -197,7 +190,7 @@ export default function AdminDashboard() {
             </button>
           }
         >
-          {vehiclesLoading ? (
+          {loading ? (
             <div className="flex justify-center py-12">
               <div className="relative">
                 <div className="w-12 h-12 rounded-full border-4 border-primary-200 dark:border-primary-900"></div>

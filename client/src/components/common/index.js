@@ -11,3 +11,4 @@ export { default as ConfirmModal } from './ConfirmModal';
 export { default as EmptyState } from './EmptyState';
 export { default as LoadingSpinner, PageLoader } from './LoadingSpinner';
 export { default as Avatar } from './Avatar';
+export { default as ProfileImageUpload } from './ProfileImageUpload';

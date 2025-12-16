@@ -42,16 +42,32 @@ initBucket();
 
 export const uploadToMinio = async (file, folder = '') => {
   try {
-    const fileName = `${folder}/${Date.now()}-${file.originalname}`;
+    // Validation du fichier
+    if (!file || !file.buffer) {
+      throw new Error('Fichier invalide ou corrompu');
+    }
+
+    // Vérifier la connexion MinIO
+    const bucketExists = await minioClient.bucketExists(BUCKET_NAME);
+    if (!bucketExists) {
+      throw new Error('Service de stockage non disponible');
+    }
+
+    const fileName = `${folder}/${Date.now()}-${file.originalname.replace(/\s+/g, '-')}`;
+    
     await minioClient.putObject(BUCKET_NAME, fileName, file.buffer, file.size, {
       'Content-Type': file.mimetype
     });
-    // Retourner l'URL publique directe (utiliser localhost pour l'accès externe)
-    const endpoint = process.env.NODE_ENV === 'production' ? process.env.MINIO_ENDPOINT : 'localhost';
-    const publicUrl = `http://${endpoint}:${process.env.MINIO_PORT || 9000}/${BUCKET_NAME}/${fileName}`;
+    
+    // Utiliser MINIO_PUBLIC_URL si défini, sinon localhost pour développement
+    const publicUrl = process.env.MINIO_PUBLIC_URL 
+      ? `${process.env.MINIO_PUBLIC_URL}/${BUCKET_NAME}/${fileName}`
+      : `http://localhost:${process.env.MINIO_PORT || 9000}/${BUCKET_NAME}/${fileName}`;
+    
     return publicUrl;
   } catch (error) {
-    throw new Error('Erreur lors de l\'upload: ' + error.message);
+    console.error('Erreur MinIO upload:', error);
+    throw new Error('Erreur MinIO: ' + error.message);
   }
 };
 

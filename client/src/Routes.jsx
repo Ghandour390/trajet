@@ -15,6 +15,7 @@ import Register from './pages/Register';
 // Admin Pages
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminVehicles from './pages/admin/Vehicles';
+import AdminTrailers from './pages/admin/Trailers';
 import AdminTrips from './pages/admin/Trips';
 import AdminMaintenance from './pages/admin/Maintenance';
 import AdminReports from './pages/admin/Reports';
@@ -22,6 +23,7 @@ import AdminUsers from './pages/admin/Users';
 import TripForm from './pages/admin/TripForm';
 import TripView from './pages/admin/TripView';
 import VehicleForm from './pages/admin/VehicleForm';
+import TrailerFormPage from './pages/admin/TrailerFormPage';
 import MaintenanceForm from './pages/admin/MaintenanceForm';
 import UserForm from './pages/admin/UserForm';
 
@@ -33,6 +35,7 @@ import Profile from './pages/chauffeur/Profile';
 
 // Home Page
 import Home from './pages/Home';
+import TestUpload from './pages/TestUpload';
 
 /**
  * AppRoutes Component
@@ -54,6 +57,7 @@ export default function AppRoutes() {
     <Routes>
       {/* Public Routes */}
       <Route path="/" element={<Home />} />
+      <Route path="/test-upload" element={<TestUpload />} />
       
       {/* Auth Routes */}
       <Route element={<AuthLayout />}>
@@ -93,6 +97,9 @@ export default function AppRoutes() {
         <Route path="vehicles" element={<AdminVehicles />} />
         <Route path="vehicles/create" element={<VehicleForm />} />
         <Route path="vehicles/edit/:id" element={<VehicleForm />} />
+        <Route path="trailers" element={<AdminTrailers />} />
+        <Route path="trailers/create" element={<TrailerFormPage />} />
+        <Route path="trailers/edit/:id" element={<TrailerFormPage />} />
         <Route path="trips" element={<AdminTrips />} />
         <Route path="trips/create" element={<TripForm />} />
         <Route path="trips/edit/:id" element={<TripForm />} />

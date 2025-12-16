@@ -6,6 +6,7 @@ import { Button, Card, Input, Select } from '../../components/common';
 import { createTrip, updateTrip, selectTrips, selectTripsLoading } from '../../store/slices/tripsSlice';
 import { notify } from '../../utils/notifications';
 import { getAvailableDrivers, getAvailableVehicles, getAvailableTrailers } from '../../api/trips';
+import { validateTrip } from '../../api/notifications';
 
 export default function TripForm() {
   const { id } = useParams();
@@ -73,6 +74,20 @@ export default function TripForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // Valider avant création/modification
+      if (formData.vehicleRef && formData.distimatedKm) {
+        const validation = await validateTrip({
+          vehicleId: formData.vehicleRef,
+          trailerId: formData.trailerRef || null,
+          distance: parseInt(formData.distimatedKm)
+        });
+        
+        if (!validation.valid) {
+          notify.error('Validation échouée:\n' + validation.errors.join('\n'));
+          return;
+        }
+      }
+
       if (isEditMode) {
         await dispatch(updateTrip({ id, data: formData })).unwrap();
         notify.success('Trajet modifié avec succès');
@@ -81,8 +96,8 @@ export default function TripForm() {
         notify.success('Trajet créé avec succès');
       }
       navigate('/admin/trips');
-    } catch {
-      notify.error('Erreur lors de la création');
+    } catch (error) {
+      notify.error(error.response?.data?.message || 'Erreur lors de la création');
     }
   };
 

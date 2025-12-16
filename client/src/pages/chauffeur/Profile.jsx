@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Lock, Save, Camera } from 'lucide-react';
-import { Button, Card, Input } from '../../components/common';
+import { Lock, Save } from 'lucide-react';
+import { Button, Card, Input, ProfileImageUpload } from '../../components/common';
 import { selectUser, updateProfileImage } from '../../store/slices/authSlice';
 import * as usersAPI from '../../api/users';
 import { notify } from '../../utils/notifications';
@@ -28,7 +28,6 @@ export default function Profile() {
     confirmPassword: '',
   });
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-  const [imagePreview, setImagePreview] = useState(null);
 
   // Initialize form with user data
   useEffect(() => {
@@ -70,44 +69,10 @@ export default function Profile() {
     }
   };
 
-  // Handle image upload
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    // Validation du fichier
-    if (!file.type.startsWith('image/')) {
-      notify.error('Veuillez sélectionner une image valide');
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) { // 5MB max
-      notify.error('L\'image ne doit pas dépasser 5MB');
-      return;
-    }
-
-    setImagePreview(URL.createObjectURL(file));
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append('image', file);
-      const response = await usersAPI.uploadProfileImage(user?.id, formData);
-      
-      // Mise à jour du store Redux avec l'URL de l'image
-      dispatch(updateProfileImage(response.profileImage));
-      
-      // Forcer la mise à jour de l'aperçu avec la nouvelle URL
-      setImagePreview(response.profileImage);
-      
-      notify.success('Photo de profil mise à jour avec succès');
-    } catch (error) {
-      console.error('Erreur upload:', error);
-      notify.error(error.response?.data?.message || 'Erreur lors de l\'upload');
-      // Réinitialiser l'aperçu en cas d'erreur
-      setImagePreview(null);
-    } finally {
-      setLoading(false);
-    }
+  // Handle image upload success
+  const handleImageUploadSuccess = (imageUrl) => {
+    dispatch(updateProfileImage(imageUrl));
+    notify.success('Photo de profil mise à jour avec succès');
   };
 
   // Handle password change
@@ -145,27 +110,19 @@ export default function Profile() {
 
       {/* Profile Card */}
       <Card>
-        <div className="flex items-center gap-4 mb-6">
-          <div className="relative">
-            {imagePreview || user?.profileImage ? (
-              <img src={imagePreview || user?.profileImage} alt="Profile" className="w-20 h-20 rounded-full object-cover shadow-lg" />
-            ) : (
-              <div className="w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center text-white text-2xl font-bold shadow-lg">
-                {user?.firstname?.[0]}{user?.lastname?.[0]}
-              </div>
-            )}
-            <label className="absolute bottom-0 right-0 bg-white dark:bg-slate-800 p-1.5 rounded-full shadow-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-slate-700">
-              <Camera size={16} className="text-gray-600 dark:text-gray-300" />
-              <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-            </label>
-          </div>
-          <div>
+        <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
+          <ProfileImageUpload
+            userId={user?.id}
+            currentImage={user?.profileImage}
+            onSuccess={handleImageUploadSuccess}
+          />
+          <div className="text-center md:text-left">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
               {user?.firstname} {user?.lastname}
             </h2>
             <p className="text-gray-500 dark:text-slate-400">{user?.email}</p>
             <span className="inline-block mt-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400 rounded-full text-xs font-semibold">
-              Chauffeur
+              {user?.role === 'admin' ? 'Admin' : 'Chauffeur'}
             </span>
           </div>
         </div>

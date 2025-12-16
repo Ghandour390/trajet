@@ -72,7 +72,7 @@ class TripController {
   async updateStatus(req, res) {
     try {
       const { status } = req.body;
-      const trip = await tripService.updateStatus(req.params.id, status);
+      const trip = await tripService.updateStatus(req.params.id, status, req.user.id);
       if (!trip) {
         return res.status(404).json({ message: 'Trip not found' });
       }

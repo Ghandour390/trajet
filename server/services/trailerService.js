@@ -12,9 +12,10 @@ class TrailerService {
     const newTrailer = await Trailer.create(trailerData);
     
     // Créer automatiquement des pneus par défaut
+    const tireCount = 4;
     const tires = [];
     
-    for (let i = 0; i < 4; i++) {
+    for (let i = 0; i < tireCount; i++) {
       const tire = await Tire.create({
         serial: `${newTrailer.plateNumber}-T${i + 1}`,
         position: `Position ${i + 1}`,
@@ -28,19 +29,15 @@ class TrailerService {
     
     return newTrailer;
   }
-
   async findAll() {
-    return await Trailer.find().populate('attachedTo', 'plateNumber');
+    return await Trailer.find();
   }
-
   async findById(id) {
-    return await Trailer.findById(id).populate('attachedTo', 'plateNumber');
+    return await Trailer.findById(id);
   }
-
   async update(id, trailerData) {
     return await Trailer.findByIdAndUpdate(id, trailerData, { new: true });
   }
-
   async delete(id) {
     return await Trailer.findByIdAndDelete(id);
   }
@@ -58,6 +55,7 @@ class TrailerService {
     }).distinct('trailerRef');
 
     return await Trailer.find({
+      status: { $in: ['available', 'in_use'] },
       _id: { $nin: busyTrailersIds }
     });
   }

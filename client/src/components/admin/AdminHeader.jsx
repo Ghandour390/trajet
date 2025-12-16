@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Menu, Bell, User, Moon, Sun, Search, Settings, ChevronDown } from 'lucide-react';
+import { Menu, User, Moon, Sun, Search, Settings, ChevronDown } from 'lucide-react';
 import { selectUser } from '../../store/slices/authSlice';
 import { useTheme } from '../../contexts/ThemeContext';
+import NotificationBell from './NotificationBell';
 
 /**
  * AdminHeader Component
@@ -14,7 +15,6 @@ export default function AdminHeader({ onMenuClick }) {
   const navigate = useNavigate();
   const { isDark, toggleTheme } = useTheme();
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
 
   return (
     <header className="sticky top-0 z-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-gray-200/50 dark:border-slate-700/50 px-4 sm:px-6 py-3">
@@ -66,35 +66,7 @@ export default function AdminHeader({ onMenuClick }) {
           </button>
 
           {/* Notifications */}
-          <div className="relative">
-            <button 
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="p-2.5 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 
-                text-gray-600 dark:text-gray-300 transition-all duration-200 hover:scale-105 relative"
-            >
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
-            </button>
-
-            {/* Notifications Dropdown */}
-            {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 overflow-hidden animate-fade-in">
-                <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-700">
-                  <h3 className="font-semibold text-gray-800 dark:text-white">Notifications</h3>
-                </div>
-                <div className="max-h-64 overflow-y-auto">
-                  <div className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Nouveau trajet assigné</p>
-                    <p className="text-xs text-gray-400 dark:text-slate-500 mt-1">Il y a 5 minutes</p>
-                  </div>
-                  <div className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-                    <p className="text-sm text-gray-600 dark:text-gray-300">Maintenance planifiée</p>
-                    <p className="text-xs text-gray-400 dark:text-slate-500 mt-1">Il y a 1 heure</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
+          <NotificationBell />
 
           {/* User Profile */}
           <div className="relative">

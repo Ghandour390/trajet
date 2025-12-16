@@ -1,6 +1,8 @@
 export { default as Dashboard } from './Dashboard';
 export { default as Vehicles } from './Vehicles';
 export { default as VehicleForm } from './VehicleForm';
+export { default as Trailers } from './Trailers';
+export { default as TrailerFormPage } from './TrailerFormPage';
 export { default as Trips } from './Trips';
 export { default as TripForm } from './TripForm';
 export { default as TripView } from './TripView';

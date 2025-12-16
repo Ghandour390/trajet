@@ -91,22 +91,54 @@ class UserController {
   // @route   POST /api/users/:id/profile-image
   async uploadProfileImage(req, res) {
     try {
+      // Vérifier si un fichier est fourni
       if (!req.file) {
-        return res.status(400).json({ message: 'Aucune image fournie' });
+        return res.status(400).json({ 
+          success: false,
+          message: 'Aucune image fournie' 
+        });
+      }
+
+      // Vérifier si l'utilisateur existe
+      const userExists = await userService.findById(req.params.id);
+      if (!userExists) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'Utilisateur introuvable' 
+        });
       }
       
-      // Upload du fichier et récupération de l'URL publique
+      // Upload du fichier vers MinIO
       const imageUrl = await uploadToMinio(req.file, 'profiles');
       
       // Mise à jour de l'utilisateur avec l'URL de l'image
       const user = await userService.update(req.params.id, { profileImage: imageUrl });
       
       res.status(200).json({ 
-        profileImage: imageUrl,
-        user 
+        success: true,
+        message: 'Image de profil mise à jour avec succès',
+        data: {
+          profileImage: imageUrl,
+          user
+        }
       });
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      console.error('Erreur upload image profil:', error);
+      
+      // Gestion des erreurs spécifiques
+      if (error.message.includes('MinIO') || error.message.includes('upload')) {
+        return res.status(503).json({ 
+          success: false,
+          message: 'Service de stockage temporairement indisponible',
+          error: error.message
+        });
+      }
+      
+      res.status(500).json({ 
+        success: false,
+        message: 'Erreur lors de l\'upload de l\'image',
+        error: error.message 
+      });
     }
   }
 }

@@ -23,11 +23,14 @@ const tripSchema = new mongoose.Schema({
   vehicleRef: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vehicle',
-    required: false
+    required: false,
+    default: null
   },
   trailerRef: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Trailer'
+    ref: 'Trailer',
+    required: false,
+    default: null
   },
   startKm: {
     type: Number,
