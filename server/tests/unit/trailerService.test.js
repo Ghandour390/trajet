@@ -56,19 +56,14 @@ describe('TrailerService', () => {
   });
 
   describe('findAll', () => {
-    it('should return all trailers with populated attachedTo', async () => {
+    it('should return all trailers', async () => {
       const mockTrailers = [{ _id: '1' }];
 
-      const mockQuery = {
-        populate: jest.fn().mockResolvedValue(mockTrailers)
-      };
-
-      Trailer.find.mockReturnValue(mockQuery);
+      Trailer.find.mockResolvedValue(mockTrailers);
 
       const result = await trailerService.findAll();
 
       expect(Trailer.find).toHaveBeenCalled();
-      expect(mockQuery.populate).toHaveBeenCalledWith('attachedTo', 'plateNumber');
       expect(result).toEqual(mockTrailers);
     });
   });
@@ -77,11 +72,7 @@ describe('TrailerService', () => {
     it('should return trailer by id', async () => {
       const mockTrailer = { _id: '1', plateNumber: 'R-12345-B' };
 
-      const mockQuery = {
-        populate: jest.fn().mockResolvedValue(mockTrailer)
-      };
-
-      Trailer.findById.mockReturnValue(mockQuery);
+      Trailer.findById.mockResolvedValue(mockTrailer);
 
       const result = await trailerService.findById('1');
 
@@ -140,6 +131,7 @@ describe('TrailerService', () => {
       });
 
       expect(Trailer.find).toHaveBeenCalledWith({
+        status: { $in: ['available', 'in_use'] },
         _id: { $nin: ['trailer1', 'trailer2'] }
       });
 
