@@ -2,7 +2,9 @@ import { jest, describe, it, expect, beforeEach } from '@jest/globals';
 
 const mockTire = {
   create: jest.fn(),
-  find: jest.fn(),
+  find: jest.fn().mockReturnValue({
+    populate: jest.fn().mockResolvedValue([])
+  }),
   findById: jest.fn(),
   findByIdAndUpdate: jest.fn(),
   findByIdAndDelete: jest.fn()
@@ -34,7 +36,9 @@ describe('TireService', () => {
   describe('findAll', () => {
     it('should find all tires', async () => {
       const tires = [{ _id: '1' }, { _id: '2' }];
-      mockTire.find.mockResolvedValue(tires);
+      mockTire.find.mockReturnValue({
+        populate: jest.fn().mockResolvedValue(tires)
+      });
 
       const result = await tireService.findAll();
 
