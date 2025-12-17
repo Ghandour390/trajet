@@ -34,6 +34,28 @@ export const getVehiclesNeedingAttention = createAsyncThunk(
   }
 );
 
+export const getFuelChartData = createAsyncThunk(
+  'dashboard/getFuelChart',
+  async (period = 'month', { rejectWithValue }) => {
+    try {
+      return await dashboardAPI.getFuelChartData(period);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Erreur de chargement des données carburant');
+    }
+  }
+);
+
+export const getKilometrageChartData = createAsyncThunk(
+  'dashboard/getKilometrageChart',
+  async (period = 'month', { rejectWithValue }) => {
+    try {
+      return await dashboardAPI.getKilometrageChartData(period);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Erreur de chargement des données kilométrage');
+    }
+  }
+);
+
 const initialState = {
   stats: {
     totalVehicles: 0,
@@ -44,7 +66,9 @@ const initialState = {
   },
   recentTrips: [],
   vehiclesAttention: [],
-  loading: false,
+  fuelChartData: [],
+  kilometrageChartData: [],
+  loading: true,
   error: null
 };
 
@@ -74,6 +98,12 @@ const dashboardSlice = createSlice({
       })
       .addCase(getVehiclesNeedingAttention.fulfilled, (state, action) => {
         state.vehiclesAttention = action.payload;
+      })
+      .addCase(getFuelChartData.fulfilled, (state, action) => {
+        state.fuelChartData = action.payload;
+      })
+      .addCase(getKilometrageChartData.fulfilled, (state, action) => {
+        state.kilometrageChartData = action.payload;
       });
   }
 });
@@ -81,6 +111,8 @@ const dashboardSlice = createSlice({
 export const selectDashboardStats = (state) => state.dashboard.stats;
 export const selectRecentTrips = (state) => state.dashboard.recentTrips;
 export const selectVehiclesAttention = (state) => state.dashboard.vehiclesAttention;
+export const selectFuelChartData = (state) => state.dashboard.fuelChartData;
+export const selectKilometrageChartData = (state) => state.dashboard.kilometrageChartData;
 export const selectDashboardLoading = (state) => state.dashboard.loading;
 
 export const { clearError } = dashboardSlice.actions;

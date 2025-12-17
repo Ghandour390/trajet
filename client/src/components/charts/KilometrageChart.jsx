@@ -13,18 +13,17 @@ import { useTheme } from '../../contexts/ThemeContext';
  * KilometrageChart Component
  * Displays kilometrage evolution over time with dark mode support
  */
-export default function KilometrageChart({ data }) {
+export default function KilometrageChart({ data, period = 'month' }) {
   const { isDark } = useTheme();
 
   // Sample data if none provided
-  const chartData = data || [
-    { month: 'Jan', kilometrage: 12500 },
-    { month: 'Fév', kilometrage: 14200 },
-    { month: 'Mar', kilometrage: 11800 },
-    { month: 'Avr', kilometrage: 15600 },
-    { month: 'Mai', kilometrage: 13400 },
-    { month: 'Juin', kilometrage: 16200 },
-  ];
+  const chartData = data || [];
+
+  if (!chartData.length) return (
+    <div className="h-64 flex items-center justify-center text-gray-400 dark:text-slate-500">
+      Aucune donnée disponible
+    </div>
+  );
 
   // Theme-aware colors
   const colors = {
@@ -38,7 +37,7 @@ export default function KilometrageChart({ data }) {
 
   return (
     <div className="h-64">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" debounce={50}>
         <LineChart
           data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -52,7 +51,11 @@ export default function KilometrageChart({ data }) {
           <YAxis
             tick={{ fill: colors.tick, fontSize: 12 }}
             axisLine={{ stroke: colors.grid }}
-            tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
+            tickFormatter={(value) => {
+              if (value >= 1000000) return `${(value/1000000).toFixed(1)}M`;
+              if (value >= 1000) return `${(value/1000).toFixed(0)}k`;
+              return value;
+            }}
           />
           <Tooltip
             contentStyle={{

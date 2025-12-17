@@ -14,3 +14,13 @@ export const getVehiclesNeedingAttention = async () => {
   const response = await api.get('/dashboard/vehicles-attention');
   return response.data;
 };
+
+export const getFuelChartData = async (period = 'month') => {
+  const response = await api.get('/dashboard/fuel-chart', { params: { period } });
+  return response.data;
+};
+
+export const getKilometrageChartData = async (period = 'month') => {
+  const response = await api.get('/dashboard/kilometrage-chart', { params: { period } });
+  return response.data;
+};

@@ -26,43 +26,41 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
     { path: '/admin/vehicles', icon: Truck, label: 'Véhicules' },
-    { path: '/admin/trailers', icon: Truck, label: 'Remorques' },
     { path: '/admin/trips', icon: MapPin, label: 'Trajets' },
     { path: '/admin/fuel', icon: Fuel, label: 'Carburant' },
-    { path: '/admin/tires', icon: CircleDot, label: 'Pneus' },
     { path: '/admin/maintenance', icon: Wrench, label: 'Maintenance' },
     { path: '/admin/reports', icon: FileText, label: 'Rapports' },
-    { path: '/admin/users', icon: Users, label: 'Utilisateurs' },
-    { path: '/admin/profile', icon: User, label: 'Mon Profil' }
+    { path: '/admin/users', icon: Users, label: 'Utilisateurs' }
   ];
 
-  const handleLogout = async () => {
-    await dispatch(logout());
-    navigate('/login');
+  const handleLogout = () => {
+    requestAnimationFrame(async () => {
+      await dispatch(logout());
+      navigate('/login');
+    });
   };
 
-  const handleNavClick = () => {
+  const handleNavClick = (e) => {
     if (isMobile) {
-      onToggle();
+      e.preventDefault();
+      requestAnimationFrame(() => onToggle());
     }
   };
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full z-40 transition-all duration-300 ease-in-out
+      className={`fixed left-0 top-0 h-full z-40 transition-transform will-change-transform
         ${isOpen ? 'w-64 translate-x-0' : isMobile ? '-translate-x-full w-64' : 'w-20 translate-x-0'}
-        bg-gradient-to-b from-primary-600 via-primary-700 to-primary-800
-        dark:from-slate-800 dark:via-slate-900 dark:to-slate-950
-        shadow-2xl`}
+        bg-primary-700 dark:bg-slate-900 shadow-2xl`}
     >
       {/* Logo & Toggle */}
       <div className="flex items-center justify-between px-4 py-5 border-b border-primary-500/30 dark:border-slate-700">
         {isOpen && (
-          <div className="flex items-center gap-3 animate-fade-in">
+          <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
               <Truck className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-white tracking-tight">TrajetCamen</span>
+            <span className="text-xl font-bold text-white">TrajetCamen</span>
           </div>
         )}
         {/* <button
@@ -108,20 +106,16 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
               key={item.path}
               to={item.path}
               onClick={handleNavClick}
-              style={{ animationDelay: `${index * 50}ms` }}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group animate-slide-in-left
+                `flex items-center gap-3 px-4 py-3 rounded-xl transition-colors
                 ${isActive
-                  ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
+                  ? 'bg-white/20 text-white'
                   : 'text-primary-100 dark:text-slate-300 hover:bg-white/10 hover:text-white'
                 }
                 ${!isOpen && !isMobile ? 'justify-center px-3' : ''}`
               }
             >
-              <item.icon 
-                size={22} 
-                className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110" 
-              />
+              <item.icon size={22} className="flex-shrink-0" />
               {(isOpen || isMobile) && (
                 <span className="font-medium truncate">{item.label}</span>
               )}
@@ -135,14 +129,10 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
         <button
           onClick={handleLogout}
           className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl
-            text-red-200 hover:text-white hover:bg-red-500/20 
-            transition-all duration-200 group
+            text-red-200 hover:text-white hover:bg-red-500/20 transition-colors
             ${!isOpen && !isMobile ? 'justify-center px-3' : ''}`}
         >
-          <LogOut 
-            size={22} 
-            className="flex-shrink-0 transition-transform duration-200 group-hover:scale-110 group-hover:-translate-x-1" 
-          />
+          <LogOut size={22} className="flex-shrink-0" />
           {(isOpen || isMobile) && <span className="font-medium">Déconnexion</span>}
         </button>
       </div>

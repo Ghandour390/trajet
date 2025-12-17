@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Download } from 'lucide-react';
 import { Button, Card, Select } from '../../components/common';
 import { FuelChart, KilometrageChart } from '../../components/charts';
-import { getReportStats, selectReportStats, selectReportsLoading } from '../../store/slices/reportsSlice';
+import { getReportStats, getFuelChartData, getKilometrageChartData, selectReportStats, selectFuelChartData, selectKilometrageChartData, selectReportsLoading } from '../../store/slices/reportsSlice';
 import { downloadPDF } from '../../utils/fileHelpers';
 
 /**
@@ -13,15 +13,19 @@ import { downloadPDF } from '../../utils/fileHelpers';
 export default function AdminReports() {
   const dispatch = useDispatch();
   const stats = useSelector(selectReportStats);
+  const fuelChartData = useSelector(selectFuelChartData);
+  const kilometrageChartData = useSelector(selectKilometrageChartData);
   const loading = useSelector(selectReportsLoading);
 
   // Local state
   const [period, setPeriod] = useState('month');
   const [reportType, setReportType] = useState('fuel');
 
-  // Fetch data on mount
+  // Fetch data on mount and when period changes
   useEffect(() => {
     dispatch(getReportStats(period));
+    dispatch(getFuelChartData(period));
+    dispatch(getKilometrageChartData(period));
   }, [dispatch, period]);
 
   const handleDownloadReport = () => {
@@ -111,10 +115,10 @@ export default function AdminReports() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card title="Consommation de carburant" subtitle="Évolution sur la période">
-          <FuelChart />
+          <FuelChart data={fuelChartData} period={period} />
         </Card>
         <Card title="Kilométrage" subtitle="Distance parcourue">
-          <KilometrageChart />
+          <KilometrageChart data={kilometrageChartData} period={period} />
         </Card>
       </div>
     </div>

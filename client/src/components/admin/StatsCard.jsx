@@ -79,15 +79,12 @@ export default function StatsCard({
       className={`
         relative overflow-hidden
         bg-white dark:bg-slate-800 
-        rounded-2xl shadow-sm hover:shadow-xl
+        rounded-2xl shadow-sm
         border border-gray-100 dark:border-slate-700
-        p-6 transition-all duration-300 
-        hover:-translate-y-1 group
+        p-6
         ${className}
       `}
     >
-      {/* Background Decoration */}
-      <div className={`absolute -right-4 -top-4 w-24 h-24 rounded-full ${currentColor.bg} opacity-50 group-hover:scale-150 transition-transform duration-500`} />
       
       <div className="relative flex items-start justify-between">
         <div className="flex-1">
@@ -95,7 +92,7 @@ export default function StatsCard({
             {title}
           </p>
           <p className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-            {typeof value === 'number' ? value.toLocaleString() : value}
+            {value ?? 0}
           </p>
           
           {trend && trendValue && (
@@ -107,11 +104,7 @@ export default function StatsCard({
         </div>
 
         {Icon && (
-          <div className={`
-            p-3.5 rounded-2xl ${currentColor.icon} ${currentColor.iconText}
-            shadow-lg ring-4 ${currentColor.ring}
-            transform group-hover:scale-110 group-hover:rotate-3 transition-all duration-300
-          `}>
+          <div className={`p-3.5 rounded-2xl ${currentColor.icon} ${currentColor.iconText} shadow-lg`}>
             <Icon size={26} strokeWidth={2} />
           </div>
         )}

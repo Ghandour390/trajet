@@ -13,18 +13,17 @@ import { useTheme } from '../../contexts/ThemeContext';
  * FuelChart Component
  * Displays fuel consumption over time with dark mode support
  */
-export default function FuelChart({ data }) {
+export default function FuelChart({ data, period = 'month' }) {
   const { isDark } = useTheme();
 
   // Sample data if none provided
-  const chartData = data || [
-    { month: 'Jan', consumption: 450 },
-    { month: 'Fév', consumption: 520 },
-    { month: 'Mar', consumption: 480 },
-    { month: 'Avr', consumption: 590 },
-    { month: 'Mai', consumption: 430 },
-    { month: 'Juin', consumption: 610 },
-  ];
+  const chartData = data || [];
+
+  if (!chartData.length) return (
+    <div className="h-64 flex items-center justify-center text-gray-400 dark:text-slate-500">
+      Aucune donnée disponible
+    </div>
+  );
 
   // Theme-aware colors
   const colors = {
@@ -39,7 +38,7 @@ export default function FuelChart({ data }) {
 
   return (
     <div className="h-64">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" debounce={50}>
         <AreaChart
           data={chartData}
           margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
@@ -53,7 +52,7 @@ export default function FuelChart({ data }) {
           <YAxis
             tick={{ fill: colors.tick, fontSize: 12 }}
             axisLine={{ stroke: colors.grid }}
-            tickFormatter={(value) => `${value}L`}
+            tickFormatter={(value) => value >= 1000 ? `${(value/1000).toFixed(1)}kL` : `${value}L`}
           />
           <Tooltip
             contentStyle={{

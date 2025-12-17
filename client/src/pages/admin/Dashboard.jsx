@@ -1,16 +1,21 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Truck, MapPin, Users, Wrench, TrendingUp, AlertTriangle, ArrowRight, Calendar, Container } from 'lucide-react';
 import { StatsCard } from '../../components/admin';
 import { Card } from '../../components/common';
+import Skeleton from '../../components/common/Skeleton';
 import { FuelChart, KilometrageChart } from '../../components/charts';
 import {
   getDashboardStats,
   getRecentTrips,
   getVehiclesNeedingAttention,
+  getFuelChartData,
+  getKilometrageChartData,
   selectDashboardStats,
   selectRecentTrips,
   selectVehiclesAttention,
+  selectFuelChartData,
+  selectKilometrageChartData,
   selectDashboardLoading
 } from '../../store/slices/dashboardSlice';
 
@@ -23,14 +28,34 @@ export default function AdminDashboard() {
   const stats = useSelector(selectDashboardStats);
   const recentTrips = useSelector(selectRecentTrips);
   const vehiclesNeedingAttention = useSelector(selectVehiclesAttention);
+  const fuelChartData = useSelector(selectFuelChartData);
+  const kilometrageChartData = useSelector(selectKilometrageChartData);
   const loading = useSelector(selectDashboardLoading);
 
-  // Fetch data on mount
+  const [chartPeriod, setChartPeriod] = useState('month');
+
+  // Fetch only critical stats immediately
   useEffect(() => {
     dispatch(getDashboardStats());
-    dispatch(getRecentTrips());
-    dispatch(getVehiclesNeedingAttention());
   }, [dispatch]);
+
+  // Lazy load everything else
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(getRecentTrips());
+      dispatch(getVehiclesNeedingAttention());
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [dispatch]);
+
+  // Load charts only when visible
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      dispatch(getFuelChartData(chartPeriod));
+      dispatch(getKilometrageChartData(chartPeriod));
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [dispatch, chartPeriod]);
 
   const getStatusConfig = (status) => {
     const configs = {
@@ -73,50 +98,40 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-6">
-        <StatsCard
-          title="Véhicules"
-          value={stats.totalVehicles}
-          icon={Truck}
-          color="primary"
-        />
-        <StatsCard
-          title="Remorques"
-          value={stats.totalTrailers}
-          icon={Container}
-          color="secondary"
-        />
-        <StatsCard
-          title="Trajets en cours"
-          value={stats.activeTrips}
-          icon={MapPin}
-          color="success"
-        />
-        <StatsCard
-          title="Chauffeurs"
-          value={stats.totalDrivers}
-          icon={Users}
-          color="info"
-        />
-        <StatsCard
-          title="Maintenance"
-          value={stats.pendingMaintenance}
-          icon={Wrench}
-          color={stats.pendingMaintenance > 0 ? 'warning' : 'success'}
-        />
+        <StatsCard title="Véhicules" value={stats.totalVehicles || 0} icon={Truck} color="primary" />
+        <StatsCard title="Remorques" value={stats.totalTrailers || 0} icon={Container} color="secondary" />
+        <StatsCard title="Trajets en cours" value={stats.activeTrips || 0} icon={MapPin} color="success" />
+        <StatsCard title="Chauffeurs" value={stats.totalDrivers || 0} icon={Users} color="info" />
+        <StatsCard title="Maintenance" value={stats.pendingMaintenance || 0} icon={Wrench} color={stats.pendingMaintenance > 0 ? 'warning' : 'success'} />
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
-        <Card title="Consommation de carburant" subtitle="Derniers 6 mois">
-          <div className="h-64 sm:h-80">
-            <FuelChart />
-          </div>
-        </Card>
-        <Card title="Kilométrage mensuel" subtitle="Évolution sur l'année">
-          <div className="h-64 sm:h-80">
-            <KilometrageChart />
-          </div>
-        </Card>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Statistiques</h2>
+          <select
+            value={chartPeriod}
+            onChange={(e) => setChartPeriod(e.target.value)}
+            className="px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          >
+            <option value="week">Cette semaine</option>
+            <option value="month">Ce mois</option>
+            <option value="quarter">Ce trimestre</option>
+            <option value="year">Cette année</option>
+          </select>
+        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-6">
+          <Card title="Consommation de carburant" subtitle="Évolution sur la période">
+            <div className="h-64 sm:h-80">
+              <FuelChart data={fuelChartData} period={chartPeriod} />
+            </div>
+          </Card>
+          <Card title="Kilométrage" subtitle="Distance parcourue">
+            <div className="h-64 sm:h-80">
+              <KilometrageChart data={kilometrageChartData} period={chartPeriod} />
+            </div>
+          </Card>
+        </div>
       </div>
 
       {/* Recent Activity Section */}

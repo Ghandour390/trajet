@@ -12,6 +12,28 @@ export const getReportStats = createAsyncThunk(
   }
 );
 
+export const getFuelChartData = createAsyncThunk(
+  'reports/getFuelChart',
+  async (period, { rejectWithValue }) => {
+    try {
+      return await reportsAPI.getFuelChartData(period);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Erreur de chargement des données carburant');
+    }
+  }
+);
+
+export const getKilometrageChartData = createAsyncThunk(
+  'reports/getKilometrageChart',
+  async (period, { rejectWithValue }) => {
+    try {
+      return await reportsAPI.getKilometrageChartData(period);
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Erreur de chargement des données kilométrage');
+    }
+  }
+);
+
 const initialState = {
   stats: {
     totalDistance: 0,
@@ -20,6 +42,8 @@ const initialState = {
     avgConsumption: 0,
     totalTrips: 0
   },
+  fuelChartData: [],
+  kilometrageChartData: [],
   loading: false,
   error: null
 };
@@ -44,11 +68,19 @@ const reportsSlice = createSlice({
       .addCase(getReportStats.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(getFuelChartData.fulfilled, (state, action) => {
+        state.fuelChartData = action.payload;
+      })
+      .addCase(getKilometrageChartData.fulfilled, (state, action) => {
+        state.kilometrageChartData = action.payload;
       });
   }
 });
 
 export const selectReportStats = (state) => state.reports.stats;
+export const selectFuelChartData = (state) => state.reports.fuelChartData;
+export const selectKilometrageChartData = (state) => state.reports.kilometrageChartData;
 export const selectReportsLoading = (state) => state.reports.loading;
 
 export const { clearError } = reportsSlice.actions;

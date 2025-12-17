@@ -39,7 +39,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen bg-gray-50 dark:bg-slate-900">
       {/* Mobile Overlay */}
       {isMobile && sidebarOpen && (
         <div
@@ -68,7 +68,7 @@ export default function AdminLayout() {
         />
         
         {/* Page Content */}
-        <main className="p-4 sm:p-6 lg:p-8 animate-fade-in">
+        <main className="p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
