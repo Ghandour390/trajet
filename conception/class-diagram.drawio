@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="Class Diagram" id="class-diagram">
-        <mxGraphModel dx="1104" dy="594" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+        <mxGraphModel dx="1369" dy="509" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -41,16 +41,39 @@
                     <mxGeometry y="138" width="220" height="102" as="geometry"/>
                 </mxCell>
                 <mxCell id="tire-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Tire" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
-                    <mxGeometry x="740" y="380" width="220" height="260" as="geometry"/>
+                    <mxGeometry x="740" y="380" width="220" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="tire-attrs" value="- id: ObjectId&#xa;- serial: String&#xa;- position: String&#xa;- wearPercent: Number&#xa;- installedAt: Date&#xa;- nextCheckKm: Number" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="tire-class" vertex="1">
-                    <mxGeometry y="40" width="220" height="110" as="geometry"/>
+                <mxCell id="tire-attrs" value="- id: ObjectId&#xa;- serial: String&#xa;- position: String&#xa;- brand: String&#xa;- model: String&#xa;- vehicleId: ObjectId&#xa;- stockStatus: String&#xa;- pressure: Number&#xa;- depth: Number&#xa;- wearPercent: Number&#xa;- installedAt: Date&#xa;- nextCheckKm: Number&#xa;- rotationHistory: Array&#xa;- inspections: Array" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="tire-class" vertex="1">
+                    <mxGeometry y="40" width="220" height="210" as="geometry"/>
                 </mxCell>
                 <mxCell id="tire-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="tire-class" vertex="1">
-                    <mxGeometry y="150" width="220" height="8" as="geometry"/>
+                    <mxGeometry y="250" width="220" height="8" as="geometry"/>
                 </mxCell>
-                <mxCell id="tire-methods" value="+ updateWear(percent: Number): void&#xa;+ scheduleCheck(km: Number): void&#xa;+ replace(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="tire-class" vertex="1">
-                    <mxGeometry y="158" width="220" height="102" as="geometry"/>
+                <mxCell id="tire-methods" value="+ needsAttention(): Boolean&#xa;+ addInspection(data): void&#xa;+ rotate(position, km): void&#xa;+ updateWear(percent): void&#xa;+ scheduleCheck(km): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="tire-class" vertex="1">
+                    <mxGeometry y="258" width="220" height="102" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-alert-class" value="&lt;&lt;Entity&gt;&gt;&#xa;TireAlert" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+                    <mxGeometry x="1020" y="420" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-alert-attrs" value="- id: ObjectId&#xa;- tireId: ObjectId&#xa;- vehicleId: ObjectId&#xa;- alertType: String&#xa;- severity: String&#xa;- message: String&#xa;- isResolved: Boolean&#xa;- resolvedAt: Date" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="tire-alert-class">
+                    <mxGeometry y="40" width="220" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-alert-divider" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="tire-alert-class">
+                    <mxGeometry y="170" width="220" height="8" as="geometry"/>
+                </mxCell>
+                <mxCell id="tire-alert-methods" value="+ resolve(userId): void&#xa;+ notify(): void" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="tire-alert-class">
+                    <mxGeometry y="178" width="220" height="62" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel-tire-alert" value="" style="endArrow=none;endFill=0;endSize=12;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="tire-attrs" target="tire-alert-attrs">
+                    <mxGeometry width="160" relative="1" as="geometry">
+                        <mxPoint x="960" y="500" as="sourcePoint"/>
+                        <mxPoint x="1020" y="500" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel-tire-alert-label" value="alerts&#xa;0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=10;" connectable="0" vertex="1" parent="rel-tire-alert">
+                    <mxGeometry x="0.3" y="1" relative="1" as="geometry">
+                        <mxPoint x="-10" y="-10" as="offset"/>
+                    </mxGeometry>
                 </mxCell>
                 <mxCell id="trip-class" value="&lt;&lt;Entity&gt;&gt;&#xa;Trip" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
                     <mxGeometry x="80" y="420" width="240" height="380" as="geometry"/>
@@ -113,7 +136,7 @@
                         <Array as="points">
                             <mxPoint x="320" y="380"/>
                             <mxPoint x="710" y="380"/>
-                            <mxPoint x="700" y="165"/>
+                            <mxPoint x="710" y="160"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
@@ -137,7 +160,7 @@
                         <mxPoint x="10" y="-10" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="2" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="rel4">
+                <mxCell id="2" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="rel4" vertex="1" connectable="0">
                     <mxGeometry x="0.7131" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>

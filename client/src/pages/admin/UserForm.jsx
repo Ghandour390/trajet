@@ -9,12 +9,15 @@ export default function UserForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const isEdit = !!id;
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
     email: '',
     phone: '',
     role: 'chauffeur',
+    password: '',
+    licence: '',
   });
 
   useEffect(() => {
@@ -36,6 +39,8 @@ export default function UserForm() {
           email: user.email || '',
           phone: user.phone || '',
           role: user.role || 'chauffeur',
+          licence: user.licence || '',
+          password: '',
         });
       }
     } catch {
@@ -54,11 +59,16 @@ export default function UserForm() {
     e.preventDefault();
     setLoading(true);
     try {
-      await usersAPI.updateUser(id, formData);
-      notify.success('Utilisateur mis à jour avec succès');
+      if (isEdit) {
+        await usersAPI.updateUser(id, formData);
+        notify.success('Utilisateur mis à jour avec succès');
+      } else {
+        await usersAPI.createUser(formData);
+        notify.success('Chauffeur créé avec succès');
+      }
       navigate('/admin/users');
-    } catch {
-      notify.error('Erreur lors de la mise à jour');
+    } catch (error) {
+      notify.error(error?.message || 'Erreur lors de l\'opération');
     } finally {
       setLoading(false);
     }
@@ -77,8 +87,12 @@ export default function UserForm() {
           <ArrowLeft size={20} />
         </Button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Modifier l'utilisateur</h1>
-          <p className="text-gray-600 dark:text-slate-400">Modifiez les informations de l'utilisateur</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+            {isEdit ? 'Modifier l\'utilisateur' : 'Ajouter un chauffeur'}
+          </h1>
+          <p className="text-gray-600 dark:text-slate-400">
+            {isEdit ? 'Modifiez les informations de l\'utilisateur' : 'Créez un nouveau chauffeur'}
+          </p>
         </div>
       </div>
 
@@ -113,6 +127,22 @@ export default function UserForm() {
               value={formData.phone}
               onChange={handleInputChange}
             />
+            <Input
+              label="Mot de passe"
+              name="password"
+              type="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              required={!isEdit}
+              placeholder={isEdit ? 'Laisser vide pour ne pas changer' : ''}
+            />
+            <Input
+              label="Numéro de permis"
+              name="licence"
+              value={formData.licence}
+              onChange={handleInputChange}
+              placeholder="B123456"
+            />
             <Select
               label="Rôle"
               name="role"
@@ -127,7 +157,7 @@ export default function UserForm() {
               Annuler
             </Button>
             <Button type="submit" variant="primary" loading={loading}>
-              Mettre à jour
+              {isEdit ? 'Mettre à jour' : 'Créer'}
             </Button>
           </div>
         </form>

@@ -14,6 +14,7 @@ import tireRoutes from './routes/tireRoutes.js';
 import fuelRoutes from './routes/fuelRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
+import reportRoutes from './routes/reportRoutes.js';
 import swaggerSpec from './config/swagger.js';
 import cors from 'cors';
 
@@ -51,6 +52,7 @@ app.use('/api/tires', tireRoutes);
 app.use('/api/fuel', fuelRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/reports', reportRoutes);
 
 // Error Handler
 app.use(errorHandler);

@@ -32,6 +32,7 @@ router.get('/', authenticate, authorize('admin'), vehicleController.getAllVehicl
  */
 router.get('/disponibles', authenticate, authorize('admin'), vehicleController.getAvailableVehicles);
 
+router.get('/:id/tires', authenticate, authorize('admin'), vehicleController.getVehicleWithTires);
 router.get('/:id', authenticate, authorize('admin'), vehicleController.getVehicleById);
 router.patch('/:id', authenticate, authorize('admin'), vehicleController.updateVehicle);
 router.delete('/:id', authenticate, authorize('admin'), vehicleController.deleteVehicle);

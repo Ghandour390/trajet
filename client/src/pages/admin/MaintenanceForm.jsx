@@ -95,6 +95,7 @@ export default function MaintenanceForm() {
               value={formData.km}
               onChange={handleInputChange}
               required
+              min="0"
               placeholder="45000"
             />
             <Input

@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Download } from 'lucide-react';
 import { Button, Card, Select } from '../../components/common';
 import { FuelChart, KilometrageChart } from '../../components/charts';
-import { getFuelStats, selectFuelStats } from '../../store/slices/fuelSlice';
-import { getTrips, selectTrips } from '../../store/slices/tripsSlice';
+import { getReportStats, selectReportStats, selectReportsLoading } from '../../store/slices/reportsSlice';
 import { downloadPDF } from '../../utils/fileHelpers';
 
 /**
@@ -13,8 +12,8 @@ import { downloadPDF } from '../../utils/fileHelpers';
  */
 export default function AdminReports() {
   const dispatch = useDispatch();
-  const fuelStats = useSelector(selectFuelStats);
-  const trips = useSelector(selectTrips);
+  const stats = useSelector(selectReportStats);
+  const loading = useSelector(selectReportsLoading);
 
   // Local state
   const [period, setPeriod] = useState('month');
@@ -22,15 +21,8 @@ export default function AdminReports() {
 
   // Fetch data on mount
   useEffect(() => {
-    dispatch(getFuelStats({ period }));
-    dispatch(getTrips());
+    dispatch(getReportStats(period));
   }, [dispatch, period]);
-
-  // Calculate summary stats
-  const totalDistance = trips.reduce((sum, trip) => sum + (trip.distance || 0), 0);
-  const totalFuel = fuelStats?.totalConsumption || 0;
-  const avgConsumption = totalDistance > 0 ? (totalFuel / totalDistance * 100).toFixed(2) : 0;
-  const totalCost = fuelStats?.totalCost || 0;
 
   const handleDownloadReport = () => {
     downloadPDF(`rapport-${reportType}-${period}.pdf`);
@@ -87,24 +79,34 @@ export default function AdminReports() {
       </Card>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="text-center">
-          <p className="text-sm text-gray-500 dark:text-slate-400">Distance totale</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalDistance.toLocaleString()} km</p>
-        </Card>
-        <Card className="text-center">
-          <p className="text-sm text-gray-500 dark:text-slate-400">Carburant consommé</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalFuel.toLocaleString()} L</p>
-        </Card>
-        <Card className="text-center">
-          <p className="text-sm text-gray-500 dark:text-slate-400">Consommation moyenne</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{avgConsumption} L/100km</p>
-        </Card>
-        <Card className="text-center">
-          <p className="text-sm text-gray-500 dark:text-slate-400">Coût total carburant</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{totalCost.toLocaleString()} MAD</p>
-        </Card>
-      </div>
+      {loading ? (
+        <div className="flex justify-center py-12">
+          <div className="w-12 h-12 rounded-full border-4 border-primary-500 border-t-transparent animate-spin"></div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <Card className="text-center">
+            <p className="text-sm text-gray-500 dark:text-slate-400">Distance totale</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalDistance.toLocaleString()} km</p>
+          </Card>
+          <Card className="text-center">
+            <p className="text-sm text-gray-500 dark:text-slate-400">Carburant consommé</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalFuel.toLocaleString()} L</p>
+          </Card>
+          <Card className="text-center">
+            <p className="text-sm text-gray-500 dark:text-slate-400">Consommation moyenne</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.avgConsumption} L/100km</p>
+          </Card>
+          <Card className="text-center">
+            <p className="text-sm text-gray-500 dark:text-slate-400">Coût total</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalCost.toLocaleString()} MAD</p>
+          </Card>
+          <Card className="text-center">
+            <p className="text-sm text-gray-500 dark:text-slate-400">Trajets complétés</p>
+            <p className="text-2xl font-bold text-gray-900 dark:text-white">{stats.totalTrips}</p>
+          </Card>
+        </div>
+      )}
 
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

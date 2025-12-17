@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import Trip from '../models/Trip.js';
+import bcrypt from 'bcryptjs';
 
 class UserService {
   async findAll() {
@@ -11,14 +12,22 @@ class UserService {
   }
 
   async create(userData) {
+    if (userData.password) {
+      userData.passwordHash = await bcrypt.hash(userData.password, 10);
+      delete userData.password;
+    }
     return await User.create(userData);
   }
 
   async update(id, userData) {
+    if (userData.password) {
+      userData.passwordHash = await bcrypt.hash(userData.password, 10);
+      delete userData.password;
+    }
     return await User.findByIdAndUpdate(id, userData, {
       new: true,
       runValidators: true
-    }).select('-password');
+    }).select('-passwordHash');
   }
 
   async delete(id) {

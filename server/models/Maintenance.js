@@ -16,7 +16,8 @@ const maintenanceSchema = new mongoose.Schema({
   },
   km: {
     type: Number,
-    required: true
+    required: true,
+    min: [0, 'Le kilométrage ne peut pas être négatif']
   },
   notes: {
     type: String

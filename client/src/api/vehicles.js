@@ -41,3 +41,9 @@ export const assignDriver = async (vehicleId, driverId) => {
   const response = await api.patch(`/vehicles/${vehicleId}/driver`, { driverId });
   return response.data;
 };
+
+// Get vehicle with tires
+export const getVehicleWithTires = async (id) => {
+  const response = await api.get(`/vehicles/${id}/tires`);
+  return response.data;
+};

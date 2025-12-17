@@ -1,64 +1,40 @@
 import api from './axios';
 
-
-// Get all users
-export const getUsers = async (params = {}) => {
-  const response = await api.get('/users', { params });
+export const getUsers = async () => {
+  const response = await api.get('/users');
   return response.data;
 };
 
-// Get user by ID
-export const getUserById = async (id) => {
-  const response = await api.get(`/users/${id}`);
+export const getUserById = async (userId) => {
+  const response = await api.get(`/users/${userId}`);
   return response.data;
 };
 
-// Get current user profile
-export const getProfile = async () => {
-  const response = await api.get('/auth/my');
-  return response.data;
-};
-
-// Update user profile
-export const updateProfile = async (id, data) => {
-  const response = await api.patch(`/users/${id}`, data);
-  return response.data;
-};
-
-// Update user by ID (admin)
-export const updateUser = async (id, data) => {
-  const response = await api.put(`/users/${id}`, data);
-  return response.data;
-};
-
-// Delete user
-export const deleteUser = async (id) => {
-  const response = await api.delete(`/users/${id}`);
-  return response.data;
-};
-
-// Get all drivers
-export const getDrivers = async () => {
-  const response = await api.get('/users/drivers');
-  return response.data;
-};
-
-// Change password
-export const changePassword = async (data) => {
-  const response = await api.post('/auth/change-password', data);
-  return response.data;
-};
-
-// Upload profile image
-export const uploadProfileImage = async (id, formData) => {
-  const response = await api.post(`/users/${id}/profile-image`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+export const uploadProfileImage = async (userId, formData) => {
+  const response = await api.post(`/users/${userId}/profile-image`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
   });
   return response.data;
 };
 
-// Get profile image URL
-export const getProfileImageUrl = async (id) => {
-  const response = await api.get(`/users/${id}/profile-image`);
+export const updateProfile = async (userId, userData) => {
+  const response = await api.patch(`/users/${userId}`, userData);
+  return response.data;
+};
+
+export const changePassword = async (passwordData) => {
+  const response = await api.post('/auth/change-password', passwordData);
+  return response.data;
+};
+
+export const createUser = async (userData) => {
+  const response = await api.post('/users', userData);
+  return response.data;
+};
+
+export const updateUser = async (userId, userData) => {
+  const response = await api.patch(`/users/${userId}`, userData);
   return response.data;
 };

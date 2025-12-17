@@ -2,6 +2,9 @@ import Notification from '../models/Notification.js';
 
 export const getNotifications = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
     const { limit = 20, isRead } = req.query;
     const filter = { userId: req.user.id };
     if (isRead !== undefined) filter.isRead = isRead === 'true';
@@ -10,7 +13,7 @@ export const getNotifications = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(parseInt(limit));
     
-    res.json(notifications);
+    res.status(200).json(notifications);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -18,11 +21,14 @@ export const getNotifications = async (req, res) => {
 
 export const getUnreadCount = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
     const count = await Notification.countDocuments({ 
       userId: req.user.id, 
       isRead: false 
     });
-    res.json({ count });
+    res.status(200).json({ count });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

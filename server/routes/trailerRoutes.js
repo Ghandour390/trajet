@@ -32,6 +32,7 @@ router.get('/', authenticate, authorize('admin'), trailerController.getAllTraile
  */
 router.get('/disponibles', authenticate, authorize('admin'), trailerController.getAvailableTrailers);
 
+router.get('/:id/tires', authenticate, authorize('admin'), trailerController.getTrailerWithTires);
 router.get('/:id', authenticate, authorize('admin'), trailerController.getTrailerById);
 router.patch('/:id', authenticate, authorize('admin'), trailerController.updateTrailer);
 router.delete('/:id', authenticate, authorize('admin'), trailerController.deleteTrailer);

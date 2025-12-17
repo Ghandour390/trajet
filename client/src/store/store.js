@@ -7,6 +7,7 @@ import fuelReducer from './slices/fuelSlice';
 import maintenanceReducer from './slices/maintenanceSlice';
 import notificationsReducer from './slices/notificationsSlice';
 import dashboardReducer from './slices/dashboardSlice';
+import reportsReducer from './slices/reportsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     maintenance: maintenanceReducer,
     notifications: notificationsReducer,
     dashboard: dashboardReducer,
+    reports: reportsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

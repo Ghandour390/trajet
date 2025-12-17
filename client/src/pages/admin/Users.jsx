@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Phone, Calendar, Edit, Shield } from 'lucide-react';
+import { Phone, Calendar, Edit, Shield, Plus } from 'lucide-react';
 import { Button, Card, Table, PageHeader, SearchFilter, StatusBadge, Avatar } from '../../components/common';
 import * as usersAPI from '../../api/users';
 import { notify } from '../../utils/notifications';
@@ -173,6 +173,9 @@ export default function AdminUsers() {
       <PageHeader
         title="Utilisateurs"
         subtitle="Gérez les utilisateurs de la plateforme"
+        actionLabel="Ajouter un chauffeur"
+        actionIcon={Plus}
+        onAction={() => navigate('/admin/users/create')}
       />
 
       {/* Filters */}

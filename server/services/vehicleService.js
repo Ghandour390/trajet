@@ -9,22 +9,29 @@ class VehicleService {
       throw new Error(`Le véhicule avec la plaque ${vehicleData.plateNumber} existe déjà`);
     }
     
-    const newVehicle = await vihicleModel.create(vehicleData);
+    const { tires: tiresData, ...vehicleInfo } = vehicleData;
+    const newVehicle = await vihicleModel.create(vehicleInfo);
     
-    // Créer automatiquement des pneus par défaut
-    const tireCount = vehicleData.type === 'Camion' ? 6 : 4;
-    const tires = [];
+    const tireIds = [];
     
-    for (let i = 0; i < tireCount; i++) {
-      const tire = await Tire.create({
-        serial: `${newVehicle.plateNumber}-T${i + 1}`,
-        position: `Position ${i + 1}`,
-        nextCheckKm: (vehicleData.currentKm || 0) + 10000
-      });
-      tires.push(tire._id);
+    if (tiresData && tiresData.length > 0) {
+      for (const tireData of tiresData) {
+        const tire = await Tire.create({
+          serial: tireData.serial || `${newVehicle.plateNumber}-T${tireIds.length + 1}`,
+          position: tireData.position || `Position ${tireIds.length + 1}`,
+          brand: tireData.brand,
+          pressure: tireData.pressure,
+          depth: tireData.depth,
+          vehicleId: newVehicle._id,
+          stockStatus: 'mounted',
+          nextCheckKm: (vehicleInfo.currentKm || 0) + 10000,
+          wearPercent: 0
+        });
+        tireIds.push(tire._id);
+      }
     }
     
-    newVehicle.tires = tires;
+    newVehicle.tires = tireIds;
     await newVehicle.save();
     
     return newVehicle;
@@ -58,6 +65,14 @@ class VehicleService {
       status: { $in: ['active', 'in_use'] },
       _id: { $nin: busyVehiclesIds }
     });
+  }
+
+  async findByIdWithTires(id) {
+    const vehicle = await vihicleModel.findById(id);
+    if (!vehicle) return null;
+
+    const tires = await Tire.find({ vehicleId: id, stockStatus: 'mounted' });
+    return { ...vehicle.toObject(), tires };
   }
 }
 

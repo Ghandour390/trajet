@@ -88,7 +88,15 @@ class TripService {
 
   async updateStatus(id, status, userId = null) {
     const trip = await Trip.findByIdAndUpdate(id, { status }, { new: true })
-      .populate('assignedTo', 'firstname lastname');
+      .populate('assignedTo', 'firstname lastname')
+      .populate('vehicleRef')
+      .populate('trailerRef');
+    
+    // Si trajet complété, ajouter distance aux pneus
+    if (status === 'completed' && trip.endKm && trip.startKm) {
+      const distance = trip.endKm - trip.startKm;
+      await this.addDistanceToTires(trip, distance);
+    }
     
     // Si c'est un chauffeur qui change le statut, notifier l'admin
     if (userId && trip.assignedTo && trip.assignedTo._id.toString() === userId) {
@@ -96,6 +104,37 @@ class TripService {
     }
     
     return trip;
+  }
+
+  async addDistanceToTires(trip, distance) {
+    try {
+      const Tire = (await import('../models/Tire.js')).default;
+      const updates = [];
+
+      // Pneus du véhicule
+      if (trip.vehicleRef) {
+        updates.push(
+          Tire.updateMany(
+            { vehicleId: trip.vehicleRef._id, stockStatus: 'mounted' },
+            { $inc: { nextCheckKm: -distance, wearPercent: distance * 0.001 } }
+          )
+        );
+      }
+
+      // Pneus de la remorque
+      if (trip.trailerRef) {
+        updates.push(
+          Tire.updateMany(
+            { trailerId: trip.trailerRef._id, stockStatus: 'mounted' },
+            { $inc: { nextCheckKm: -distance, wearPercent: distance * 0.001 } }
+          )
+        );
+      }
+
+      await Promise.all(updates);
+    } catch (error) {
+      console.error('Erreur ajout distance pneus:', error);
+    }
   }
 
   // Créer notification pour admin lors changement statut

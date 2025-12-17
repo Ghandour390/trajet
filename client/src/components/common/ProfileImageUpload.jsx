@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import axios from 'axios';
+import { uploadProfileImage } from '../../api/users';
 
 const ProfileImageUpload = ({ userId, currentImage, onSuccess, className = '' }) => {
   const [uploading, setUploading] = useState(false);
@@ -50,17 +50,7 @@ const ProfileImageUpload = ({ userId, currentImage, onSuccess, className = '' })
     formData.append('image', file);
 
     try {
-      const token = localStorage.getItem('token');
-      const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/users/${userId}/profile-image`,
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
+      const data = await uploadProfileImage(userId, formData);
 
       if (data.success) {
         setPreview(data.data.profileImage);
@@ -70,7 +60,7 @@ const ProfileImageUpload = ({ userId, currentImage, onSuccess, className = '' })
       console.error('Erreur upload:', err);
       const message = err.response?.data?.message || 'Erreur lors de l\'upload';
       setError(message);
-      setPreview(currentImage); // Restaurer l'image précédente
+      setPreview(currentImage);
     } finally {
       setUploading(false);
     }

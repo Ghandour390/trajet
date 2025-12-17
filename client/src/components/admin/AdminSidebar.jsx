@@ -4,14 +4,13 @@ import {
   LayoutDashboard,
   Truck,
   MapPin,
+  Fuel,
+  CircleDot,
   Wrench,
   FileText,
   Users,
   User,
   LogOut
-  // ChevronLeft,
-  // ChevronRight,
-  // X,
 } from 'lucide-react';
 import { logout } from '../../store/slices/authSlice';
 
@@ -27,8 +26,10 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
   const menuItems = [
     { path: '/admin/dashboard', icon: LayoutDashboard, label: 'Tableau de bord' },
     { path: '/admin/vehicles', icon: Truck, label: 'Véhicules' },
-    { path: '/admin/trailers', icon: Truck, label: 'Remorques' }, // Icône à adapter si besoin
+    { path: '/admin/trailers', icon: Truck, label: 'Remorques' },
     { path: '/admin/trips', icon: MapPin, label: 'Trajets' },
+    { path: '/admin/fuel', icon: Fuel, label: 'Carburant' },
+    { path: '/admin/tires', icon: CircleDot, label: 'Pneus' },
     { path: '/admin/maintenance', icon: Wrench, label: 'Maintenance' },
     { path: '/admin/reports', icon: FileText, label: 'Rapports' },
     { path: '/admin/users', icon: Users, label: 'Utilisateurs' },
