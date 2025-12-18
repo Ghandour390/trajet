@@ -43,6 +43,15 @@ const tripSchema = new mongoose.Schema({
     type: Number ,
     required: true
   },
+  distance: {
+    type: Number
+  },
+  startDate: {
+    type: Date
+  },
+  endDate: {
+    type: Date
+  },
   fuelVolume: {
     type: Number
   },

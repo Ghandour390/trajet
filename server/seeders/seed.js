@@ -90,7 +90,7 @@ const seedDatabase = async () => {
         model: 'Actros',
         year: 2020,
         currentKm: 45000,
-        status: 'active',
+        status: 'maintenance',
         fuelType: 'Diesel',
         tires: [tires[0]._id, tires[1]._id, tires[2]._id, tires[3]._id]
       },
@@ -112,7 +112,7 @@ const seedDatabase = async () => {
         model: 'Master',
         year: 2022,
         currentKm: 15000,
-        status: 'active',
+        status: 'maintenance',
         fuelType: 'Diesel',
         tires: [tires[8]._id, tires[9]._id]
       }
@@ -162,148 +162,74 @@ const seedDatabase = async () => {
     await Tire.updateMany({ _id: { $in: [trailerTires[2]._id, trailerTires[3]._id] } }, { trailerId: trailers[1]._id });
     console.log('Created trailers');
 
-    // Create Trips
-    const trips = await Trip.insertMany([
-      {
-        reference: 'TRIP001',
-        origin: 'Casablanca',
-        destination: 'Marrakech',
-        assignedTo: users[1]._id,
-        vehicleRef: vehicles[0]._id,
-        trailerRef: trailers[0]._id,
-        startKm: 44750,
-        endKm: 45000,
-        distimatedKm: 250,
-        fuelVolume: 80,
-        status: 'completed',
-        startAt: new Date('2024-01-15'),
-        endAt: new Date('2024-01-15'),
-        notes: 'Livraison effectuée avec succès'
-      },
-      {
-        reference: 'TRIP002',
-        origin: 'Rabat',
-        destination: 'Tanger',
-        assignedTo: users[2]._id,
-        vehicleRef: vehicles[1]._id,
-        startKm: 29650,
-        endKm: 30000,
-        distimatedKm: 350,
-        status: 'completed',
-        startAt: new Date('2024-01-20'),
-        endAt: new Date('2024-01-20')
-      },
-      {
-        reference: 'TRIP003',
-        origin: 'Agadir',
-        destination: 'Casablanca',
-        assignedTo: users[1]._id,
-        vehicleRef: vehicles[0]._id,
-        startKm: 45000,
-        distimatedKm: 500,
-        status: 'in_progress',
-        startAt: new Date()
-      },
-      {
-        reference: 'TRIP004',
-        origin: 'Fès',
-        destination: 'Oujda',
-        assignedTo: users[2]._id,
-        vehicleRef: vehicles[2]._id,
-        distimatedKm: 200,
-        status: 'planned',
-        startAt: new Date(Date.now() + 86400000)
-      },
-      {
-        reference: 'TRIP005',
-        origin: 'Tanger',
-        destination: 'Casablanca',
-        assignedTo: users[1]._id,
-        vehicleRef: vehicles[1]._id,
-        trailerRef: trailers[1]._id,
-        distimatedKm: 350,
-        status: 'planned',
-        startAt: new Date(Date.now() + 172800000)
-      }
-    ]);
-    console.log('Created trips');
+    // Create Trips - More data
+    const now = new Date();
+    const trips = [];
+    const cities = ['Casablanca', 'Rabat', 'Marrakech', 'Fès', 'Tanger', 'Agadir', 'Oujda'];
+    for (let i = 0; i < 50; i++) {
+      const startDate = new Date(now);
+      startDate.setDate(startDate.getDate() - i);
+      const distance = Math.round(200 + Math.random() * 500);
+      const startKm = 10000 + i * 500;
+      trips.push({
+        reference: `TRIP${String(i + 1).padStart(3, '0')}`,
+        origin: cities[i % cities.length],
+        destination: cities[(i + 1) % cities.length],
+        assignedTo: users[(i % 2) + 1]._id,
+        vehicleRef: vehicles[i % 3]._id,
+        startKm: startKm,
+        endKm: i < 30 ? startKm + distance : null,
+        distance: i < 30 ? distance : null,
+        distimatedKm: distance,
+        status: i < 30 ? 'completed' : i < 35 ? 'in_progress' : 'planned',
+        startDate: startDate,
+        endDate: i < 30 ? new Date(startDate.getTime() + 86400000) : null
+      });
+    }
+    const tripsInserted = await Trip.insertMany(trips);
+    console.log('Created 50 trips');
 
-    // Create Maintenance
-    await Maintenance.insertMany([
-      {
-        vehicleRef: vehicles[0]._id,
-        type: 'Vidange',
-        date: new Date('2024-01-10'),
-        km: 30000,
-        notes: 'Révision des 30000 km'
-      },
-      {
-        vehicleRef: vehicles[1]._id,
-        type: 'Freins',
-        date: new Date('2024-02-01'),
-        km: 45500,
-        notes: 'Changement plaquettes avant',
-        cost: 2500
-      },
-      {
-        vehicleRef: vehicles[2]._id,
-        type: 'Pneus',
-        date: new Date('2024-01-25'),
-        km: 15000,
-        notes: 'Rotation des pneus',
-        cost: 500
-      },
-      {
-        vehicleRef: vehicles[0]._id,
-        type: 'Contrôle technique',
-        date: new Date('2024-12-16'),
-        km: 45000,
-        notes: 'Contrôle technique annuel',
-        cost: 1000
-      }
-    ]);
-    console.log('Created maintenance records');
+    // Create Maintenance - More data
+    const maintenances = [];
+    const types = ['Vidange', 'Freins', 'Pneus', 'Contrôle technique', 'Révision'];
+    for (let i = 0; i < 15; i++) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i * 7);
+      maintenances.push({
+        vehicleRef: vehicles[i % 3]._id,
+        type: types[i % types.length],
+        date: date,
+        km: 10000 + i * 5000,
+        notes: `Maintenance ${types[i % types.length]}`,
+        cost: 500 + Math.random() * 2000,
+        status: i < 10 ? 'completed' : 'pending'
+      });
+    }
+    await Maintenance.insertMany(maintenances);
+    console.log('Created 15 maintenance records');
 
-    // Create Fuel Records
-    await Fuel.insertMany([
-      {
-        trip: trips[0]._id,
-        vehicle: vehicles[0]._id,
-        driver: users[1]._id,
-        liters: 80,
-        cost: 1200,
-        station: 'Total Casablanca',
-        location: 'Casablanca',
-        odometer: 44800,
+    // Create Fuel Records - More data for charts
+    const fuelRecords = [];
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(now);
+      date.setDate(date.getDate() - i);
+      const liters = 50 + Math.random() * 100;
+      fuelRecords.push({
+        trip: tripsInserted[i % tripsInserted.length]._id,
+        vehicle: vehicles[i % 3]._id,
+        driver: users[(i % 2) + 1]._id,
+        liters: liters,
+        volume: liters,
+        quantity: liters,
+        cost: 800 + Math.random() * 1000,
+        pricePerLiter: 15 + Math.random() * 2,
+        station: ['Total', 'Shell', 'Afriquia'][i % 3],
         fuelType: 'diesel',
-        date: new Date('2024-01-15')
-      },
-      {
-        trip: trips[1]._id,
-        vehicle: vehicles[1]._id,
-        driver: users[2]._id,
-        liters: 100,
-        cost: 1500,
-        station: 'Shell Rabat',
-        location: 'Rabat',
-        odometer: 29700,
-        fuelType: 'diesel',
-        date: new Date('2024-01-20')
-      },
-      {
-        trip: trips[0]._id,
-        vehicle: vehicles[2]._id,
-        driver: users[1]._id,
-        liters: 50,
-        cost: 750,
-        station: 'Afriquia Fès',
-        location: 'Fès',
-        odometer: 14800,
-        fuelType: 'diesel',
-        date: new Date('2024-01-18')
-      }
-    ]);
-    console.log('Created fuel records');
+        date: date
+      });
+    }
+    await Fuel.insertMany(fuelRecords);
+    console.log('Created 30 fuel records');
 
     // Create Notifications
     await Notification.insertMany([
@@ -382,11 +308,11 @@ const seedDatabase = async () => {
     console.log('\n✅ Database seeded successfully!');
     console.log('\n📊 Données créées:');
     console.log('- 3 utilisateurs (1 admin, 2 chauffeurs)');
-    console.log('- 3 véhicules avec 10 pneus');
-    console.log('- 2 remorques avec 4 pneus');
-    console.log('- 5 trajets (2 complétés, 1 en cours, 2 planifiés)');
+    console.log('- 3 véhicules (2 en maintenance)');
+    console.log('- 2 remorques');
+    console.log('- 50 trajets (30 complétés, 5 en cours, 15 planifiés)');
     console.log('- 4 maintenances');
-    console.log('- 3 enregistrements carburant');
+    console.log('- 30 enregistrements carburant');
     console.log('- 4 notifications');
     console.log('- 4 alertes pneus');
     console.log('\n🔑 Identifiants de test:');

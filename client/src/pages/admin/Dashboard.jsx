@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Truck, MapPin, Users, Wrench, TrendingUp, AlertTriangle, ArrowRight, Calendar, Container } from 'lucide-react';
 import { StatsCard } from '../../components/admin';
 import { Card } from '../../components/common';
-import Skeleton from '../../components/common/Skeleton';
 import { FuelChart, KilometrageChart } from '../../components/charts';
 import {
   getDashboardStats,
@@ -28,6 +27,10 @@ export default function AdminDashboard() {
   const stats = useSelector(selectDashboardStats);
   const recentTrips = useSelector(selectRecentTrips);
   const vehiclesNeedingAttention = useSelector(selectVehiclesAttention);
+  
+  useEffect(() => {
+    console.log('🚗 Vehicles state updated:', vehiclesNeedingAttention);
+  }, [vehiclesNeedingAttention]);
   const fuelChartData = useSelector(selectFuelChartData);
   const kilometrageChartData = useSelector(selectKilometrageChartData);
   const loading = useSelector(selectDashboardLoading);
@@ -41,11 +44,9 @@ export default function AdminDashboard() {
 
   // Lazy load everything else
   useEffect(() => {
-    const timer = setTimeout(() => {
-      dispatch(getRecentTrips());
-      dispatch(getVehiclesNeedingAttention());
-    }, 500);
-    return () => clearTimeout(timer);
+    console.log('🔴 Loading vehicles...');
+    dispatch(getRecentTrips());
+    dispatch(getVehiclesNeedingAttention());
   }, [dispatch]);
 
   // Load charts only when visible
@@ -196,7 +197,7 @@ export default function AdminDashboard() {
 
         {/* Vehicles Needing Attention */}
         <Card
-          title="Véhicules à surveiller"
+          title={`Véhicules à surveiller (${vehiclesNeedingAttention.length})`}
           subtitle="Maintenance requise ou proche"
           action={
             <button className="text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium flex items-center gap-1 transition-colors">
@@ -236,7 +237,7 @@ export default function AdminDashboard() {
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-white">
-                        {vehicle.matricule}
+                        {vehicle.plateNumber}
                       </p>
                       <p className="text-sm text-gray-500 dark:text-slate-400">
                         {vehicle.brand} {vehicle.model}

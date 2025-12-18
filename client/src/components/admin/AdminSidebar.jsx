@@ -5,11 +5,9 @@ import {
   Truck,
   MapPin,
   Fuel,
-  CircleDot,
   Wrench,
   FileText,
   Users,
-  User,
   LogOut
 } from 'lucide-react';
 import { logout } from '../../store/slices/authSlice';
@@ -101,7 +99,7 @@ export default function AdminSidebar({ isOpen, onToggle, isMobile }) {
       {/* Navigation */}
       <nav className="mt-4 px-3 flex-1 overflow-y-auto">
         <div className="space-y-1">
-          {menuItems.map((item, index) => (
+          {menuItems.map((item) => (
             <NavLink
               key={item.path}
               to={item.path}

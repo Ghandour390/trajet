@@ -10,7 +10,8 @@
     "test:unit": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --testPathPattern=unit",
     "test:integration": "node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --config=jest.integration.config.js",
     "seed": "node seeders/seed.js",
-    "add-indexes": "node scripts/addIndexes.js"
+    "add-indexes": "node scripts/addIndexes.js",
+    "check-vehicles": "node scripts/checkVehicles.js"
   },
   "keywords": [],
   "author": "",

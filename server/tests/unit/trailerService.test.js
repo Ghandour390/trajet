@@ -38,7 +38,7 @@ describe('TrailerService', () => {
 
       Tire.create.mockResolvedValue({ _id: 'tire123' });
 
-      const result = await trailerService.create(trailerData);
+      await trailerService.create(trailerData);
 
       expect(Trailer.findOne).toHaveBeenCalledWith({ plateNumber: 'R-12345-B' });
       expect(Trailer.create).toHaveBeenCalled();

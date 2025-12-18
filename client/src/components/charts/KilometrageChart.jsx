@@ -13,7 +13,7 @@ import { useTheme } from '../../contexts/ThemeContext';
  * KilometrageChart Component
  * Displays kilometrage evolution over time with dark mode support
  */
-export default function KilometrageChart({ data, period = 'month' }) {
+export default function KilometrageChart({ data }) {
   const { isDark } = useTheme();
 
   // Sample data if none provided

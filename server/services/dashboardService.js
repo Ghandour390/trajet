@@ -2,7 +2,6 @@ import Vehicle from '../models/Vehicle.js';
 import Trailer from '../models/Trailer.js';
 import Trip from '../models/Trip.js';
 import User from '../models/User.js';
-import Maintenance from '../models/Maintenance.js';
 
 class DashboardService {
     async getStats() {
@@ -14,11 +13,11 @@ class DashboardService {
                 totalDrivers,
                 pendingMaintenance
             ] = await Promise.all([
-                Vehicle.countDocuments().lean(),
-                Trailer.countDocuments().lean(),
-                Trip.countDocuments({ status: 'in_progress' }).lean(),
-                User.countDocuments({ role: 'chauffeur' }).lean(),
-                Maintenance.countDocuments({ status: 'pending' }).lean()
+                Vehicle.countDocuments(),
+                Trailer.countDocuments(),
+                Trip.countDocuments({ status: 'in_progress' }),
+                User.countDocuments({ role: 'chauffeur' }),
+                (await import('../models/Maintenance.js')).default.countDocuments({ status: 'pending' })
             ]);
 
             return {
@@ -28,7 +27,7 @@ class DashboardService {
                 totalDrivers,
                 pendingMaintenance
             };
-        } catch (error) {
+        } catch {
             return {
                 totalVehicles: 0,
                 totalTrailers: 0,
@@ -42,18 +41,25 @@ class DashboardService {
     async getFuelChartData(period = 'month') {
         try {
             const dateRange = this.getDateRange(period);
-            const groupBy = this.getGroupByFormat(period);
-
             const Fuel = (await import('../models/Fuel.js')).default;
             const fuelData = await Fuel.aggregate([
                 { $match: { date: { $gte: dateRange.start, $lte: dateRange.end } } },
-                { $group: { _id: groupBy, consumption: { $sum: '$quantity' } } },
-                { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } },
+                { 
+                    $group: { 
+                        _id: {
+                            year: { $year: '$date' },
+                            month: { $month: '$date' }
+                        },
+                        consumption: { $sum: '$liters' }
+                    }
+                },
+                { $sort: { '_id.year': 1, '_id.month': 1 } },
                 { $limit: 12 }
             ]);
 
             return this.formatChartData(fuelData, period, 'consumption');
         } catch (error) {
+            console.error('Fuel chart error:', error);
             return [];
         }
     }
@@ -61,17 +67,24 @@ class DashboardService {
     async getKilometrageChartData(period = 'month') {
         try {
             const dateRange = this.getDateRange(period);
-            const groupBy = this.getGroupByFormat(period);
-
             const trips = await Trip.aggregate([
-                { $match: { startDate: { $gte: dateRange.start, $lte: dateRange.end } } },
-                { $group: { _id: groupBy, kilometrage: { $sum: '$distance' } } },
-                { $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } },
+                { $match: { startDate: { $gte: dateRange.start, $lte: dateRange.end }, distance: { $exists: true, $ne: null } } },
+                { 
+                    $group: { 
+                        _id: {
+                            year: { $year: '$startDate' },
+                            month: { $month: '$startDate' }
+                        },
+                        kilometrage: { $sum: '$distance' }
+                    }
+                },
+                { $sort: { '_id.year': 1, '_id.month': 1 } },
                 { $limit: 12 }
             ]);
 
             return this.formatChartData(trips, period, 'kilometrage');
         } catch (error) {
+            console.error('Kilometrage chart error:', error);
             return [];
         }
     }
@@ -89,16 +102,10 @@ class DashboardService {
         return { start, end };
     }
 
-    getGroupByFormat(period) {
-        if (period === 'week') {
-            return { year: { $year: '$date' }, month: { $month: '$date' }, day: { $dayOfMonth: '$date' } };
-        }
-        return { year: { $year: '$date' }, month: { $month: '$date' } };
-    }
+
 
     formatChartData(data, period, valueKey) {
         const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
-        const days = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
         
         return data.map(item => {
             let label;
@@ -122,17 +129,19 @@ class DashboardService {
             .sort({ createdAt: -1 })
             .limit(5)
             .populate('assignedTo', 'firstname lastname')
-            .populate('vehicleRef', 'plateNumber')
-            .lean();
+            .populate('vehicleRef', 'plateNumber');
     }
 
     async getVehiclesNeedingAttention() {
-        return await Vehicle.find({
+        const vehicles = await Vehicle.find({
             $or: [
                 { status: 'maintenance' },
                 { status: 'inactive' }
             ]
-        }).limit(5).lean();
+        })
+            .limit(10);
+
+        return vehicles;
     }
 }
 

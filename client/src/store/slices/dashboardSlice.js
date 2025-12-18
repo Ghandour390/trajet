@@ -27,8 +27,11 @@ export const getVehiclesNeedingAttention = createAsyncThunk(
   'dashboard/getVehiclesAttention',
   async (_, { rejectWithValue }) => {
     try {
-      return await dashboardAPI.getVehiclesNeedingAttention();
+      const result = await dashboardAPI.getVehiclesNeedingAttention();
+      console.log('📦 API Response vehicles:', result);
+      return result;
     } catch (error) {
+      console.error('❌ Error loading vehicles:', error);
       return rejectWithValue(error.response?.data?.message || 'Erreur de chargement des véhicules');
     }
   }
